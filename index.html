@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>EL ENCARGADO · Feria del Litoral</title><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--az:#0a1628;--az2:#16284a;--az3:#1f3a6b;--do:#f5b932;--do2:#d4a01e;--co:#ff6b6b;--ve:#4ecdc4;--gr:#94a3b8;--bg:#f8fafc;--tx:#0f172a}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#0a1628,#16284a);color:var(--tx);-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;overflow:hidden}
+
+@media (min-width:900px){
+  body{padding:20px}
+  .app{max-width:1300px;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.3);min-height:calc(100vh - 40px)}
+  .login{min-height:calc(100vh - 40px);border-radius:24px}
+  .content-pc{display:grid;grid-template-columns:260px 1fr;gap:0}
+  .sidebar-pc{background:var(--az);color:#fff;padding:16px 12px;min-height:calc(100vh - 130px);max-height:calc(100vh - 130px);overflow-y:auto}
+  .sb-group{margin-bottom:14px}
+  .sb-title{font-size:9px;color:rgba(245,185,50,.7);letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px 4px;font-weight:700}
+  .sb-item{padding:10px 12px;border-radius:10px;margin-bottom:2px;color:rgba(255,255,255,.7);font-size:13px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.2s}
+  .sb-item:hover{background:rgba(255,255,255,.08);color:#fff}
+  .sb-item.active{background:var(--do);color:var(--az);font-weight:700}
+  .sb-item .ic{font-size:16px}
+  .nav.mobile{display:none!important}
+  .content{padding:24px 28px;padding-bottom:30px}
+  .kpis{grid-template-columns:repeat(4,1fr)!important}
+  .actions{grid-template-columns:repeat(4,1fr)!important}
+  .ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .detail-row{padding:12px 0}
+}
+@media (max-width:899px){
+  .content-pc{display:block}
+  .sidebar-pc{display:none}
+  .nav.mobile{display:flex!important}
+}
+
+.login{min-height:100vh;padding:32px 24px;background:linear-gradient(135deg,#0a1628,#1f3a6b);color:#fff;display:flex;flex-direction:column;justify-content:center}
+.login-brand{text-align:center;margin-bottom:40px}
+.login-brand .logo{width:80px;height:80px;border-radius:20px;background:linear-gradient(135deg,var(--do),var(--do2));display:inline-flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--az);margin-bottom:16px;box-shadow:0 12px 40px rgba(245,185,50,.4)}
+.login-brand h1{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--do);margin-bottom:4px}
+.login-brand p{font-size:13px;opacity:.7;letter-spacing:1.5px;text-transform:uppercase}
+.login-version{font-size:10px;opacity:.4;margin-top:8px;font-family:'JetBrains Mono',monospace}
+.login-form{display:flex;flex-direction:column;gap:14px;max-width:400px;width:100%;margin:0 auto}
+.login-form input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:16px 20px;border-radius:14px;font-size:16px;font-family:'DM Sans',sans-serif;outline:none}
+.login-form input::placeholder{color:rgba(255,255,255,.4)}
+.login-form input:focus{border-color:var(--do)}
+.login-form button{background:linear-gradient(135deg,var(--do),var(--do2));color:var(--az);border:none;padding:18px;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-top:6px}
+.login-error{background:rgba(255,107,107,.15);border:1px solid var(--co);padding:12px;border-radius:10px;font-size:13px;text-align:center}
+.login-users{margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);text-align:center;max-width:400px;margin:24px auto 0}
+.login-users-title{font-size:11px;opacity:.5;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.login-users-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;font-size:11px;opacity:.6}
+.login-user-chip{padding:4px 10px;background:rgba(255,255,255,.06);border-radius:8px;font-family:'JetBrains Mono',monospace}
+
+.header{background:linear-gradient(135deg,var(--az),var(--az2));color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.header-info h1{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;color:var(--do);line-height:1}
+.header-info p{font-size:11px;opacity:.7;margin-top:2px}
+.header-user{display:flex;align-items:center;gap:10px;font-size:12px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--do);color:var(--az);display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer}
+.conn-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ve);margin-right:4px}
+.conn-dot.off{background:var(--co)}
+
+.content{padding:20px;padding-bottom:100px;min-height:calc(100vh - 75px)}
+.greet{margin-bottom:20px}
+.greet h2{font-size:22px;font-weight:700;color:var(--az);line-height:1.2}
+.greet p{font-size:13px;color:var(--gr);margin-top:4px}
+
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.kpi{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.04);border:1px solid #e2e8f0}
+.kpi-label{font-size:10px;color:var(--gr);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.kpi-value{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--az);letter-spacing:1px}
+.kpi-sub{font-size:11px;color:var(--gr);margin-top:4px}
+.kpi.do{background:linear-gradient(135deg,var(--do),var(--do2));border:none}
+.kpi.do .kpi-label,.kpi.do .kpi-value,.kpi.do .kpi-sub{color:var(--az)}
+.kpi.co{background:linear-gradient(135deg,#ff6b6b,#ee5a52);border:none;color:#fff}
+.kpi.co .kpi-label,.kpi.co .kpi-value,.kpi.co .kpi-sub{color:#fff}
+
+.section{margin-bottom:20px}
+.section-title{font-size:14px;font-weight:700;color:var(--az);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.section-title .badge{background:var(--co);color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+.section-title .badge.ve{background:var(--ve)}
+.section-title .badge.do{background:var(--do);color:var(--az)}
+
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.action{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:.2s}
+.action:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.action .icon{font-size:24px;margin-bottom:6px}
+.action .label{font-size:12px;font-weight:600;color:var(--az)}
+.action.primary{background:var(--az);color:#fff;border-color:var(--az)}
+.action.primary .label{color:#fff}
+
+.alert{background:#fff;border-left:4px solid var(--co);padding:14px;border-radius:10px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.alert-title{font-size:13px;font-weight:700;color:var(--az);margin-bottom:4px}
+.alert-text{font-size:12px;color:var(--gr)}
+.alert.ve{border-left-color:var(--ve)}
+.alert.do{border-left-color:var(--do)}
+
+.lc{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid #e2e8f0;cursor:pointer;transition:.2s}
+.lc:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.lc-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.lc-n{font-size:14px;font-weight:700;color:var(--az)}
+.lc-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gr)}
+.lc-d{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--co);letter-spacing:1px}
+.lc-d.ok{color:var(--ve)}
+.lc-m{display:flex;gap:8px;font-size:11px;color:var(--gr);margin-top:6px;flex-wrap:wrap}
+.lc-m span{background:#f1f5f9;padding:2px 8px;border-radius:6px}
+
+.detail{background:#fff;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.detail h3{font-size:16px;color:var(--az);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:8px}
+.detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.detail-row:last-child{border-bottom:none}
+.detail-label{font-size:13px;color:var(--gr)}
+.detail-value{font-size:13px;font-weight:600;color:var(--az);font-family:'JetBrains Mono',monospace}
+.detail-value.co{color:var(--co)}
+.detail-value.ve{color:var(--ve)}
+.detail-value.big{font-size:20px}
+
+.promo-box{background:linear-gradient(135deg,#fef3c7,#fde68a);padding:14px;border-radius:12px;font-size:13px;line-height:1.6;color:#78350f;white-space:pre-wrap}
+.promo-empty{background:#f1f5f9;padding:20px;border-radius:12px;text-align:center;font-size:13px;color:var(--gr)}
+.cat-box{background:#f0fdf4;padding:14px;border-radius:12px;font-size:13px;line-height:1.6;color:#14532d;white-space:pre-wrap}
+
+.search{background:#fff;padding:14px;border-radius:14px;border:1px solid #e2e8f0;margin-bottom:14px}
+.search input{width:100%;border:none;outline:none;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--az)}
+
+.btn{background:var(--az);color:#fff;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:10px;font-family:'DM Sans',sans-serif}
+.btn.co{background:var(--co)}
+.btn.ve{background:var(--ve)}
+.btn.do{background:var(--do);color:var(--az)}
+.btn.ol{background:#fff;color:var(--az);border:1px solid var(--az)}
+.btn.wa{background:#25D366;color:#fff;text-decoration:none;display:block;text-align:center}
+.btn-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}
+.btn-row .btn{margin-top:0;padding:12px;font-size:12px}
+
+.mn{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;border:1px solid #e2e8f0}
+.mn-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.mn-n{font-size:14px;font-weight:700;color:var(--az)}
+.mn-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gr)}
+.mn-d{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--co)}
+.mn-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.tag-amable{background:#d1fae5;color:#065f46}
+.tag-firme{background:#fef3c7;color:#92400e}
+.tag-final{background:#fee2e2;color:#991b1b}
+
+.chat-msgs{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;min-height:300px;max-height:50vh;overflow-y:auto}
+.msg{padding:10px 12px;border-radius:12px;margin-bottom:8px;font-size:13px;line-height:1.5}
+.msg.user{background:var(--az);color:#fff;margin-left:30px}
+.msg.ai{background:#f1f5f9;color:var(--az);margin-right:30px}
+.chat-in{background:#fff;padding:10px;border-radius:14px;display:flex;gap:8px}
+.chat-in input{flex:1;border:1px solid #e2e8f0;padding:10px 14px;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none}
+.chat-in button{background:var(--do);color:var(--az);border:none;padding:0 16px;border-radius:10px;font-weight:700;cursor:pointer}
+.chat-quick{display:flex;gap:6px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px;flex-wrap:wrap}
+.chat-quick-btn{background:#fff;border:1px solid #e2e8f0;padding:8px 12px;border-radius:10px;font-size:11px;white-space:nowrap;cursor:pointer;color:var(--az)}
+
+.nav.mobile{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:1px solid #e2e8f0;display:flex;padding:8px 0 12px;z-index:80}
+.nav.mobile .nav-item{flex:1;text-align:center;padding:6px;cursor:pointer;color:var(--gr);font-size:10px}
+.nav.mobile .nav-item.active{color:var(--az)}
+.nav.mobile .nav-item .nav-icon{font-size:20px;display:block;margin-bottom:2px}
+
+.loading{text-align:center;padding:40px 20px;color:var(--gr)}
+.spinner{display:inline-block;width:24px;height:24px;border:3px solid #e2e8f0;border-top-color:var(--az);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--az);color:#fff;padding:12px 20px;border-radius:24px;font-size:13px;z-index:200;box-shadow:0 4px 20px rgba(0,0,0,.2);opacity:0;transition:.3s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.co{background:var(--co)}
+.toast.ve{background:var(--ve)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:.2s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:#fff;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px;transform:translateY(100%);transition:.3s;max-height:90vh;overflow-y:auto;position:relative}
+.modal-overlay.show .modal{transform:translateY(0)}
+@media(min-width:900px){.modal-overlay{align-items:center}.modal{border-radius:20px;max-width:500px}}
+.modal h3{font-size:18px;color:var(--az);margin-bottom:14px}
+.modal-close{position:absolute;top:14px;right:14px;background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px}
+.modal input,.modal select,.modal textarea{width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;font-family:inherit;margin-bottom:10px;outline:none}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+</style></head><body>
+
+<div class="app" id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CONFIG = {
+  API: 'https://script.google.com/macros/s/AKfycbxc2TXvwKC60sBrIUXEdTMRMlCFC1syCQfyPMXr2esqG9XPvHFLX6UWu-HM17lKrOFM/exec',
+  TOKEN: 'feria-litoral-encargado-2026-secret-xyz789',
+  VER: 'v4.0 PRO',
+  USERS: {
+    roberto:{pin:'1234',name:'Roberto',role:'Admin',ini:'R'},
+    sebastian:{pin:'1234',name:'Sebastián',role:'Operador',ini:'S'},
+    fernando:{pin:'1234',name:'Fernando',role:'Operador',ini:'F'},
+    victoria:{pin:'1234',name:'Victoria',role:'Operadora',ini:'V'}
+  }
+};
+const state = { user:null, view:'inicio', online:true, data:{alquileres:[],morosos:[],caja:null,avisos:[],promosCargado:[],promosSinCargar:[],recordatorios:[],gastos:[],auditoria:[]}, chat:[] };
+
+const MENU_PC = [
+  {grupo:'PRINCIPAL', items:[
+    {id:'inicio', ic:'🏠', label:'Inicio', fn:'rInicio'},
+    {id:'cobranzas', ic:'💰', label:'Cobranzas', fn:'rCobranzas'}
+  ]},
+  {grupo:'MARKETING', items:[
+    {id:'promos', ic:'🎯', label:'Promos', fn:'rPromos'},
+    {id:'catalogo', ic:'🛍️', label:'Catálogo Lito', fn:'rCatalogo'}
+  ]},
+  {grupo:'COMUNICACIÓN', items:[
+    {id:'whatsapp', ic:'📱', label:'WhatsApp masivo', fn:'rWhatsApp'},
+    {id:'avisos', ic:'📢', label:'Avisos al equipo', fn:'rAvisos'},
+    {id:'recordatorios', ic:'📋', label:'Recordatorios enviados', fn:'rRecordatorios'}
+  ]},
+  {grupo:'GESTIÓN', items:[
+    {id:'locales', ic:'🏪', label:'Locales', fn:'rLocales'},
+    {id:'cambiar', ic:'🔄', label:'Cambiar inquilino', fn:'rCambiar'}
+  ]},
+  {grupo:'OPERACIÓN', items:[
+    {id:'caja', ic:'💵', label:'Caja', fn:'rCaja'},
+    {id:'gastos', ic:'📉', label:'Gastos', fn:'rGastos'},
+    {id:'auditoria', ic:'🧾', label:'Auditoría', fn:'rAuditoria'}
+  ]},
+  {grupo:'INTELIGENCIA', items:[
+    {id:'analisis', ic:'📊', label:'Análisis y gráficos', fn:'rAnalisis'},
+    {id:'campanias', ic:'📣', label:'Campañas / Eventos', fn:'rCampanias'},
+    {id:'chat', ic:'🤖', label:'Chat IA', fn:'rChat'},
+    {id:'alertas', ic:'🚨', label:'Alertas', fn:'rAlertas'}
+  ]}
+];
+
+const NAV_MOBILE = [
+  {id:'inicio', ic:'🏠', label:'Inicio', fn:'rInicio'},
+  {id:'cobranzas', ic:'💰', label:'Cobrar', fn:'rCobranzas'},
+  {id:'whatsapp', ic:'📱', label:'WApp', fn:'rWhatsApp'},
+  {id:'locales', ic:'🏪', label:'Locales', fn:'rLocales'},
+  {id:'chat', ic:'🤖', label:'Chat', fn:'rChat'}
+];
+
+async function apiGet(accion, p={}) {
+  const url = new URL(CONFIG.API);
+  url.searchParams.set('accion', accion);
+  url.searchParams.set('token', CONFIG.TOKEN);
+  Object.keys(p).forEach(k => url.searchParams.set(k, p[k]));
+  try { const r = await fetch(url.toString()); const d = await r.json(); state.online=true; return d; }
+  catch (e) { state.online=false; return {ok:false,error:'Sin conexión'}; }
+}
+async function apiPost(accion, body={}) {
+  try { const r = await fetch(CONFIG.API, {method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({accion,token:CONFIG.TOKEN,...body})}); return await r.json(); }
+  catch (e) { return {ok:false,error:e.message}; }
+}
+function money(n) { if(n===null||n===undefined||isNaN(n))return '$0'; return '$'+Number(n).toLocaleString('es-AR'); }
+function toast(msg, type='') { const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show '+type; setTimeout(()=>t.classList.remove('show'),2800); }
+function fechaCorta(d){ if(!d)return''; try{ if(typeof d==='string'&&d.includes('T'))return new Date(d).toLocaleDateString('es-AR'); return d; }catch(e){return d;} }
+
+async function cargarDatosBase() {
+  const [a, c, av, m] = await Promise.all([apiGet('listar_alquileres'),apiGet('estado_caja'),apiGet('avisos'),apiGet('morosos_top',{cantidad:50})]);
+  if(a.ok)state.data.alquileres=a.data||[];
+  if(c.ok)state.data.caja=c.data;
+  if(av.ok)state.data.avisos=av.data||[];
+  if(m.ok)state.data.morosos=m.data||[];
+}
+
+// LOGIN
+function rLogin(error='') {
+  document.getElementById('app').innerHTML = `
+    <div class="login">
+      <div class="login-brand">
+        <div class="logo">EL</div>
+        <h1>EL ENCARGADO</h1>
+        <p>Feria del Litoral</p>
+        <div class="login-version">${CONFIG.VER} · menú pro</div>
+      </div>
+      <div class="login-form">
+        ${error?`<div class="login-error">${error}</div>`:''}
+        <input type="text" id="username" placeholder="Usuario" autocomplete="username">
+        <input type="password" id="pin" placeholder="PIN" inputmode="numeric" autocomplete="current-password">
+        <button onclick="hLogin()">Entrar</button>
+      </div>
+      <div class="login-users">
+        <div class="login-users-title">Usuarios habilitados</div>
+        <div class="login-users-grid">${Object.keys(CONFIG.USERS).map(u=>`<span class="login-user-chip">${u}</span>`).join('')}</div>
+      </div>
+    </div>`;
+  setTimeout(()=>document.getElementById('username')?.focus(),100);
+}
+function hLogin() {
+  const u=(document.getElementById('username').value||'').toLowerCase().trim();
+  const p=document.getElementById('pin').value;
+  if(!CONFIG.USERS[u]||CONFIG.USERS[u].pin!==p){rLogin('Usuario o PIN incorrecto');return;}
+  state.user={id:u,...CONFIG.USERS[u]};
+  rInicio();
+}
+function logout(){state.user=null;state.chat=[];rLogin();}
+
+// LAYOUT con menú PRO
+function renderSidebarPC() {
+  return MENU_PC.map(g => `
+    <div class="sb-group">
+      <div class="sb-title">${g.grupo}</div>
+      ${g.items.map(i => `<div class="sb-item ${state.view===i.id?'active':''}" onclick="${i.fn}()"><span class="ic">${i.ic}</span>${i.label}</div>`).join('')}
+    </div>
+  `).join('');
+}
+function renderNavMobile() {
+  return NAV_MOBILE.map(i => `<div class="nav-item ${state.view===i.id?'active':''}" onclick="${i.fn}()"><span class="nav-icon">${i.ic}</span>${i.label}</div>`).join('');
+}
+function render(view) {
+  document.getElementById('app').innerHTML = `
+    <div class="header">
+      <div class="header-info"><h1>EL ENCARGADO</h1><p><span class="conn-dot ${state.online?'':'off'}"></span>${state.online?'En vivo':'Sin conexión'} · ${state.user.role}</p></div>
+      <div class="header-user"><div class="user-avatar" onclick="logout()" title="Cerrar sesión">${state.user.ini}</div></div>
+    </div>
+    <div class="content-pc">
+      <nav class="sidebar-pc">${renderSidebarPC()}</nav>
+      <div class="content" id="view">${view}</div>
+    </div>
+    <nav class="nav mobile">${renderNavMobile()}</nav>`;
+}
+function loading(msg='Cargando...'){render(`<div class="loading"><div class="spinner"></div><p style="margin-top:12px;font-size:13px">${msg}</p></div>`);}
+
+// === INICIO ===
+async function rInicio() {
+  state.view='inicio'; loading('Cargando datos en vivo...');
+  await cargarDatosBase();
+  const tA=state.data.alquileres.reduce((s,a)=>s+(Number(a['ALQUILER ACTUAL'])||0),0);
+  const tP=state.data.alquileres.reduce((s,a)=>s+(Number(a.PAGADO)||0),0);
+  const dT=state.data.morosos.reduce((s,m)=>s+(Number(m['DEUDA TOTAL'])||0),0);
+  const caja=state.data.caja?Number(state.data.caja.CAJA||state.data.caja['SUMA TOTAL']||0):0;
+  const ahora=new Date();
+  const h=ahora.getHours();
+  const saludo=h<12?'Buen día':h<19?'Buenas tardes':'Buenas noches';
+  
+  render(`
+    <div class="greet"><h2>${saludo}, ${state.user.name}</h2><p>${ahora.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'})}</p></div>
+    <div class="kpis">
+      <div class="kpi do"><div class="kpi-label">Cobrado mes</div><div class="kpi-value">${money(tP)}</div><div class="kpi-sub">de ${money(tA)}</div></div>
+      <div class="kpi co"><div class="kpi-label">Deuda total</div><div class="kpi-value">${money(dT)}</div><div class="kpi-sub">${state.data.morosos.length} morosos</div></div>
+      <div class="kpi"><div class="kpi-label">Caja</div><div class="kpi-value" style="color:var(--ve)">${money(caja)}</div></div>
+      <div class="kpi"><div class="kpi-label">Locales activos</div><div class="kpi-value">${state.data.alquileres.filter(a=>a.NOMBRE).length}</div></div>
+    </div>
+    <div class="section"><div class="section-title">⚡ Acciones rápidas</div>
+      <div class="actions">
+        <div class="action primary" onclick="rWhatsApp()"><div class="icon">📱</div><div class="label">Notificar morosos</div></div>
+        <div class="action" onclick="rCobranzas()"><div class="icon">💵</div><div class="label">Cargar pago</div></div>
+        <div class="action" onclick="modGasto()"><div class="icon">📉</div><div class="label">Cargar gasto</div></div>
+        <div class="action" onclick="modAviso()"><div class="icon">📢</div><div class="label">Aviso al equipo</div></div>
+      </div>
+    </div>
+    <div class="section"><div class="section-title">🚨 Top 5 morosos <span class="badge">${state.data.morosos.length}</span></div>
+      ${state.data.morosos.slice(0,5).map(m=>`<div class="lc" onclick="verLocal(${m.LOCAL})"><div class="lc-h"><div><div class="lc-n">${m.NOMBRE||'?'}</div><div class="lc-num">Local ${m.LOCAL}</div></div><div class="lc-d">${money(m['DEUDA TOTAL'])}</div></div></div>`).join('')}
+    </div>
+    ${state.data.avisos.length>0?`<div class="section"><div class="section-title">📢 Últimos avisos</div>
+      ${state.data.avisos.slice(-3).reverse().map(a=>`<div class="alert"><div class="alert-title">${a.AVISO||a.aviso||''}</div><div class="alert-text">${fechaCorta(a.FECHA||a.fecha)}</div></div>`).join('')}
+    </div>`:''}
+  `);
+}
+
+// === COBRANZAS ===
+async function rCobranzas() {
+  state.view='cobranzas';
+  if(!state.data.alquileres.length){loading();await cargarDatosBase();}
+  render(`
+    <div class="greet"><h2>💰 Cobranzas</h2><p>${state.data.morosos.length} locales con deuda</p></div>
+    <div class="search"><input type="text" id="sm" placeholder="🔍 Buscar local..." oninput="fMor()"></div>
+    <div id="lMor">${rMorList(state.data.morosos)}</div>
+  `);
+}
+function rMorList(l){if(!l.length)return'<div class="loading">No hay coincidencias</div>';return l.map(m=>`<div class="lc" onclick="verLocal(${m.LOCAL})"><div class="lc-h"><div><div class="lc-n">${m.NOMBRE||'?'}</div><div class="lc-num">Local ${m.LOCAL} · ${money(m['ALQUILER ACTUAL'])}</div></div><div class="lc-d">${money(m['DEUDA TOTAL'])}</div></div><div class="lc-m"><span>Pagado: ${money(m.PAGADO)}</span>${m.MORA>0?`<span style="background:#fee2e2;color:#991b1b">Mora: ${money(m.MORA)}</span>`:''}</div></div>`).join('');}
+function fMor(){const q=document.getElementById('sm').value.toLowerCase();const f=state.data.morosos.filter(m=>String(m.NOMBRE||'').toLowerCase().includes(q)||String(m.LOCAL).includes(q));document.getElementById('lMor').innerHTML=rMorList(f);}
+
+// === PROMOS ===
+async function rPromos() {
+  state.view='promos'; loading('Cargando promos...');
+  const r = await apiGet('locales_sin_promo');
+  if(!r.ok){render(`<div class="greet"><h2>🎯 Promos</h2></div><div class="alert"><div class="alert-title">Error</div><div class="alert-text">${r.error}</div></div>`);return;}
+  const con=r.con_promo||[]; const sin=r.sin_promo||[];
+  const resetTxt = r.ultimoReset ? `· Último reset: ${r.ultimoReset}` : '';
+  render(`
+    <div class="greet"><h2>🎯 Promos</h2><p>Promos activas de la semana ${resetTxt}</p></div>
+    <div class="kpis" style="grid-template-columns:1fr 1fr">
+      <div class="kpi" style="background:#d1fae5;border-color:#a7f3d0"><div class="kpi-label">Con promo</div><div class="kpi-value" style="color:#065f46">${con.length}</div></div>
+      <div class="kpi" style="background:#fee2e2;border-color:#fecaca"><div class="kpi-label">Sin promo</div><div class="kpi-value" style="color:#991b1b">${sin.length}</div></div>
+    </div>
+    
+    <div class="alert do"><div class="alert-title">📣 Mensaje masivo</div><div class="alert-text">Mandales WhatsApp a TODOS los que aún no cargaron promo esta semana.</div>
+      <button class="btn do" onclick="rNotificarSinPromo()" style="margin-top:10px">📱 Notificar a los ${sin.length} sin promo</button>
+    </div>
+    
+    ${con.length?`<div class="alert ve"><div class="alert-title">📣 Difundir promos cargadas</div><div class="alert-text">Mandá a cada locatario la promo de su local para que difunda a sus clientes.</div>
+      <button class="btn ve" onclick="rDifusionPromos()" style="margin-top:10px">📣 Difundir las ${con.length} promos</button>
+    </div>`:''}
+    
+    <div class="section"><div class="section-title">✅ Con promo cargada <span class="badge ve">${con.length}</span></div>
+      ${con.map(p=>`<div class="lc"><div class="lc-h"><div><div class="lc-n">${p.local}</div>${p.fecha?`<div class="lc-num">📅 ${p.fecha}</div>`:''}</div></div><div class="promo-box" style="font-size:12px;margin-top:8px">${(p.promo||'').substring(0,300)}${p.promo&&p.promo.length>300?'...':''}</div></div>`).join('')}
+    </div>
+    <div class="section"><div class="section-title">❌ Sin promo cargada <span class="badge">${sin.length}</span></div>
+      ${sin.map(p=>`<div class="lc"><div class="lc-h"><div class="lc-n">${p.nombre||p.local}</div><span class="mn-tag tag-firme">SIN PROMO</span></div></div>`).join('')}
+    </div>
+  `);
+}
+
+// === NOTIFICAR SIN PROMO (Mensaje masivo) ===
+async function rNotificarSinPromo() {
+  loading('Preparando mensajes masivos...');
+  const r = await apiGet('links_sin_promo',{operador:state.user.name});
+  if(!r.ok){render(`<div class="greet"><h2>📣 Notificar promos</h2></div><div class="alert"><div class="alert-text">${r.error}</div></div>`);return;}
+  const conT=r.data.filter(x=>x.tiene_telefono);
+  const sinT=r.data.filter(x=>!x.tiene_telefono);
+  render(`
+    <div class="greet"><h2>📣 Recordatorio cargar promo</h2><p>Tocá cada uno para mandarle el mensaje</p></div>
+    <div class="kpis" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">${r.data.length}</div></div>
+      <div class="kpi" style="background:#d1fae5;border-color:#a7f3d0"><div class="kpi-label">Con tel</div><div class="kpi-value" style="color:#065f46">${conT.length}</div></div>
+      <div class="kpi" style="background:#fee2e2;border-color:#fecaca"><div class="kpi-label">Sin tel</div><div class="kpi-value" style="color:#991b1b">${sinT.length}</div></div>
+    </div>
+    ${conT.length?`<div class="section"><div class="section-title">✅ Listos para enviar</div>
+      ${conT.map(m=>`<div class="mn"><div class="mn-h"><div><div class="mn-n">${m.nombre}</div><div class="mn-num">Local ${m.local}</div></div></div><a href="${m.link}" target="_blank" class="btn wa">💬 Mandar recordatorio</a></div>`).join('')}
+    </div>`:''}
+    ${sinT.length?`<div class="section"><div class="section-title">⚠️ Sin teléfono</div>
+      <div class="alert"><div class="alert-text">Cargá los teléfonos en hoja TELEFONOS</div></div>
+      ${sinT.map(m=>`<div class="mn"><div class="mn-h"><div class="mn-n">${m.nombre}</div><div class="mn-num">Local ${m.local}</div></div></div>`).join('')}
+    </div>`:''}
+    <button class="btn ol" onclick="rPromos()">← Volver a Promos</button>
+  `);
+}
+
+// === CATÁLOGO ===
+async function rCatalogo() {
+  state.view='catalogo';
+  render(`
+    <div class="greet"><h2>🛍️ Catálogo de Lito</h2><p>Qué vende cada local · planilla voiceflowgenerales</p></div>
+    <div class="search"><input type="text" id="sc" placeholder="🔍 Buscar producto, rubro, local..." onkeypress="if(event.key==='Enter')buscarCat()"></div>
+    <button class="btn do" onclick="buscarCat()">🔍 Buscar</button>
+    <div id="resCat" style="margin-top:14px"><div class="promo-empty">Escribí qué buscás (ej: "jeans mujer", "calzado", "pijamas")</div></div>
+  `);
+}
+async function buscarCat() {
+  const q = document.getElementById('sc').value.trim();
+  if(!q){toast('Escribí algo','co');return;}
+  document.getElementById('resCat').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const r = await apiGet('voiceflow_buscar',{q});
+  if(!r.ok||!r.data||!r.data.length){document.getElementById('resCat').innerHTML='<div class="promo-empty">Sin resultados</div>';return;}
+  document.getElementById('resCat').innerHTML=r.data.map(x=>`<div class="lc"><div class="lc-n">${x.local}</div><div class="cat-box" style="margin-top:8px;font-size:12px">${x.descripcion}</div></div>`).join('');
+}
+
+// === WHATSAPP MASIVO ===
+async function rWhatsApp() {
+  state.view='whatsapp'; loading('Preparando mensajes...');
+  if(!state.data.morosos.length)await cargarDatosBase();
+  const r = await apiGet('links_morosos',{cantidad:20,tono:'auto',operador:state.user.name,soloConTelefono:false});
+  if(!r.ok){render(`<div class="greet"><h2>📱 WhatsApp masivo</h2></div><div class="alert"><div class="alert-text">${r.error}</div></div>`);return;}
+  const conT=r.data.filter(x=>x.tiene_telefono);
+  const sinT=r.data.filter(x=>!x.tiene_telefono);
+  render(`
+    <div class="greet"><h2>📱 WhatsApp masivo</h2><p>Tocá un mensaje y abre WhatsApp con el texto listo</p></div>
+    <div class="kpis" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">${r.data.length}</div></div>
+      <div class="kpi" style="background:#d1fae5;border-color:#a7f3d0"><div class="kpi-label">Con tel</div><div class="kpi-value" style="color:#065f46">${conT.length}</div></div>
+      <div class="kpi" style="background:#fee2e2;border-color:#fecaca"><div class="kpi-label">Sin tel</div><div class="kpi-value" style="color:#991b1b">${sinT.length}</div></div>
+    </div>
+    ${conT.length?`<div class="section"><div class="section-title">✅ Listos para enviar</div>
+      ${conT.map(m=>`<div class="mn"><div class="mn-h"><div><div class="mn-n">${m.nombre}</div><div class="mn-num">Local ${m.local} · <span class="mn-tag tag-${m.plantilla_usada.split('_')[0]}">${m.plantilla_usada.split('_')[0]}</span></div></div><div class="mn-d">${money(m.deuda_total)}</div></div><a href="${m.link}" target="_blank" class="btn wa">💬 Abrir WhatsApp</a></div>`).join('')}
+    </div>`:''}
+    ${sinT.length?`<div class="section"><div class="section-title">⚠️ Sin teléfono</div>
+      <div class="alert"><div class="alert-title">Cargá los teléfonos en TELEFONOS</div><div class="alert-text">Formato: 5493425284562</div></div>
+      ${sinT.map(m=>`<div class="mn"><div class="mn-h"><div><div class="mn-n">${m.nombre}</div><div class="mn-num">Local ${m.local}</div></div><div class="mn-d">${money(m.deuda_total)}</div></div></div>`).join('')}
+    </div>`:''}
+    <button class="btn ol" onclick="rWhatsApp()">🔄 Recargar</button>
+  `);
+}
+
+// === AVISOS ===
+async function rAvisos() {
+  state.view='avisos'; loading();
+  if(!state.data.avisos.length){const r=await apiGet('avisos');if(r.ok)state.data.avisos=r.data||[];}
+  render(`
+    <div class="greet"><h2>📢 Avisos al equipo</h2><p>${state.data.avisos.length} avisos publicados</p></div>
+    <button class="btn do" onclick="modAviso()">+ Nuevo aviso</button>
+    <div style="margin-top:14px">
+      ${state.data.avisos.slice().reverse().map(a=>`<div class="alert"><div class="alert-title">${a.AVISO||a.aviso||''}</div><div class="alert-text">${fechaCorta(a.FECHA||a.fecha)}</div></div>`).join('')}
+    </div>
+  `);
+}
+
+// === RECORDATORIOS ENVIADOS ===
+async function rRecordatorios() {
+  state.view='recordatorios'; loading('Cargando historial...');
+  // Como no hay endpoint específico, leemos directamente de la hoja vía un truco: el Apps Script ya escribe ahí
+  render(`
+    <div class="greet"><h2>📋 Recordatorios enviados</h2><p>Historial de mensajes WhatsApp</p></div>
+    <div class="alert do" style="margin-bottom:14px"><div class="alert-title">💡 Info</div><div class="alert-text">Cada vez que tocás un botón WhatsApp con "registrar:true", se guarda acá. Pronto verás el detalle completo.</div></div>
+    <div class="promo-empty">📋 La hoja RECORDATORIOS en la planilla tiene el historial completo. En la próxima versión lo mostramos acá filtrado y agrupado.</div>
+    <button class="btn ol" onclick="rWhatsApp()">📱 Ir a WhatsApp masivo</button>
+  `);
+}
+
+// === LOCALES ===
+async function rLocales() {
+  state.view='locales';
+  if(!state.data.alquileres.length){loading();await cargarDatosBase();}
+  render(`
+    <div class="greet"><h2>🏪 Locales</h2><p>${state.data.alquileres.filter(a=>a.NOMBRE).length} activos</p></div>
+    <div class="search"><input type="text" id="sl" placeholder="🔍 Buscar por número o nombre..." oninput="fLoc()"></div>
+    <div id="lLoc">${rLocList(state.data.alquileres.filter(a=>a.NOMBRE))}</div>
+  `);
+}
+function rLocList(l){if(!l.length)return'<div class="loading">No hay coincidencias</div>';return l.map(x=>{const dt=Number(x['DEUDA TOTAL'])||0;return`<div class="lc" onclick="verLocal(${x.LOCAL})"><div class="lc-h"><div><div class="lc-n">${x.NOMBRE}</div><div class="lc-num">Local ${x.LOCAL} · ${money(x['ALQUILER ACTUAL'])}</div></div><div class="lc-d ${dt>0?'':'ok'}">${dt>0?money(dt):'✓ AL DÍA'}</div></div></div>`;}).join('');}
+function fLoc(){const q=document.getElementById('sl').value.toLowerCase();const f=state.data.alquileres.filter(a=>a.NOMBRE&&(String(a.NOMBRE).toLowerCase().includes(q)||String(a.LOCAL).includes(q)));document.getElementById('lLoc').innerHTML=rLocList(f);}
+
+// === CAMBIAR INQUILINO ===
+async function rCambiar() {
+  state.view='cambiar';
+  if(!state.data.alquileres.length){loading();await cargarDatosBase();}
+  render(`
+    <div class="greet"><h2>🔄 Cambiar inquilino</h2><p>Reemplazar locatario actual por uno nuevo</p></div>
+    <div class="alert do"><div class="alert-title">⚠️ Atención</div><div class="alert-text">Esta acción modifica el nombre, clave y opcionalmente la deuda del local. Se registra en AUDITORIA.</div></div>
+    <div class="detail" style="margin-top:14px">
+      <h3>Datos del cambio</h3>
+      <label style="font-size:12px;color:var(--gr);margin-bottom:4px;display:block">Local a cambiar</label>
+      <select id="ciLocal" style="width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;margin-bottom:10px">
+        ${state.data.alquileres.filter(a=>a.NOMBRE).map(a=>`<option value="${a.LOCAL}">${a.NOMBRE} (deuda: ${money(a['DEUDA TOTAL']||0)})</option>`).join('')}
+      </select>
+      <label style="font-size:12px;color:var(--gr);margin-bottom:4px;display:block">Nombre nuevo (sin número)</label>
+      <input type="text" id="ciNombre" placeholder="Ej: DEPORTES XYZ" style="width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;margin-bottom:10px">
+      <label style="font-size:12px;color:var(--gr);margin-bottom:4px;display:block">Alquiler nuevo (opcional)</label>
+      <input type="number" id="ciAlq" placeholder="Dejar vacío para mantener" style="width:100%;padding:14px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px"><input type="checkbox" id="ciClave"> Generar clave nueva</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:10px"><input type="checkbox" id="ciCondonar"> Condonar deuda anterior</label>
+      <button class="btn co" onclick="confirmCambiar()">🔄 Confirmar cambio</button>
+    </div>
+  `);
+}
+async function confirmCambiar() {
+  const local = document.getElementById('ciLocal').value;
+  const nombreNuevo = document.getElementById('ciNombre').value.trim();
+  const alq = parseFloat(document.getElementById('ciAlq').value) || null;
+  const nuevaClave = document.getElementById('ciClave').checked;
+  const condonarDeuda = document.getElementById('ciCondonar').checked;
+  if(!nombreNuevo){toast('Falta el nombre','co');return;}
+  if(!confirm(`¿Confirmás cambiar el local ${local} a "${nombreNuevo}"?${condonarDeuda?'\n\n⚠️ Se va a condonar la deuda actual.':''}`))return;
+  toast('Procesando...');
+  const r = await apiPost('cambiar_inquilino',{local:Number(local),nombreNuevo,alquilerNuevo:alq,nuevaClave,condonarDeuda,cargadoPor:state.user.name});
+  if(r.ok){toast('✓ Inquilino cambiado','ve');state.data.alquileres=[];setTimeout(()=>rLocales(),800);}
+  else toast('Error: '+r.error,'co');
+}
+
+// === CAJA con ajuste manual ===
+async function rCaja() {
+  state.view='caja'; loading();
+  const r = await apiGet('estado_caja');
+  if(!r.ok||!r.data){render(`<div class="greet"><h2>💵 Caja</h2></div><div class="alert"><div class="alert-text">Sin datos</div></div>`);return;}
+  const c=r.data;
+  render(`
+    <div class="greet"><h2>💵 Estado de caja</h2><p>Última actualización: ${fechaCorta(c.FECHA||'')}</p></div>
+    <div class="alert do"><div class="alert-title">⚠️ Ajuste manual</div><div class="alert-text">Si hay diferencias, podés ajustar el saldo a mano. Queda registrado en AUDITORIA.</div>
+      <button class="btn do" onclick="modAjusteCaja()" style="margin-top:10px">✏️ Ajustar saldo de caja</button>
+    </div>
+    <div class="detail">
+      <h3>💰 Saldos actuales</h3>
+      ${Object.keys(c).map(k=>{const v=c[k];const isNum=typeof v==='number';return `<div class="detail-row"><span class="detail-label">${k}</span><span class="detail-value ${isNum&&v<0?'co':'ve'}">${isNum?money(v):v}</span></div>`;}).join('')}
+    </div>
+    <button class="btn do" onclick="modGasto()">📉 Cargar gasto</button>
+    <button class="btn ol" onclick="rGastos()">Ver gastos recientes</button>
+  `);
+}
+
+function modAjusteCaja(){
+  modal(`
+    <h3>✏️ Ajustar saldo de caja</h3>
+    <div class="alert do" style="margin-bottom:14px"><div class="alert-text">El ajuste queda registrado con tu nombre y motivo en AUDITORIA.</div></div>
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px">Campo a ajustar</label>
+    <select id="acCampo"><option>CAJA</option><option>BANCO</option><option>SUMA TOTAL</option></select>
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Nuevo saldo</label>
+    <input type="number" id="acMonto" placeholder="Ej: 250000">
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Motivo (obligatorio)</label>
+    <input type="text" id="acMotivo" placeholder="Ej: corrección diferencia de caja, conteo manual">
+    <button class="btn co" onclick="confAjusteCaja()" style="margin-top:14px">Confirmar ajuste</button>
+  `);
+}
+async function confAjusteCaja(){
+  const campo = document.getElementById('acCampo').value;
+  const nuevoSaldo = parseFloat(document.getElementById('acMonto').value);
+  const motivo = document.getElementById('acMotivo').value.trim();
+  if(isNaN(nuevoSaldo)||!motivo){toast('Completá monto y motivo','co');return;}
+  if(!confirm(`¿Confirmás ajustar ${campo} a ${money(nuevoSaldo)}?\n\nMotivo: ${motivo}`))return;
+  const r = await apiPost('ajustar_caja',{campo,nuevoSaldo,motivo,cargadoPor:state.user.name});
+  if(r.ok){toast('✓ Caja ajustada','ve');cerrarModal();setTimeout(()=>rCaja(),500);}
+  else toast('Error: '+r.error,'co');
+}
+
+// === GASTOS (mejorado) ===
+async function rGastos() {
+  state.view='gastos'; loading();
+  const r = await apiGet('gastos_recientes');
+  if(!r.ok){render(`<div class="greet"><h2>📉 Gastos</h2></div><div class="alert"><div class="alert-text">${r.error||'Error'}</div></div>`);return;}
+  const g = r.data||[];
+  const total = g.reduce((s,x)=>s+(Number(x.MONTO||0)),0);
+  render(`
+    <div class="greet"><h2>📉 Gastos</h2><p>Últimos ${g.length} gastos · Total: ${money(total)}</p></div>
+    <button class="btn co" onclick="modGasto()">+ Cargar gasto</button>
+    <div style="margin-top:14px">
+      ${g.slice().reverse().map(x=>`<div class="lc"><div class="lc-h"><div style="flex:1"><div class="lc-n">${x.DETALLE||'Sin detalle'}</div><div class="lc-num">${fechaCorta(x.FECHA)} · ${x.METODO||''}${x.CODIGO?' · cód '+x.CODIGO:''}</div></div><div class="lc-d">${money(x.MONTO||0)}</div></div></div>`).join('')}
+    </div>
+  `);
+}
+
+// Modal mejorado para cargar gasto
+function modGasto() {
+  modal(`
+    <h3>📉 Cargar gasto</h3>
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px">Categoría</label>
+    <select id="gCat">
+      <option value="">Sin categoría</option>
+      <option>LIMPIEZA</option>
+      <option>ELECTRICIDAD</option>
+      <option>MANTENIMIENTO</option>
+      <option>SUELDOS</option>
+      <option>SORTEO/PREMIO</option>
+      <option>FERRETERIA</option>
+      <option>SEGURIDAD</option>
+      <option>MARKETING</option>
+      <option>OTROS</option>
+    </select>
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Beneficiario / a quién</label>
+    <input type="text" id="gBenef" placeholder="Ej: Jorge, Javi, Bernetti, proveedor X">
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Detalle corto</label>
+    <input type="text" id="gD" placeholder="Ej: corte pasto, basura, sorteo">
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Monto</label>
+    <input type="number" id="gM" placeholder="Monto">
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Método</label>
+    <select id="gMet"><option>EFECTIVO</option><option>TRANSFERENCIA</option><option>BANCO</option></select>
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px;margin-top:6px">Observación extra (opcional)</label>
+    <input type="text" id="gObs" placeholder="Notas adicionales">
+    <button class="btn co" onclick="confGasto()" style="margin-top:14px">Confirmar gasto</button>
+  `);
+}
+async function confGasto() {
+  const detalle = document.getElementById('gD').value;
+  const monto = parseFloat(document.getElementById('gM').value);
+  const metodo = document.getElementById('gMet').value;
+  const categoria = document.getElementById('gCat').value;
+  const beneficiario = document.getElementById('gBenef').value;
+  const observacion = document.getElementById('gObs').value;
+  if(!detalle||!monto){toast('Completá detalle y monto','co');return;}
+  const r = await apiPost('cargar_gasto',{detalle,monto,metodo,categoria,beneficiario,observacion,cargadoPor:state.user.name});
+  if(r.ok){toast('✓ Cargado','ve');cerrarModal();if(state.view==='gastos')setTimeout(()=>rGastos(),500);}
+  else toast('Error: '+r.error,'co');
+}
+
+// === AUDITORÍA ===
+async function rAuditoria() {
+  state.view='auditoria';
+  render(`
+    <div class="greet"><h2>🧾 Auditoría</h2><p>Log de cambios realizados desde EL ENCARGADO</p></div>
+    <div class="alert do"><div class="alert-title">💡 Info</div><div class="alert-text">Toda acción (cargar pago, cambiar inquilino, etc) queda registrada en la hoja AUDITORIA de la planilla.</div></div>
+    <div class="promo-empty" style="margin-top:14px">📋 Visualización detallada próximamente. Por ahora abrí la hoja AUDITORIA en la planilla APPALQUILER-ENCARGADO para ver el log completo.</div>
+  `);
+}
+
+// === CHAT ===
+function rChat() {
+  state.view='chat';
+  render(`
+    <div class="greet"><h2>🤖 Chat con EL ENCARGADO</h2><p>Consultá lo que necesites</p></div>
+    <div class="chat-quick">
+      <button class="chat-quick-btn" onclick="chatPreg('Top morosos')">Top morosos</button>
+      <button class="chat-quick-btn" onclick="chatPreg('Cobranza del mes')">Cobranza mes</button>
+      <button class="chat-quick-btn" onclick="chatPreg('Estado caja')">Estado caja</button>
+      <button class="chat-quick-btn" onclick="chatPreg('Locales al día')">Al día</button>
+      <button class="chat-quick-btn" onclick="chatPreg('Promos cargadas')">Promos</button>
+    </div>
+    <div class="chat-msgs" id="cMsgs">
+      ${state.chat.length===0?`<div class="msg ai">¡Hola ${state.user.name}! 👋 Probá las preguntas rápidas.<br><br><em style="font-size:11px;opacity:.7">Modo respuestas con datos locales. IA completa cuando se configure API key.</em></div>`:state.chat.map(m=>`<div class="msg ${m.role}">${m.text}</div>`).join('')}
+    </div>
+    <div class="chat-in"><input type="text" id="cInput" placeholder="Tu pregunta..." onkeypress="if(event.key==='Enter')chatEnv()"><button onclick="chatEnv()">→</button></div>
+  `);
+}
+function chatPreg(q){document.getElementById('cInput').value=q;chatEnv();}
+async function chatEnv() {
+  const i=document.getElementById('cInput');
+  const t=i.value.trim();
+  if(!t)return;
+  state.chat.push({role:'user',text:t});
+  i.value='';
+  const m=document.getElementById('cMsgs');
+  m.innerHTML+=`<div class="msg user">${t}</div>`;
+  m.scrollTop=m.scrollHeight;
+  const r=await respLoc(t.toLowerCase());
+  state.chat.push({role:'ai',text:r});
+  m.innerHTML+=`<div class="msg ai">${r}</div>`;
+  m.scrollTop=m.scrollHeight;
+}
+async function respLoc(q) {
+  if(!state.data.morosos.length)await cargarDatosBase();
+  if(q.includes('moroso')||q.includes('debe')){const t=state.data.morosos.slice(0,5);return '🚨 <b>Top 5 morosos:</b><br><br>'+t.map((m,i)=>`${i+1}. <b>${m.NOMBRE}</b><br>   ${money(m['DEUDA TOTAL'])}`).join('<br><br>');}
+  if(q.includes('cobra')||q.includes('mes')){const tp=state.data.alquileres.reduce((s,a)=>s+(Number(a.PAGADO)||0),0);const ta=state.data.alquileres.reduce((s,a)=>s+(Number(a['ALQUILER ACTUAL'])||0),0);return `💰 <b>Cobranza:</b><br>Cobrado: ${money(tp)}<br>Esperado: ${money(ta)}<br>Cumplimiento: <b>${ta>0?Math.round(tp/ta*100):0}%</b>`;}
+  if(q.includes('caja')){if(!state.data.caja)return 'No hay datos';return '💵 <b>Caja:</b><br>'+Object.keys(state.data.caja).map(k=>`${k}: <b>${typeof state.data.caja[k]==='number'?money(state.data.caja[k]):state.data.caja[k]}</b>`).join('<br>');}
+  if(q.includes('día')||q.includes('dia')){const ad=state.data.alquileres.filter(a=>a.NOMBRE&&Number(a['DEUDA TOTAL']||0)===0);return `✅ <b>${ad.length} al día:</b><br><br>`+ad.slice(0,10).map(l=>`• ${l.NOMBRE}`).join('<br>');}
+  if(q.includes('promo')){const r=await apiGet('locales_sin_promo');if(r.ok)return `🎯 <b>Promos:</b><br>Con promo: ${r.total_con||0}<br>Sin promo: ${r.total_sin||0}<br><br>Andá a la sección Promos para ver el detalle.`;}
+  return 'Probá las preguntas rápidas de arriba 🤖';
+}
+
+// === ALERTAS ===
+async function rAlertas() {
+  state.view='alertas'; loading();
+  if(!state.data.alquileres.length)await cargarDatosBase();
+  const r = await apiGet('locales_sin_promo');
+  const sinPromo = r.ok?(r.sin_promo||[]).length:0;
+  const morosos3M = state.data.morosos.filter(m=>Number(m['DEUDA TOTAL'])>3000000);
+  const sinTel = []; // placeholder
+  render(`
+    <div class="greet"><h2>🚨 Alertas</h2><p>Cosas que requieren tu atención</p></div>
+    ${morosos3M.length?`<div class="section"><div class="section-title">🔴 Morosos críticos ($+3M)</div>
+      ${morosos3M.map(m=>`<div class="alert"><div class="alert-title">${m.NOMBRE}</div><div class="alert-text">Deuda: ${money(m['DEUDA TOTAL'])} · <a href="#" onclick="verLocal(${m.LOCAL});return false" style="color:var(--co)">Ver →</a></div></div>`).join('')}
+    </div>`:''}
+    ${sinPromo>15?`<div class="alert do"><div class="alert-title">🎯 Marketing</div><div class="alert-text">Hay ${sinPromo} locales sin promo cargada. Recordales que lo hagan para vender más.</div></div>`:''}
+    <div class="alert ve"><div class="alert-title">✅ Sistema funcionando</div><div class="alert-text">EL ENCARGADO conectado al backend, todo OK.</div></div>
+  `);
+}
+
+// === VER LOCAL (ficha completa) ===
+async function verLocal(num) {
+  loading(`Cargando local ${num}...`);
+  const r = await apiGet('info_local_completa',{num});
+  if(!r.ok){toast('Error: '+r.error,'co');rInicio();return;}
+  const l=r.alquiler, pagos=r.pagos||[], promo=r.promo, cat=r.catalogo, tel=r.telefono, dC=r.deuda_combinada||0, dE=r.deuda_extraordinaria;
+  
+  render(`
+    <div class="greet"><h2>${l.NOMBRE}</h2><p>Local ${l.LOCAL} · Clave ${l.CLAVE||'—'} ${tel?'· 📱 Con tel':'· ⚠️ Sin tel'}</p></div>
+    <div class="ficha-grid">
+      <div>
+        <div class="detail">
+          <h3>💰 Estado de cuenta</h3>
+          <div class="detail-row"><span class="detail-label">Alquiler</span><span class="detail-value">${money(l['ALQUILER ACTUAL'])}</span></div>
+          <div class="detail-row"><span class="detail-label">Pagado</span><span class="detail-value ve">${money(l.PAGADO)}</span></div>
+          <div class="detail-row"><span class="detail-label">Deuda corriente</span><span class="detail-value co">${money(l.DEUDA)}</span></div>
+          <div class="detail-row"><span class="detail-label">Mora</span><span class="detail-value co">${money(l.MORA)}</span></div>
+          <div class="detail-row"><span class="detail-label">Intereses</span><span class="detail-value co">${money(l.INTERESES)}</span></div>
+          <div class="detail-row"><span class="detail-label" style="font-weight:700">Total alquileres</span><span class="detail-value co big">${money(l['DEUDA TOTAL'])}</span></div>
+        </div>
+        ${dE?`<div class="detail"><h3>📋 Deuda extraordinaria</h3>
+          ${dE.LLAVE?`<div class="detail-row"><span class="detail-label">Llave</span><span class="detail-value co">${money(dE.LLAVE)}</span></div>`:''}
+          ${dE.EXPENSAS?`<div class="detail-row"><span class="detail-label">Expensas</span><span class="detail-value co">${money(dE.EXPENSAS)}</span></div>`:''}
+          ${dE.MULTAS?`<div class="detail-row"><span class="detail-label">Multas</span><span class="detail-value co">${money(dE.MULTAS)}</span></div>`:''}
+          ${dE.PAGADO?`<div class="detail-row"><span class="detail-label">Pagado</span><span class="detail-value ve">${money(dE.PAGADO)}</span></div>`:''}
+        </div>`:''}
+        <div class="detail" style="background:linear-gradient(135deg,${dC>0?'#fee2e2':'#d1fae5'},#fff)">
+          <h3 style="border-bottom:none">💰 DEUDA TOTAL COMBINADA</h3>
+          <div style="text-align:center;font-family:'Bebas Neue',sans-serif;font-size:42px;color:${dC>0?'var(--co)':'var(--ve)'};letter-spacing:2px">${money(dC)}</div>
+          ${dC>0?'<p style="text-align:center;font-size:11px;color:var(--gr);margin-top:4px">Alquiler + extraordinaria</p>':'<p style="text-align:center;font-size:13px;color:var(--ve);font-weight:600">✓ AL DÍA</p>'}
+        </div>
+      </div>
+      <div>
+        <div class="detail"><h3>🎯 Promo activa</h3>
+          ${promo && promo.promo && promo.promo!=='SIN PROMO'?`<div class="promo-box">${promo.promo}</div>`:`<div class="promo-empty">❌ Sin promo cargada<br><span style="font-size:11px">Mandale recordatorio</span></div>`}
+        </div>
+        <div class="detail"><h3>🛍️ Qué vende (Lito)</h3>
+          ${cat && cat.descripcion?`<div class="cat-box">${cat.descripcion}</div>`:`<div class="promo-empty">Sin descripción en Lito IA</div>`}
+        </div>
+        ${tel?`<div class="detail"><h3>📱 WhatsApp</h3>
+          <p style="font-size:12px;color:var(--gr);margin-bottom:10px">Tel: ${tel}</p>
+          <div class="btn-row">
+            <button class="btn wa" onclick="notiL(${num},'amable_1')">Amable</button>
+            <button class="btn wa" onclick="notiL(${num},'firme_1')">Firme</button>
+            <button class="btn wa" onclick="notiL(${num},'final_1')" style="background:#dc2626">Final</button>
+          </div>
+          <button class="btn do" onclick="modMensajeLibre(${num},'${(l.NOMBRE||'').replace(/'/g,"\\'")}')" style="margin-top:10px">✏️ Mensaje personalizado libre</button>
+          ${promo && promo.promo && promo.promo!=='SIN PROMO'?`<button class="btn ve" onclick="difundirPromoLocal(${num})" style="margin-top:8px">📣 Difundir esta promo</button>`:''}
+          ${!promo||promo.promo==='SIN PROMO'?`<button class="btn ol" onclick="notiL(${num},'promo_recordatorio')" style="margin-top:8px">📣 Recordar cargar promo</button>`:''}
+        </div>`:`<div class="alert"><div class="alert-title">⚠️ Sin teléfono</div><div class="alert-text">Cargá en hoja TELEFONOS</div></div>`}
+      </div>
+    </div>
+    <button class="btn do" onclick="modPago(${num})">💵 Cargar pago</button>
+    <button class="btn ol" onclick="rLocales()">← Volver</button>
+    ${pagos.length?`<div class="detail" style="margin-top:16px"><h3>📋 Últimos pagos (${pagos.length})</h3>
+      ${pagos.slice(-5).reverse().map(p=>`<div class="detail-row"><span class="detail-label">${fechaCorta(p.FECHA)}</span><span class="detail-value ve">${money(p.MONTO)} <span style="font-size:10px;opacity:.6">${p.METODO||''}</span></span></div>`).join('')}
+    </div>`:''}
+  `);
+}
+async function notiL(num, plantilla) {
+  toast('Generando link...');
+  const r = await apiGet('generar_link_whatsapp',{local:num,plantilla,operador:state.user.name});
+  if(r.ok && r.link){window.open(r.link,'_blank');toast('WhatsApp abierto','ve');}
+  else toast(r.error||'Error','co');
+}
+
+// === MODALES ===
+// === MENSAJE PERSONALIZADO LIBRE ===
+function modMensajeLibre(num, nombre){
+  modal(`
+    <h3>✏️ Mensaje personalizado</h3>
+    <div style="font-size:13px;color:var(--gr);margin-bottom:14px">Para: ${nombre}</div>
+    <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px">Escribí tu mensaje (la firma "Feria del Litoral" se agrega automáticamente)</label>
+    <textarea id="mlText" rows="6" placeholder="Hola, te escribo para..." style="resize:vertical;min-height:120px"></textarea>
+    <button class="btn ve" onclick="enviarMensajeLibre(${num})" style="margin-top:14px">📱 Enviar por WhatsApp</button>
+  `);
+}
+async function enviarMensajeLibre(num){
+  const txt = document.getElementById('mlText').value.trim();
+  if(!txt){toast('Escribí el mensaje','co');return;}
+  toast('Generando link...');
+  const r = await apiPost('generar_link_personalizado',{local:num,mensajeLibre:txt,operador:state.user.name});
+  if(r.ok && r.link){window.open(r.link,'_blank');toast('WhatsApp abierto','ve');cerrarModal();}
+  else toast('Error: '+r.error,'co');
+}
+
+// === DIFUNDIR PROMO DE UN LOCAL ===
+async function difundirPromoLocal(num){
+  toast('Generando...');
+  const r = await apiGet('generar_link_difusion_promo',{local:num,operador:state.user.name});
+  if(r.ok && r.link){window.open(r.link,'_blank');toast('WhatsApp abierto','ve');}
+  else toast('Error: '+r.error,'co');
+}
+
+// === ANÁLISIS CON GRÁFICOS ===
+async function rAnalisis(){
+  state.view='analisis'; loading('Cargando análisis...');
+  const [ag, mg, pg] = await Promise.all([
+    apiGet('analisis_general'),
+    apiGet('morosidad_grafico'),
+    apiGet('promos_grafico')
+  ]);
+  
+  if(!ag.ok){render(`<div class="greet"><h2>📊 Análisis</h2></div><div class="alert"><div class="alert-text">${ag.error||'Error'}</div></div>`);return;}
+  
+  render(`
+    <div class="greet"><h2>📊 Análisis y gráficos</h2><p>Vista general de la feria</p></div>
+    
+    <div class="kpis">
+      <div class="kpi do"><div class="kpi-label">Cumplimiento</div><div class="kpi-value">${ag.cobranza.cumplimiento_pct}%</div><div class="kpi-sub">${money(ag.cobranza.cobrado)} de ${money(ag.cobranza.esperado)}</div></div>
+      <div class="kpi co"><div class="kpi-label">Deuda total</div><div class="kpi-value">${money(ag.cobranza.deuda)}</div><div class="kpi-sub">${ag.morosos.total} morosos</div></div>
+      <div class="kpi"><div class="kpi-label">Activación promos</div><div class="kpi-value">${ag.promos.activacion_pct}%</div><div class="kpi-sub">${ag.promos.con} de ${ag.promos.con+ag.promos.sin}</div></div>
+      <div class="kpi"><div class="kpi-label">Al día</div><div class="kpi-value" style="color:var(--ve)">${ag.distribucion_deuda.al_dia}</div><div class="kpi-sub">locales sin deuda</div></div>
+    </div>
+    
+    <div class="detail"><h3>🚨 Top 10 morosos</h3><canvas id="chMor" style="max-height:400px"></canvas></div>
+    
+    <div class="ficha-grid">
+      <div class="detail"><h3>🎯 Promos activación</h3><canvas id="chPro" style="max-height:300px"></canvas></div>
+      <div class="detail"><h3>📊 Distribución deuda</h3><canvas id="chDis" style="max-height:300px"></canvas></div>
+    </div>
+    
+    <button class="btn ol" onclick="rSugerencias()" style="margin-top:14px">🛍️ Ver sugerencias de mix de locales</button>
+  `);
+  
+  // Gráficos con Chart.js
+  setTimeout(()=>{
+    // 1. Morosidad (barras)
+    if(mg.ok && mg.data && mg.data.length){
+      const top10 = mg.data.slice(0,10);
+      new Chart(document.getElementById('chMor'), {
+        type:'bar',
+        data:{
+          labels: top10.map(m=>String(m.nombre||'').substring(0,15)),
+          datasets:[
+            {label:'Mora', data:top10.map(m=>m.mora), backgroundColor:'#fbbf24'},
+            {label:'Intereses', data:top10.map(m=>m.intereses), backgroundColor:'#ef4444'},
+            {label:'Deuda corriente', data:top10.map(m=>m.deuda-m.mora-m.intereses), backgroundColor:'#3b82f6'}
+          ]
+        },
+        options:{
+          responsive:true, maintainAspectRatio:false,
+          scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'$'+(v/1000000).toFixed(1)+'M'}}},
+          plugins:{legend:{position:'top'}}
+        }
+      });
+    }
+    
+    // 2. Promos (torta)
+    if(pg.ok){
+      new Chart(document.getElementById('chPro'), {
+        type:'doughnut',
+        data:{
+          labels:['Con promo','Sin promo'],
+          datasets:[{data:[pg.activas, pg.sin_cargar], backgroundColor:['#10b981','#ef4444']}]
+        },
+        options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}}
+      });
+    }
+    
+    // 3. Distribución deuda (torta)
+    const d = ag.distribucion_deuda;
+    new Chart(document.getElementById('chDis'), {
+      type:'pie',
+      data:{
+        labels:['Al día','Chica (<500k)','Media (500k-1.5M)','Grande (1.5-3M)','Crítica (+3M)'],
+        datasets:[{
+          data:[d.al_dia, d.chica, d.media, d.grande, d.critica],
+          backgroundColor:['#10b981','#84cc16','#fbbf24','#f97316','#ef4444']
+        }]
+      },
+      options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom',labels:{font:{size:10}}}}}
+    });
+  }, 200);
+}
+
+// === SUGERENCIAS MIX ===
+async function rSugerencias(){
+  state.view='sugerencias'; loading('Analizando rubros...');
+  const r = await apiGet('sugerencias_mix');
+  if(!r.ok){render(`<div class="greet"><h2>🛍️ Sugerencias</h2></div><div class="alert"><div class="alert-text">${r.error}</div></div>`);return;}
+  render(`
+    <div class="greet"><h2>🛍️ Sugerencias de mix</h2><p>Análisis de rubros del paseo</p></div>
+    <div class="detail"><h3>📊 Conteo de locales por rubro</h3>
+      ${Object.keys(r.conteo).map(k=>`<div class="detail-row"><span class="detail-label">${k.replace(/_/g,' ')}</span><span class="detail-value">${r.conteo[k]}</span></div>`).join('')}
+    </div>
+    ${r.sugerencias.length?`<div class="detail"><h3>💡 Recomendaciones</h3>
+      ${r.sugerencias.map(s=>`<div class="alert do" style="margin-bottom:8px"><div class="alert-text">${s}</div></div>`).join('')}
+    </div>`:'<div class="alert ve"><div class="alert-text">Mix balanceado, sin recomendaciones urgentes ✓</div></div>'}
+    <button class="btn ol" onclick="rAnalisis()">← Volver a análisis</button>
+  `);
+}
+
+// === CAMPAÑAS / EVENTOS ===
+function rCampanias(){
+  state.view='campanias';
+  render(`
+    <div class="greet"><h2>📣 Campañas / Eventos</h2><p>Mandar mensaje masivo sobre un evento</p></div>
+    <div class="alert do"><div class="alert-title">💡 Cómo funciona</div><div class="alert-text">Escribís el nombre del evento (Día de la Madre, Aniversario, etc) y EL ENCARGADO genera mensajes para todos los locales con tel cargado.</div></div>
+    <div class="detail">
+      <h3>Configurar campaña</h3>
+      <label style="font-size:11px;color:var(--gr);display:block;margin-bottom:4px">Nombre del evento</label>
+      <input type="text" id="cpEvento" placeholder="Ej: Día de la Madre, Aniversario Feria, Black Friday">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-top:14px"><input type="checkbox" id="cpSoloMor"> Solo enviar a locales morosos</label>
+      <button class="btn do" onclick="generarCampania()" style="margin-top:14px">📣 Generar mensajes</button>
+    </div>
+    <div id="cpResult"></div>
+  `);
+}
+async function generarCampania(){
+  const evento = document.getElementById('cpEvento').value.trim();
+  const soloMor = document.getElementById('cpSoloMor').checked;
+  if(!evento){toast('Escribí el evento','co');return;}
+  document.getElementById('cpResult').innerHTML='<div class="loading"><div class="spinner"></div></div>';
+  const r = await apiPost('links_evento',{evento,soloMorosos:soloMor,operador:state.user.name});
+  if(!r.ok){document.getElementById('cpResult').innerHTML=`<div class="alert"><div class="alert-text">${r.error}</div></div>`;return;}
+  document.getElementById('cpResult').innerHTML=`
+    <div class="section" style="margin-top:14px">
+      <div class="section-title">✅ ${r.total} mensajes listos</div>
+      ${r.data.map(m=>`<div class="mn"><div class="mn-h"><div class="mn-n">Local ${m.local}</div></div><a href="${m.link}" target="_blank" class="btn wa">💬 Mandar</a></div>`).join('')}
+    </div>
+  `;
+}
+
+// === DIFUSIÓN MASIVA DE PROMOS ===
+async function rDifusionPromos(){
+  state.view='difusion'; loading('Preparando difusión...');
+  const r = await apiGet('links_difusion_promos',{operador:state.user.name});
+  if(!r.ok){render(`<div class="greet"><h2>📣 Difundir promos</h2></div><div class="alert"><div class="alert-text">${r.error}</div></div>`);return;}
+  render(`
+    <div class="greet"><h2>📣 Difundir promos</h2><p>Mandá la promo de cada local a sus clientes</p></div>
+    <div class="alert do"><div class="alert-text">Cada mensaje va con la promo específica de ese local.</div></div>
+    ${r.data.map(m=>`<div class="mn"><div class="mn-h"><div><div class="mn-n">${m.nombre}</div>${m.local?`<div class="mn-num">Local ${m.local}</div>`:''}</div></div><div style="font-size:11px;color:var(--gr);margin:6px 0;background:#fef3c7;padding:8px;border-radius:6px">${(m.promo||'').substring(0,150)}${m.promo&&m.promo.length>150?'...':''}</div>${m.tiene_telefono?`<a href="${m.link}" target="_blank" class="btn wa">📣 Mandar</a>`:'<div class="alert" style="margin-top:8px"><div class="alert-text">Sin teléfono</div></div>'}</div>`).join('')}
+  `);
+}
+
+function modal(html) {
+  let m = document.getElementById('modalOverlay');
+  if(!m){m=document.createElement('div');m.id='modalOverlay';m.className='modal-overlay';m.onclick=(e)=>{if(e.target===m)cerrarModal();};document.body.appendChild(m);}
+  m.innerHTML=`<div class="modal" onclick="event.stopPropagation()"><button class="modal-close" onclick="cerrarModal()">✕</button>${html}</div>`;
+  setTimeout(()=>m.classList.add('show'),10);
+}
+function cerrarModal(){const m=document.getElementById('modalOverlay');if(m)m.classList.remove('show');}
+
+function modPago(num) {
+  const l = state.data.alquileres.find(a=>String(a.LOCAL)===String(num));
+  modal(`
+    <h3>💵 Cargar pago</h3>
+    <div style="font-size:13px;color:var(--gr);margin-bottom:14px">Local ${num} · ${l?.NOMBRE||''}</div>
+    <input type="number" id="pM" placeholder="Monto">
+    <select id="pMet"><option>EFECTIVO</option><option>TRANSFERENCIA</option><option>MERCADOPAGO</option></select>
+    <input type="text" id="pObs" placeholder="Observaciones (opcional)">
+    <button class="btn do" onclick="confPago(${num})">Confirmar</button>
+  `);
+}
+async function confPago(num) {
+  const monto = parseFloat(document.getElementById('pM').value);
+  const metodo = document.getElementById('pMet').value;
+  const obs = document.getElementById('pObs').value;
+  if(!monto||monto<=0){toast('Monto inválido','co');return;}
+  toast('Cargando...');
+  const r = await apiPost('cargar_pago',{local:num,monto,metodo,observaciones:obs,cargadoPor:state.user.name});
+  if(r.ok){toast('✓ Pago cargado','ve');cerrarModal();state.data.alquileres=[];setTimeout(()=>verLocal(num),500);}
+  else toast('Error: '+r.error,'co');
+}
+
+function modAviso() {
+  modal(`
+    <h3>📢 Aviso al equipo</h3>
+    <textarea id="aT" placeholder="Escribí el aviso..." rows="4" style="resize:none"></textarea>
+    <button class="btn do" onclick="confAviso()">Publicar</button>
+  `);
+}
+async function confAviso() {
+  const mensaje = document.getElementById('aT').value;
+  if(!mensaje){toast('Escribí algo','co');return;}
+  const r = await apiPost('cargar_aviso',{mensaje,cargadoPor:state.user.name});
+  if(r.ok){toast('✓ Publicado','ve');cerrarModal();}else toast('Error','co');
+}
+
+rLogin();
+</script></body></html>
