@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1628">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mi Local · Feria del Litoral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#0a1628; --nav2:#1f3a6b; --do:#e8b64c; --ve:#22c55e; --co:#ef4444;
+  --gr:#64748b; --bg:#f1f5f9; --card:#ffffff; --bd:#e2e8f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#0f172a;line-height:1.45;min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding:0 14px 40px}
+.money{font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.hidden{display:none!important}
+
+/* ===== LOGIN ===== */
+#login{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;background:linear-gradient(160deg,#0a1628 0%,#1f3a6b 100%)}
+#login .box{background:#fff;border-radius:20px;padding:28px 22px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+#login .logo{text-align:center;margin-bottom:6px}
+#login .logo .t{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;color:var(--nav);line-height:1}
+#login .logo .s{font-size:12px;color:var(--do);font-weight:700;letter-spacing:3px;text-transform:uppercase}
+#login h1{font-size:16px;text-align:center;color:var(--gr);font-weight:600;margin:14px 0 18px}
+label{font-size:12px;color:var(--gr);font-weight:600;display:block;margin:12px 0 4px}
+input[type=text],input[type=tel],input[type=password]{width:100%;padding:14px;border:2px solid var(--bd);border-radius:12px;font-size:17px;font-family:inherit;outline:none;transition:border .15s}
+input:focus{border-color:var(--nav2)}
+.chk{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--gr);cursor:pointer}
+.chk input{width:18px;height:18px}
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:18px;transition:transform .05s,opacity .15s}
+.btn:active{transform:scale(.98)}
+.btn.pri{background:var(--nav);color:#fff}
+.btn.gold{background:var(--do);color:var(--nav)}
+.btn.ghost{background:#fff;color:var(--nav);border:2px solid var(--bd)}
+.btn:disabled{opacity:.6}
+.err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:10px;padding:10px 12px;font-size:13px;margin-top:14px;text-align:center}
+
+/* ===== APP ===== */
+#app .top{background:var(--nav);color:#fff;padding:16px 16px 20px;border-radius:0 0 22px 22px;box-shadow:0 6px 18px rgba(10,22,40,.25);position:relative}
+#app .top .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+#app .top .loc{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;line-height:1}
+#app .top .nom{font-size:13px;color:rgba(255,255,255,.75);margin-top:2px}
+#app .top .fecha{font-size:11px;color:rgba(255,255,255,.55);margin-top:6px}
+.salir{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+.hero{margin:-14px 12px 0;background:#fff;border-radius:18px;padding:22px 18px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.08);position:relative;z-index:2}
+.hero .lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gr)}
+.hero .big{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:1px;line-height:1;margin-top:6px}
+.hero.debe{border:2px solid #fecaca;background:#fff5f5}
+.hero.debe .big{color:var(--co)}
+.hero.ok{border:2px solid #bbf7d0;background:#f0fdf4}
+.hero.ok .big{color:var(--ve);font-size:44px}
+.hero .sub{font-size:12px;color:var(--gr);margin-top:8px}
+.hero .favor{color:var(--ve);font-weight:700;font-size:14px;margin-top:8px}
+
+.sec{margin:18px 4px 0}
+.sec-t{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--gr);margin:0 8px 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kc{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:14px}
+.kc .k{font-size:11px;color:var(--gr);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kc .v{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px;margin-top:3px;color:var(--nav)}
+.kc.rojo .v{color:var(--co)}
+.kc.full{grid-column:1/-1}
+.kc.total{background:linear-gradient(135deg,#0a1628,#1f3a6b);border:none}
+.kc.total .k{color:rgba(255,255,255,.7)}
+.kc.total .v{color:#fff;font-size:34px}
+
+.pay{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px}
+.pay .alias-row{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:12px;margin-top:8px}
+.pay .alias{flex:1;font-weight:700;font-size:17px;color:var(--nav);word-break:break-all}
+.copy{background:var(--nav);color:#fff;border:none;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.copy.done{background:var(--ve)}
+
+.movs{background:#fff;border:1px solid var(--bd);border-radius:14px;overflow:hidden}
+.mov{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #f1f5f9}
+.mov:last-child{border-bottom:none}
+.mov .f{font-size:13px;font-weight:600;color:#334155}
+.mov .m{font-size:11px;color:var(--gr)}
+.mov .a{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--ve);letter-spacing:.5px}
+.empty{padding:18px;text-align:center;color:var(--gr);font-size:13px}
+
+.links{display:grid;gap:10px}
+.lk{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:14px 16px;text-decoration:none;color:var(--nav);font-weight:600;font-size:15px}
+.lk .ico{font-size:22px}
+.lk .ar{margin-left:auto;color:var(--gr)}
+.lk.wa{background:#f0fdf4;border-color:#bbf7d0}
+
+.foot{text-align:center;font-size:11px;color:var(--gr);margin-top:24px}
+.spin{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--nav);border-radius:50%;animation:sp 1s linear infinite;margin:40px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login">
+  <div class="box">
+    <div class="logo">
+      <div class="t">FERIA DEL LITORAL</div>
+      <div class="s">Mi Local</div>
+    </div>
+    <h1>Consultá tu estado de cuenta</h1>
+    <label>Número de local</label>
+    <input id="inLocal" type="tel" inputmode="numeric" placeholder="Ej: 12" autocomplete="off">
+    <label>Clave</label>
+    <input id="inClave" type="password" inputmode="numeric" placeholder="Tu clave" autocomplete="off">
+    <label class="chk"><input type="checkbox" id="inRecordar" checked> Recordar en este celular</label>
+    <button class="btn pri" id="btnEntrar" onclick="entrar()">Entrar</button>
+    <div id="loginErr" class="err hidden"></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <div class="top">
+    <div class="row">
+      <div>
+        <div class="loc" id="tLocal">Local</div>
+        <div class="nom" id="tNombre"></div>
+        <div class="fecha" id="tFecha"></div>
+      </div>
+      <button class="salir" onclick="salir()">Salir</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div id="contenido"></div>
+    <div class="foot">Feria del Litoral · Santa Fe<br>Consulta de estado de cuenta<br>
+      <span id="footInst" style="display:none"><button onclick="instalarApp()" style="margin-top:10px;background:transparent;border:1px solid var(--bd);border-radius:20px;padding:9px 16px;font-size:12px;color:var(--nav);font-weight:600;cursor:pointer;font-family:inherit">📲 Instalar en mi celular</button></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ======== CONFIG (editá esto Roberto) ========
+const CONFIG = {
+  API: 'https://script.google.com/macros/s/AKfycbxc2TXvwKC60sBrIUXEdTMRMlCFC1syCQfyPMXr2esqG9XPvHFLX6UWu-HM17lKrOFM/exec',
+  // Poné el número de WhatsApp de la administración (con código país, sin + ni espacios). Ej: 5493425123456
+  WHATSAPP_ADMIN: '5493426111612',
+  // Links extra que quieras mostrar. Dejá la lista vacía [] si no querés ninguno.
+  // Cada uno: { ico:'emoji', txt:'Texto', url:'https://...' }
+  LINKS: [
+    // { ico:'📄', txt:'Reglamento interno', url:'https://...' },
+    // { ico:'📸', txt:'Instagram de la feria', url:'https://instagram.com/...' },
+  ]
+};
+
+const $ = id => document.getElementById(id);
+function money(n){ n=Number(n)||0; const neg=n<0; n=Math.abs(Math.round(n)); return (neg?'-$':'$')+n.toLocaleString('es-AR'); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function parseFecha(s){ try{ const p=String(s).split(' ')[0].split('/'); if(p.length<3) return null; return new Date(+p[2], +p[1]-1, +p[0]); }catch(e){ return null; } }
+function mesDe(s){ return String(s).split(' ')[0].split('/').slice(1).join('/'); } // 'MM/yyyy'
+function rowPago(p){ return `<div class="mov"><div><div class="f">${esc(p.fecha)}</div><div class="m">${esc(p.metodo||'')}</div></div><div class="a money">${money(p.monto)}</div></div>`; }
+
+let SES = {}; // sesión actual (num + clave) para acciones que escriben
+
+async function portalGet(accion, params={}){
+  const url = new URL(CONFIG.API);
+  url.searchParams.set('accion', accion);
+  Object.keys(params).forEach(k=>url.searchParams.set(k, params[k]));
+  const r = await fetch(url.toString());
+  return await r.json();
+}
+async function portalPost(accion, body={}){
+  const r = await fetch(CONFIG.API, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(Object.assign({accion}, body))});
+  return await r.json();
+}
+async function recargar(){
+  if(!SES.num) return;
+  try{ const d = await portalGet('portal_local', {num:SES.num, clave:SES.clave}); if(d && d.ok) mostrar(d); }catch(e){}
+}
+
+// ======== LOGIN ========
+async function entrar(){
+  const local = $('inLocal').value.trim();
+  const clave = $('inClave').value.trim();
+  const err = $('loginErr');
+  err.classList.add('hidden');
+  if(!local || !clave){ err.textContent='Completá tu número de local y tu clave.'; err.classList.remove('hidden'); return; }
+  const btn = $('btnEntrar'); btn.disabled=true; btn.textContent='Entrando...';
+  try{
+    const d = await portalGet('portal_local', {num:local, clave:clave});
+    if(d && d.ok){
+      SES = {num:local, clave:clave};
+      if($('inRecordar').checked){
+        try{ localStorage.setItem('milocal', JSON.stringify({local, clave})); }catch(e){}
+      } else { try{ localStorage.removeItem('milocal'); }catch(e){} }
+      mostrar(d);
+    } else {
+      err.textContent = (d && d.error) || 'No pude entrar. Revisá los datos.';
+      err.classList.remove('hidden');
+    }
+  }catch(e){
+    err.textContent='Sin conexión. Probá de nuevo.'; err.classList.remove('hidden');
+  }
+  btn.disabled=false; btn.textContent='Entrar';
+}
+
+function salir(){
+  try{ localStorage.removeItem('milocal'); }catch(e){}
+  $('app').classList.add('hidden');
+  $('login').classList.remove('hidden');
+  $('inClave').value='';
+}
+
+// ======== RENDER ESTADO ========
+function mostrar(d){
+  $('login').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('tLocal').textContent = 'Local '+d.local;
+  $('tNombre').textContent = d.nombre || '';
+  $('tFecha').textContent = 'Al '+d.fecha;
+
+  const debe = d.deuda_combinada > 0;
+  let html = '';
+
+  // AVISOS: la última arriba; las anteriores se archivan abajo de todo (últimos 90 días)
+  let avisosArchivadosHtml = '';
+  if(d.avisos && d.avisos.length){
+    let vistos={};
+    try{ vistos = JSON.parse(localStorage.getItem('avisos_vistos_'+d.local)||'{}'); }catch(e){}
+    const ult = d.avisos[0]; // el más nuevo
+    const esNuevo = !vistos[ult.id];
+    html += `<div class="sec" style="margin-top:16px"><div class="sec-t">📣 Aviso de la feria${esNuevo?` <span style="background:var(--co);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;margin-left:4px">nuevo</span>`:''}</div>`;
+    html += `<div style="background:#fff;border:1px solid ${esNuevo?'#fcd34d':'var(--bd)'};border-left:4px solid ${esNuevo?'#f59e0b':'#cbd5e1'};border-radius:12px;padding:13px 15px">
+      ${ult.titulo?`<div style="font-weight:700;font-size:15px;color:var(--nav);margin-bottom:3px">${esNuevo?'🔔 ':''}${esc(ult.titulo)}</div>`:''}
+      <div style="font-size:14px;color:#334155;white-space:pre-wrap">${!ult.titulo&&esNuevo?'🔔 ':''}${esc(ult.mensaje)}</div>
+      <div style="font-size:11px;color:var(--gr);margin-top:6px">${esc(ult.fecha)}</div>
+    </div></div>`;
+    // anteriores (de los últimos 90 días) → archivadas abajo de todo
+    const viejos = d.avisos.slice(1).filter(a=>{ const dt=parseFecha(a.fecha); return !dt || (Date.now()-dt.getTime()) < 90*24*3600*1000; });
+    if(viejos.length){
+      avisosArchivadosHtml = `<div class="sec"><details><summary style="cursor:pointer;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--gr);list-style:none;padding:6px 8px">📁 Avisos anteriores (${viejos.length})</summary><div style="margin-top:10px">`
+        + viejos.map(a=>`<div style="background:#f8fafc;border:1px solid var(--bd);border-radius:10px;padding:11px 13px;margin-bottom:8px">
+            ${a.titulo?`<div style="font-weight:600;font-size:14px;color:var(--nav);margin-bottom:3px">${esc(a.titulo)}</div>`:''}
+            <div style="font-size:13px;color:#475569;white-space:pre-wrap">${esc(a.mensaje)}</div>
+            <div style="font-size:11px;color:var(--gr);margin-top:5px">${esc(a.fecha)}</div></div>`).join('')
+        + `</div></details></div>`;
+    }
+    try{ const nv={}; d.avisos.forEach(a=>nv[a.id]=1); localStorage.setItem('avisos_vistos_'+d.local, JSON.stringify(nv)); }catch(e){}
+  }
+
+  // HERO estado
+  if(debe){
+    html += `<div class="hero debe">
+      <div class="lbl">Tu saldo a pagar</div>
+      <div class="big money">${money(d.deuda_combinada)}</div>
+      <div class="sub">Alquileres ${money(d.deuda_total)}${d.extra.total>0?' + otros conceptos '+money(d.extra.total):''}</div>
+    </div>`;
+  } else {
+    html += `<div class="hero ok">
+      <div class="lbl">Estado</div>
+      <div class="big">✓ AL DÍA</div>
+      ${d.a_favor>0?`<div class="favor">Tenés ${money(d.a_favor)} a favor</div>`:`<div class="sub">No tenés deuda pendiente. ¡Gracias!</div>`}
+    </div>`;
+  }
+
+  // Detalle del mes
+  html += `<div class="sec"><div class="sec-t">Detalle del mes</div><div class="grid">
+    <div class="kc"><div class="k">Alquiler del mes</div><div class="v money">${money(d.alquiler)}</div></div>
+    <div class="kc"><div class="k">Pagaste este mes</div><div class="v money">${money(d.pagado)}</div></div>
+    <div class="kc ${d.deuda>0?'rojo':''}"><div class="k">Deuda del mes</div><div class="v money">${d.deuda<0?'A favor '+money(Math.abs(d.deuda)):money(d.deuda)}</div></div>
+    <div class="kc ${d.mora>0?'rojo':''}"><div class="k">Mora (meses ant.)</div><div class="v money">${money(d.mora)}</div></div>
+    ${d.intereses>0?`<div class="kc rojo"><div class="k">Intereses</div><div class="v money">${money(d.intereses)}</div></div>`:''}
+    <div class="kc total full"><div class="k">Total a pagar (alquileres)</div><div class="v money">${money(d.deuda_total)}</div></div>
+  </div></div>`;
+
+  // Otros conceptos (llave / expensas / multas)
+  if(d.extra && d.extra.total>0){
+    html += `<div class="sec"><div class="sec-t">Otros conceptos</div><div class="grid">
+      ${d.extra.llave>0?`<div class="kc"><div class="k">Llave</div><div class="v money">${money(d.extra.llave)}</div></div>`:''}
+      ${d.extra.expensas>0?`<div class="kc"><div class="k">Expensas</div><div class="v money">${money(d.extra.expensas)}</div></div>`:''}
+      ${d.extra.multas>0?`<div class="kc"><div class="k">Multas</div><div class="v money">${money(d.extra.multas)}</div></div>`:''}
+      <div class="kc total full"><div class="k">Total otros conceptos</div><div class="v money">${money(d.extra.total)}</div></div>
+    </div></div>`;
+  }
+
+  // Cómo pagar
+  if(d.alias){
+    html += `<div class="sec"><div class="sec-t">Cómo pagar</div>
+      <div class="pay">
+        <div style="font-size:13px;color:var(--gr)">Transferí al alias:</div>
+        <div class="alias-row"><span class="alias" id="aliasTxt">${esc(d.alias)}</span>
+        <button class="copy" id="btnCopy" onclick="copiarAlias()">Copiar</button></div>
+        <div style="font-size:12px;color:var(--gr);margin-top:10px">Después de transferir, guardá el comprobante por si te lo piden.</div>
+      </div></div>`;
+  }
+
+  // Subir comprobante de pago
+  html += `<div class="sec"><div class="sec-t">Subir comprobante</div>
+    <div class="pay">
+      <div style="font-size:13px;color:var(--gr);margin-bottom:10px">¿Ya transferiste? Subí la foto del comprobante y queda registrado.</div>
+      <input type="file" id="compFile" accept="image/*" style="display:none" onchange="subirComprobante(this)">
+      <button class="btn gold" style="margin-top:0" onclick="document.getElementById('compFile').click()">📎 Adjuntar comprobante (foto o galería)</button>
+      <div id="compEstado" style="font-size:13px;text-align:center;margin-top:10px"></div>
+      ${(d.comprobantes&&d.comprobantes.length)?`<div style="margin-top:12px">
+        <div style="font-size:12px;color:var(--gr);font-weight:600;margin-bottom:6px">Tus comprobantes subidos:</div>
+        ${d.comprobantes.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:13px">
+          <a href="${esc(c.url)}" target="_blank" style="color:var(--nav);font-weight:600;text-decoration:none">📄 ${esc(c.fecha)}</a>
+          <span style="font-size:11px;color:var(--gr)">${c.estado==='APROBADO'?'✅ '+esc(c.estado):'⏳ '+esc(c.estado||'PENDIENTE')}</span>
+        </div>`).join('')}
+      </div>`:''}
+    </div></div>`;
+
+  // Historial de pagos: mes vigente + desplegable con los anteriores
+  html += `<div class="sec"><div class="sec-t">Pagos de este mes</div>`;
+  if(d.pagos && d.pagos.length){
+    const mesAct = mesDe(d.fecha||'');
+    const orden = d.pagos.slice().reverse(); // más nuevos primero
+    const esteMes = orden.filter(p=> mesDe(p.fecha)===mesAct );
+    const anteriores = orden.filter(p=> mesDe(p.fecha)!==mesAct );
+    html += `<div class="movs">${ esteMes.length ? esteMes.map(rowPago).join('') : '<div class="empty">Todavía no registraste pagos este mes.</div>' }</div>`;
+    if(anteriores.length){
+      html += `<details style="margin-top:10px"><summary style="cursor:pointer;font-size:13px;color:var(--nav);font-weight:600;text-align:center;list-style:none;padding:8px">▾ Ver pagos anteriores (${anteriores.length})</summary><div class="movs" style="margin-top:8px">${anteriores.map(rowPago).join('')}</div></details>`;
+    }
+  } else {
+    html += `<div class="movs"><div class="empty">Todavía no hay pagos registrados.</div></div>`;
+  }
+  html += `</div>`;
+
+  // Mi promo (para Lito, la IA de la feria)
+  html += `<div class="sec"><div class="sec-t">Mi promo para Lito 🤖</div>
+    <div class="pay">
+      ${d.promo?`<div style="font-size:13px;color:var(--gr)">Tu promo activa:</div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;margin-top:6px;font-size:14px;color:#166534;white-space:pre-wrap">${esc(d.promo)}</div>`
+      :`<div style="font-size:13px;color:var(--gr)">Todavía no cargaste una promo. Cargala y Lito la va a ofrecer a los clientes de la feria.</div>`}
+      <textarea id="promoTxt" rows="2" placeholder="Ej: 2x1 en empanadas hasta el domingo" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;font-family:inherit;resize:vertical;margin-top:10px"></textarea>
+      <button class="btn pri" style="margin-top:8px" onclick="enviarPromo()">${d.promo?'Cambiar mi promo':'Cargar mi promo'}</button>
+      <div id="promoEstado" style="font-size:13px;text-align:center;margin-top:8px"></div>
+    </div></div>`;
+
+  // Info general de la feria
+  if(d.info && d.info.length){
+    html += `<div class="sec"><div class="sec-t">Info de la feria</div>`;
+    html += d.info.map(it=>`<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:13px 15px;margin-bottom:8px">
+      ${it.titulo?`<div style="font-weight:700;font-size:14px;color:var(--nav);margin-bottom:3px">${esc(it.titulo)}</div>`:''}
+      <div style="font-size:13px;color:#334155;white-space:pre-wrap">${esc(it.texto)}</div>
+    </div>`).join('');
+    html += `</div>`;
+  }
+
+  let linksHtml = '';
+  if(CONFIG.WHATSAPP_ADMIN){
+    const msg = encodeURIComponent(`Hola, soy del Local ${d.local} (${d.nombre}). `);
+    linksHtml += `<a class="lk wa" href="https://wa.me/${CONFIG.WHATSAPP_ADMIN}?text=${msg}" target="_blank"><span class="ico">💬</span> Escribir a la administración <span class="ar">›</span></a>`;
+  }
+  (CONFIG.LINKS||[]).forEach(l=>{
+    if(l && l.url) linksHtml += `<a class="lk" href="${esc(l.url)}" target="_blank"><span class="ico">${esc(l.ico||'🔗')}</span> ${esc(l.txt||'Link')} <span class="ar">›</span></a>`;
+  });
+  if(linksHtml){
+    html += `<div class="sec"><div class="sec-t">Contacto y links</div><div class="links">${linksHtml}</div></div>`;
+  }
+
+  // Avisos anteriores, archivados abajo de todo
+  html += avisosArchivadosHtml;
+
+  const fi=$('footInst'); if(fi) fi.style.display = yaInstalada()? 'none' : 'inline';
+
+  $('contenido').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function copiarAlias(){
+  const t = $('aliasTxt').textContent;
+  const done = ()=>{ const b=$('btnCopy'); b.textContent='✓ Copiado'; b.classList.add('done'); setTimeout(()=>{b.textContent='Copiar';b.classList.remove('done');},1800); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done)); }
+  else fallbackCopy(t,done);
+}
+function fallbackCopy(t,cb){ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); cb&&cb(); }
+
+// ======== SUBIR COMPROBANTE ========
+async function subirComprobante(input){
+  const file = input.files && input.files[0];
+  input.value='';
+  if(!file) return;
+  const est = $('compEstado');
+  est.style.color='var(--gr)'; est.textContent='Procesando imagen...';
+  try{
+    const img = await comprimirImagen(file, 1400, 0.7);
+    est.textContent='Subiendo... (aguantá unos segundos)';
+    const r = await portalPost('portal_subir_comprobante', {num:SES.num, clave:SES.clave, base64:img.base64, mime:img.mime});
+    if(r && r.ok){ est.style.color='var(--ve)'; est.textContent='✅ ¡Comprobante subido! Gracias.'; setTimeout(recargar, 1300); }
+    else { est.style.color='var(--co)'; est.textContent='No se pudo subir: '+((r&&r.error)||'error'); }
+  }catch(e){ est.style.color='var(--co)'; est.textContent='No se pudo procesar la imagen. Probá con otra foto.'; }
+}
+function comprimirImagen(file, maxLado, calidad){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        if(w>maxLado||h>maxLado){ if(w>h){ h=Math.round(h*maxLado/w); w=maxLado; } else { w=Math.round(w*maxLado/h); h=maxLado; } }
+        const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        const dataUrl=cv.toDataURL('image/jpeg', calidad);
+        resolve({base64:dataUrl.split(',')[1], mime:'image/jpeg'});
+      };
+      img.onerror=reject; img.src=e.target.result;
+    };
+    reader.onerror=reject; reader.readAsDataURL(file);
+  });
+}
+
+// ======== CARGAR PROMO ========
+async function enviarPromo(){
+  const txt=($('promoTxt').value||'').trim();
+  const est=$('promoEstado');
+  if(!txt){ est.style.color='var(--co)'; est.textContent='Escribí tu promo.'; return; }
+  est.style.color='var(--gr)'; est.textContent='Enviando...';
+  const r=await portalPost('portal_cargar_promo', {num:SES.num, clave:SES.clave, texto:txt});
+  if(r && r.ok){ est.style.color='var(--ve)'; est.textContent='✅ ¡Promo cargada! Lito ya la puede ofrecer.'; setTimeout(recargar,1300); }
+  else { est.style.color='var(--co)'; est.textContent='No se pudo: '+((r&&r.error)||'error'); }
+}
+
+// ======== INSTALAR APP (banner) ========
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; mostrarBannerInstalar(); });
+function yaInstalada(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function esIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+function mostrarBannerInstalar(){
+  if(yaInstalada()) return;
+  try{ if(localStorage.getItem('instalar_no')==='1') return; }catch(e){}
+  if(document.getElementById('bannerInst')) return;
+  const b=document.createElement('div');
+  b.id='bannerInst';
+  b.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:200;background:#0a1628;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -6px 20px rgba(0,0,0,.3)';
+  b.innerHTML = `<div style="flex:1;font-size:13px;line-height:1.35"><b style="color:#e8b64c">Instalá Mi Local</b><br>Tenela como app en tu celu, con su ícono.</div>
+    <button id="btnInstNo" style="background:transparent;color:rgba(255,255,255,.6);border:none;font-size:13px;cursor:pointer;padding:8px">Ahora no</button>
+    <button id="btnInstSi" style="background:#e8b64c;color:#0a1628;border:none;border-radius:10px;padding:11px 16px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">Instalar</button>`;
+  document.body.appendChild(b);
+  document.getElementById('btnInstNo').onclick = ()=>{ try{localStorage.setItem('instalar_no','1');}catch(e){} b.remove(); };
+  document.getElementById('btnInstSi').onclick = instalarApp;
+}
+async function instalarApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    try{ await deferredPrompt.userChoice; }catch(e){}
+    deferredPrompt=null;
+    const b=document.getElementById('bannerInst'); if(b) b.remove();
+  } else {
+    instruccionesInstalar();
+  }
+}
+function instruccionesInstalar(){
+  const ios = esIOS();
+  const pasos = ios
+    ? '1) Tocá el botón <b>Compartir</b> ⬆️ (abajo en el centro)<br>2) Bajá y tocá <b>"Agregar a inicio"</b><br>3) Tocá <b>Agregar</b>'
+    : '1) Tocá los <b>tres puntitos ⋮</b> (arriba a la derecha)<br>2) Tocá <b>"Agregar a la pantalla principal"</b> o <b>"Instalar aplicación"</b><br>3) Confirmá';
+  let m=document.getElementById('modalInst');
+  if(!m){ m=document.createElement('div'); m.id='modalInst'; document.body.appendChild(m); }
+  m.style.cssText='position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML=`<div style="background:#fff;border-radius:18px;padding:22px;max-width:340px;width:100%">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#0a1628;letter-spacing:1px">CÓMO INSTALARLA</div>
+    <div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.6">${pasos}</div>
+    <button onclick="document.getElementById('modalInst').remove()" style="width:100%;margin-top:16px;background:#0a1628;color:#fff;border:none;border-radius:10px;padding:13px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit">Entendido</button>
+  </div>`;
+}
+
+// ======== PWA (instalable en el celular) ========
+if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+// En iPhone no existe el evento automático: mostramos el banner igual
+window.addEventListener('load', ()=>{ if(esIOS() && !yaInstalada()) setTimeout(mostrarBannerInstalar, 2500); });
+
+// ======== AUTO-LOGIN ========
+(async function(){
+  let saved=null;
+  try{ saved = JSON.parse(localStorage.getItem('milocal')||'null'); }catch(e){}
+  if(saved && saved.local && saved.clave){
+    try{
+      const d = await portalGet('portal_local', {num:saved.local, clave:saved.clave});
+      if(d && d.ok){ SES={num:saved.local, clave:saved.clave}; mostrar(d); return; }
+    }catch(e){}
+  }
+  // sin sesión: mostrar login
+  $('inLocal') && $('inLocal').focus();
+})();
+
+// Enter para entrar
+['inLocal','inClave'].forEach(id=>{
+  const el=$(id); if(el) el.addEventListener('keydown',e=>{ if(e.key==='Enter') entrar(); });
+});
+</script>
+</body>
+</html>
