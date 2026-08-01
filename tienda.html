@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ac:#111827; --ac-soft:#1f2937; --ink:#0f1115; --paper:#f5f5f3;
+    --ac:#111827; --ac-soft:#1f2937; --ink:#0e1013; --paper:#f6f6f4;
     --gr:#6b7280; --bd:#e7e7ea; --card:#ffffff; --lime:#c6f24e;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -21,67 +21,55 @@
   /* ---------- top bar ---------- */
   .topbar{position:sticky;top:0;z-index:45;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(12px);border-bottom:1px solid var(--bd)}
   .topbar .in{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px}
-  .brand{font-family:'Archivo';font-weight:800;font-size:17px;letter-spacing:-.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand{font-family:'Archivo';font-weight:800;font-size:16px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
   .cartbtn{display:flex;align-items:center;gap:8px;background:var(--ac);color:#fff;border:none;border-radius:100px;padding:9px 15px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Inter';transition:transform .12s}
   .cartbtn:active{transform:scale(.96)}
   .cartbtn .n{background:rgba(255,255,255,.22);border-radius:100px;min-width:20px;text-align:center;padding:1px 6px;font-size:12px;font-weight:800}
 
-  /* ---------- delivery banner (signature) ---------- */
-  .deliv{position:relative;overflow:hidden;background:var(--ink);color:#fff}
-  .deliv .in{max-width:1180px;margin:0 auto;padding:16px 18px 20px;position:relative;z-index:2}
-  .deliv .kicker{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-  .deliv h2{font-family:'Bebas Neue';font-weight:400;font-size:clamp(30px,8vw,46px);line-height:.92;letter-spacing:1px;margin:0}
-  .deliv h2 .hl{color:var(--lime)}
-  .deliv .moto-badge{font-size:26px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.4))}
-  .deliv .sub{font-size:13.5px;color:rgba(255,255,255,.72);margin-top:7px;max-width:560px;line-height:1.4}
-  .deliv .live{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:var(--lime);color:#10210a;font-weight:800;font-size:13px;padding:8px 14px;border-radius:100px;box-shadow:0 6px 18px rgba(198,242,78,.28)}
-  .deliv .live .dot{width:8px;height:8px;border-radius:50%;background:#10210a;animation:pulse 1.3s ease-in-out infinite}
-  .deliv .live.off{background:rgba(255,255,255,.1);color:#fff;box-shadow:none}
-  .deliv .live.off .dot{background:var(--lime)}
-  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
-  /* road + riding moto */
-  .road{position:absolute;left:0;right:0;bottom:0;height:3px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.16) 0 14px,transparent 14px 30px);z-index:1}
-  .rider{position:absolute;bottom:2px;left:-50px;font-size:24px;z-index:1;animation:ride 7s linear infinite;will-change:transform}
-  .rider .dash{opacity:.5;font-size:15px;margin-left:-4px}
-  @keyframes ride{0%{transform:translateX(-60px)}100%{transform:translateX(calc(100vw + 60px))}}
-  .sheen{position:absolute;inset:0;z-index:0;background:linear-gradient(115deg,transparent 30%,rgba(198,242,78,.10) 45%,transparent 60%);background-size:280% 100%;animation:sheen 6s linear infinite}
-  @keyframes sheen{0%{background-position:200% 0}100%{background-position:-80% 0}}
+  /* ---------- masthead (identity + delivery hook, centered) ---------- */
+  .masthead{position:relative;overflow:hidden;background:var(--ink);color:#fff;text-align:center}
+  .masthead .cover-bg{position:absolute;inset:0;background-position:center;background-size:cover;opacity:.26}
+  .masthead .glow{position:absolute;inset:0;background:radial-gradient(75% 130% at 50% -15%, color-mix(in srgb, var(--ac) 60%, transparent) 0%, transparent 62%)}
+  .masthead .veil{position:absolute;inset:0;background:linear-gradient(180deg, rgba(14,16,19,.35), rgba(14,16,19,.85))}
+  .masthead .in{position:relative;z-index:3;max-width:720px;margin:0 auto;padding:38px 22px 40px}
+  .store{font-family:'Archivo';font-weight:900;font-size:clamp(32px,8.5vw,54px);line-height:.98;letter-spacing:-1.2px;text-transform:uppercase}
+  .storedesc{font-size:14.5px;color:rgba(255,255,255,.8);margin:12px auto 0;line-height:1.5;max-width:520px;white-space:pre-wrap}
+  .rule{width:52px;height:3px;background:var(--lime);border-radius:3px;margin:22px auto 20px}
+  .hook{display:flex;align-items:center;justify-content:center;gap:11px;flex-wrap:wrap}
+  .hook .moto{font-size:27px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45))}
+  .hook .big{font-family:'Bebas Neue';font-weight:400;font-size:clamp(26px,7vw,40px);letter-spacing:1.5px;line-height:1}
+  .hook .big .hl{color:var(--lime)}
+  .subhook{font-size:13px;color:rgba(255,255,255,.72);margin-top:8px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.4}
+  .live{display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:var(--lime);color:#0f2109;font-weight:800;font-size:13.5px;padding:9px 16px;border-radius:100px;box-shadow:0 8px 22px rgba(198,242,78,.3)}
+  .live .dot{width:8px;height:8px;border-radius:50%;background:#0f2109;animation:pulse 1.3s ease-in-out infinite}
+  .live.off{background:rgba(255,255,255,.09);color:#fff;box-shadow:none;border:1px solid rgba(255,255,255,.16)}
+  .live.off .dot{background:var(--lime)}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+  .sheen{position:absolute;inset:0;z-index:1;background:linear-gradient(115deg,transparent 34%,rgba(198,242,78,.09) 47%,transparent 60%);background-size:280% 100%;animation:sheen 7s linear infinite}
+  @keyframes sheen{0%{background-position:220% 0}100%{background-position:-90% 0}}
 
-  /* ---------- hero ---------- */
-  .hero{position:relative;overflow:hidden}
-  .hero.plain{background:
-      radial-gradient(120% 90% at 15% 0%, color-mix(in srgb, var(--ac) 30%, #000) 0%, var(--ac) 55%, color-mix(in srgb, var(--ac) 65%, #000) 100%);
-    color:#fff}
-  .hero .in{max-width:1180px;margin:0 auto;position:relative}
-  .hero .cover{width:100%;height:clamp(150px,42vw,300px);object-fit:cover;display:block}
-  .hero .cap{padding:22px 18px 24px}
-  .hero.hascover .cap{position:absolute;left:0;right:0;bottom:0;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.78));padding-top:64px}
-  .hero h1{font-family:'Archivo';font-weight:900;margin:0;font-size:clamp(26px,7vw,40px);line-height:1.02;letter-spacing:-.7px}
-  .hero .desc{font-size:14px;opacity:.86;margin-top:8px;line-height:1.45;max-width:620px;white-space:pre-wrap}
-  .hero .pattern{position:absolute;inset:0;opacity:.06;background-image:radial-gradient(#fff 1px,transparent 1.4px);background-size:18px 18px}
-
-  /* ---------- trust chips ---------- */
-  .trust{max-width:1180px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;padding:12px 18px 4px;scrollbar-width:none}
-  .trust::-webkit-scrollbar{display:none}
-  .chip{flex:0 0 auto;display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--bd);border-radius:100px;padding:8px 13px;font-size:12.5px;font-weight:600;color:#2b2d33;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  /* ---------- trust chips (centered) ---------- */
+  .trust{max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:16px 16px 2px}
+  .chip{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--bd);border-radius:100px;padding:8px 14px;font-size:12.5px;font-weight:600;color:#2b2d33;box-shadow:0 1px 2px rgba(0,0,0,.04)}
   .chip b{font-weight:800}
 
   /* ---------- catalog ---------- */
-  .content{max-width:1180px;margin:0 auto;padding:16px 14px 40px}
-  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 4px 16px;flex-wrap:wrap}
-  .eyebrow{font-family:'Archivo';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#9a9ca3}
-  .search{flex:1;min-width:170px;max-width:320px}
-  .search input{width:100%;padding:11px 15px;border:1px solid var(--bd);border-radius:100px;font-size:14px;background:#fff;font-family:'Inter'}
+  .content{max-width:1040px;margin:0 auto;padding:22px 16px 40px}
+  .sechead{text-align:center;margin:6px 0 20px}
+  .eyebrow{font-family:'Archivo';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:2.5px;color:#9a9ca3}
+  .sechead h2{font-family:'Archivo';font-weight:900;font-size:23px;letter-spacing:-.5px;margin:4px 0 0}
+  .search{max-width:360px;margin:14px auto 0}
+  .search input{width:100%;padding:12px 16px;border:1px solid var(--bd);border-radius:100px;font-size:14px;background:#fff;font-family:'Inter';text-align:center}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:14px}
   .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
-  .card:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.11)}
-  .card .ph{width:100%;aspect-ratio:1/1;background:#eceef1 center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#c3c7cd;font-size:34px;cursor:pointer;position:relative;overflow:hidden}
-  .card .ph .im{position:absolute;inset:0;background:inherit;transition:transform .4s ease}
-  .card:hover .ph .im{transform:scale(1.05)}
+  .card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(0,0,0,.12)}
+  .card .ph{width:100%;aspect-ratio:1/1;background:#eceef1;display:flex;align-items:center;justify-content:center;color:#c3c7cd;font-size:34px;cursor:pointer;position:relative;overflow:hidden}
+  .card .ph .im{position:absolute;inset:0;background-position:center;background-size:cover;transition:transform .45s ease}
+  .card:hover .ph .im{transform:scale(1.06)}
   .tag{position:absolute;top:9px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:100px;color:#fff;font-family:'Inter';z-index:2}
   .tag.off{left:9px;background:#e11d48}
-  .tag.dest{right:9px;background:rgba(17,24,39,.92);backdrop-filter:blur(4px)}
-  .card .info{padding:11px 12px 13px;display:flex;flex-direction:column;flex:1}
+  .tag.dest{right:9px;background:rgba(14,16,19,.92);backdrop-filter:blur(4px)}
+  .card .info{padding:12px 12px 13px;display:flex;flex-direction:column;flex:1}
   .card .t{font-size:14px;font-weight:600;line-height:1.28;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px;cursor:pointer;color:#1a1c20}
   .card .prow{margin-top:7px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
   .card .antes{font-size:12px;color:var(--gr);text-decoration:line-through}
@@ -93,16 +81,18 @@
   .qty button{background:var(--ac);color:#fff;border:none;width:38px;height:36px;font-size:18px;cursor:pointer;font-weight:700}
   .qty span{font-weight:800;color:var(--ac)}
 
-  .empty{text-align:center;padding:64px 24px;color:var(--gr)}
+  .empty{text-align:center;padding:56px 24px;color:var(--gr)}
   .empty .em{font-size:46px;margin-bottom:12px}
   .empty h2{font-family:'Archivo';font-size:19px;color:#1a1c20;margin:0 0 6px;font-weight:800}
 
   /* ---------- footer ---------- */
-  .foot{max-width:1180px;margin:0 auto;padding:8px 18px 30px}
-  .foot .cta{background:var(--ink);color:#fff;border-radius:20px;padding:22px;text-align:center}
-  .foot .cta h3{font-family:'Archivo';font-weight:800;font-size:20px;margin:0 0 4px}
+  .foot{max-width:1180px;margin:0 auto;padding:8px 16px 30px}
+  .foot .cta{background:var(--ink);color:#fff;border-radius:22px;padding:26px 22px;text-align:center;position:relative;overflow:hidden}
+  .foot .cta .glow{position:absolute;inset:0;background:radial-gradient(70% 120% at 50% 120%, color-mix(in srgb,var(--ac) 45%, transparent), transparent 60%)}
+  .foot .cta > *{position:relative;z-index:2}
+  .foot .cta h3{font-family:'Archivo';font-weight:800;font-size:21px;margin:0 0 4px}
   .foot .cta p{font-size:13.5px;color:rgba(255,255,255,.7);margin:0 0 16px}
-  .foot .cta a{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#0a2e17;font-weight:800;text-decoration:none;padding:13px 22px;border-radius:100px;font-size:15px}
+  .foot .cta a{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#0a2e17;font-weight:800;text-decoration:none;padding:14px 24px;border-radius:100px;font-size:15px}
   .foot .mini{text-align:center;color:#a9abb2;font-size:11.5px;margin-top:16px}
 
   /* ---------- modales ---------- */
@@ -118,7 +108,7 @@
   .sheet .off-pill{font-size:12px;background:#e11d48;color:#fff;padding:2px 8px;border-radius:100px;font-weight:800;font-family:'Inter'}
   .sheet .lbl{font-family:'Archivo';font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gr);font-weight:700;margin-top:14px}
   .sheet .dtxt{font-size:15px;color:#3f3f46;white-space:pre-wrap;line-height:1.5;margin-top:4px}
-  .sheet .deliv-note{display:flex;align-items:center;gap:8px;margin-top:14px;background:#f2f7e8;border:1px solid #dcebc0;color:#3f5417;border-radius:12px;padding:10px 12px;font-size:12.5px;font-weight:600}
+  .deliv-note{display:flex;align-items:center;gap:8px;margin-top:14px;background:#f2f7e8;border:1px solid #dcebc0;color:#3f5417;border-radius:12px;padding:10px 12px;font-size:12.5px;font-weight:600}
   .talles-w{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
   .talles-w span{border:1px solid var(--bd);border-radius:9px;padding:5px 12px;font-size:13px;font-weight:600;background:#fafafa}
   .close{position:sticky;top:0;display:flex;justify-content:flex-end;padding:8px;background:linear-gradient(#fff,rgba(255,255,255,0));z-index:2}
@@ -143,13 +133,12 @@
   @keyframes sp{to{transform:rotate(360deg)}}
 
   @media(min-width:720px){
-    .grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px}
-    .content{padding:24px 20px 60px}
-    .deliv .in{padding:22px 20px 26px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:20px}
+    .content{padding:30px 20px 60px}
+    .masthead .in{padding:48px 22px 50px}
   }
   @media(prefers-reduced-motion:reduce){
-    .rider,.sheen,.dot{animation:none!important}
-    .rider{display:none}
+    .sheen,.dot{animation:none!important}
   }
 </style>
 </head>
@@ -196,7 +185,7 @@ function aplicarTema(cfg){
     document.documentElement.style.setProperty('--ac-soft',lighten(hex,.2));
   }
 }
-function vacio(em,t,s){ return `<div class="hero plain"><div class="in"><div class="cap"><h1>Tienda online</h1></div></div></div><div class="empty"><div class="em">${em}</div><h2>${t}</h2><div>${s}</div></div>`; }
+function vacio(em,t,s){ return `<div class="masthead"><div class="glow"></div><div class="in"><div class="store">Tienda online</div></div></div><div class="empty"><div class="em">${em}</div><h2>${t}</h2><div>${s}</div></div>`; }
 
 function delivEstado(){
   const now=new Date(); const day=now.getDay(); const h=now.getHours()+now.getMinutes()/60;
@@ -206,25 +195,12 @@ function delivEstado(){
     const falta = hh>0 ? (hh+' h '+(mm>0?mm+' m':'')) : (mm+' m');
     return {abierto:true, texto:'Comprá en las próximas '+falta.trim()+' y lo recibís HOY'};
   }
-  return {abierto:false, texto:'Miércoles a domingo · comprá antes de las 17 h y lo tenés hoy'};
-}
-function bannerHTML(){
-  return `<section class="deliv">
-    <div class="sheen"></div>
-    <div class="in">
-      <div class="kicker"><span class="moto-badge">🛵</span><h2>ENTREGAS <span class="hl">EN EL DÍA</span></h2></div>
-      <div class="sub">Elegí, comprás por WhatsApp y te lo llevamos a tu casa el mismo día. De miércoles a domingo, comprando antes de las 17 h.</div>
-      <div id="delivLive"></div>
-    </div>
-    <div class="road"></div><div class="rider">🛵<span class="dash">💨</span></div>
-  </section>`;
+  return {abierto:false, texto:'Miércoles a domingo · antes de las 17 h lo tenés hoy'};
 }
 function tickEntrega(){
   const box=$('delivLive'); if(!box) return;
   const e=delivEstado();
-  box.innerHTML = e.abierto
-    ? `<span class="live"><span class="dot"></span>${esc(e.texto)}</span>`
-    : `<span class="live off"><span class="dot"></span>${esc(e.texto)}</span>`;
+  box.innerHTML = `<span class="live ${e.abierto?'':'off'}"><span class="dot"></span>🛵 ${esc(e.texto)}</span>`;
 }
 
 function render(d){
@@ -237,11 +213,18 @@ function render(d){
       <div class="brand">${esc(titulo)}</div>
       <button class="cartbtn" onclick="openCart()">🛒 Pedido <span class="n" id="cbN">0</span></button>
     </div></div>
-    ${bannerHTML()}
-    <div class="hero ${cover?'hascover':'plain'}"><div class="in">
-      ${cover?`<img class="cover" src="${esc(cover)}" alt="">`:`<div class="pattern"></div>`}
-      <div class="cap"><h1>${esc(titulo)}</h1>${cfg.descripcion?`<div class="desc">${esc(cfg.descripcion)}</div>`:''}</div>
-    </div></div>
+    <section class="masthead">
+      ${cover?`<div class="cover-bg" style="background-image:url('${esc(cover)}')"></div><div class="veil"></div>`:`<div class="glow"></div>`}
+      <div class="sheen"></div>
+      <div class="in">
+        <div class="store">${esc(titulo)}</div>
+        ${cfg.descripcion?`<div class="storedesc">${esc(cfg.descripcion)}</div>`:''}
+        <div class="rule"></div>
+        <div class="hook"><span class="moto">🛵</span><span class="big">ENTREGAS <span class="hl">EN EL DÍA</span></span></div>
+        <div class="subhook">Elegís, comprás por WhatsApp y te lo llevamos a tu casa el mismo día.</div>
+        <div id="delivLive"></div>
+      </div>
+    </section>
     <div class="trust">
       <div class="chip">🛵 <b>Envío en el día</b></div>
       <div class="chip">💬 Te atendemos al toque</div>
@@ -252,15 +235,17 @@ function render(d){
   if(!prods.length){
     html+=`<div class="empty"><div class="em">📦</div><h2>Se vienen novedades</h2><div>Esta tienda está cargando sus productos. Volvé pronto y guardá el link.</div></div>`;
   } else {
-    html+=`<div class="toolbar">
-      <div class="eyebrow" id="cnt">${prods.length} producto${prods.length>1?'s':''}</div>
-      ${conBuscador?`<div class="search"><input type="text" placeholder="Buscar en la tienda..." oninput="filtrar(this.value)"></div>`:''}
+    html+=`<div class="sechead">
+      <div class="eyebrow">La tienda</div>
+      <h2>Nuestros productos</h2>
+      ${conBuscador?`<div class="search"><input type="text" placeholder="Buscar..." oninput="filtrar(this.value)"></div>`:''}
     </div><div class="grid" id="grid"></div>`;
   }
   const wa=waNum(d.whatsapp);
   html+=`</div>
     <div class="foot">
       <div class="cta">
+        <div class="glow"></div>
         <h3>¿Alguna duda? 👋</h3>
         <p>Escribinos y te ayudamos a elegir. Coordinás el envío o el retiro en el momento.</p>
         ${wa?`<a href="https://wa.me/${wa}?text=${encodeURIComponent('¡Hola! Vengo de tu tienda online 👋')}" target="_blank">💬 Escribinos por WhatsApp</a>`:''}
@@ -288,7 +273,7 @@ function cardHTML(p,i){
     </div>
   </div>`;
 }
-function pintarGrid(){ const g=$('grid'); if(!g)return; const vis=visibles(); g.innerHTML=vis.length?vis.map(o=>cardHTML(o.p,o.i)).join(''):`<div class="empty" style="grid-column:1/-1"><div class="em">🔍</div><h2>Sin resultados</h2></div>`; const c=$('cnt'); if(c) c.textContent = FILTRO ? (vis.length+' resultado'+(vis.length===1?'':'s')) : ((DATA.productos||[]).length+' productos'); actualizarCarrito(); }
+function pintarGrid(){ const g=$('grid'); if(!g)return; const vis=visibles(); g.innerHTML=vis.length?vis.map(o=>cardHTML(o.p,o.i)).join(''):`<div class="empty" style="grid-column:1/-1"><div class="em">🔍</div><h2>Sin resultados</h2></div>`; actualizarCarrito(); }
 function filtrar(q){ FILTRO=q||''; pintarGrid(); }
 
 function abrir(i){
