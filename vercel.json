@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/l/:local/:prod", "destination": "/tienda.html?local=:local&prod=:prod" },
+    { "source": "/l/:local", "destination": "/tienda.html?local=:local" }
+  ]
+}
