@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a1628">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Mi Local · Feria del Litoral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --nav:#0a1628; --nav2:#1f3a6b; --do:#e8b64c; --ve:#22c55e; --co:#ef4444;
+  --gr:#64748b; --bg:#f1f5f9; --card:#ffffff; --bd:#e2e8f0;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#0f172a;line-height:1.45;min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding:0 14px 40px}
+.money{font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.hidden{display:none!important}
+
+/* ===== LOGIN ===== */
+#login{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;background:linear-gradient(160deg,#0a1628 0%,#1f3a6b 100%)}
+#login .box{background:#fff;border-radius:20px;padding:28px 22px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+#login .logo{text-align:center;margin-bottom:6px}
+#login .logo .t{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:2px;color:var(--nav);line-height:1}
+#login .logo .s{font-size:12px;color:var(--do);font-weight:700;letter-spacing:3px;text-transform:uppercase}
+#login h1{font-size:16px;text-align:center;color:var(--gr);font-weight:600;margin:14px 0 18px}
+label{font-size:12px;color:var(--gr);font-weight:600;display:block;margin:12px 0 4px}
+input[type=text],input[type=tel],input[type=password]{width:100%;padding:14px;border:2px solid var(--bd);border-radius:12px;font-size:17px;font-family:inherit;outline:none;transition:border .15s}
+input:focus{border-color:var(--nav2)}
+.chk{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--gr);cursor:pointer}
+.chk input{width:18px;height:18px}
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:18px;transition:transform .05s,opacity .15s}
+.btn:active{transform:scale(.98)}
+.btn.pri{background:var(--nav);color:#fff}
+.btn.gold{background:var(--do);color:var(--nav)}
+.btn.ghost{background:#fff;color:var(--nav);border:2px solid var(--bd)}
+.btn:disabled{opacity:.6}
+.err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca;border-radius:10px;padding:10px 12px;font-size:13px;margin-top:14px;text-align:center}
+
+/* ===== APP ===== */
+#app .top{background:var(--nav);color:#fff;padding:16px 16px 20px;border-radius:0 0 22px 22px;box-shadow:0 6px 18px rgba(10,22,40,.25);position:relative}
+#app .top .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+#app .top .loc{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;line-height:1}
+#app .top .nom{font-size:13px;color:rgba(255,255,255,.75);margin-top:2px}
+#app .top .fecha{font-size:11px;color:rgba(255,255,255,.55);margin-top:6px}
+.salir{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:10px;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+
+.hero{margin:-14px 12px 0;background:#fff;border-radius:18px;padding:22px 18px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.08);position:relative;z-index:2}
+.hero .lbl{font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--gr)}
+.hero .big{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:1px;line-height:1;margin-top:6px}
+.hero.debe{border:2px solid #fecaca;background:#fff5f5}
+.hero.debe .big{color:var(--co)}
+.hero.ok{border:2px solid #bbf7d0;background:#f0fdf4}
+.hero.ok .big{color:var(--ve);font-size:44px}
+.hero .sub{font-size:12px;color:var(--gr);margin-top:8px}
+.hero .favor{color:var(--ve);font-weight:700;font-size:14px;margin-top:8px}
+
+.sec{margin:18px 4px 0}
+.sec-t{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--gr);margin:0 8px 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kc{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:14px}
+.kc .k{font-size:11px;color:var(--gr);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.kc .v{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.5px;margin-top:3px;color:var(--nav)}
+.kc.rojo .v{color:var(--co)}
+.kc.full{grid-column:1/-1}
+.kc.total{background:linear-gradient(135deg,#0a1628,#1f3a6b);border:none}
+.kc.total .k{color:rgba(255,255,255,.7)}
+.kc.total .v{color:#fff;font-size:34px}
+
+.pay{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:16px}
+.pay .alias-row{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:10px;padding:12px;margin-top:8px}
+.pay .alias{flex:1;font-weight:700;font-size:17px;color:var(--nav);word-break:break-all}
+.copy{background:var(--nav);color:#fff;border:none;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.copy.done{background:var(--ve)}
+
+.movs{background:#fff;border:1px solid var(--bd);border-radius:14px;overflow:hidden}
+.mov{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #f1f5f9}
+.mov:last-child{border-bottom:none}
+.mov .f{font-size:13px;font-weight:600;color:#334155}
+.mov .m{font-size:11px;color:var(--gr)}
+.mov .a{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--ve);letter-spacing:.5px}
+.empty{padding:18px;text-align:center;color:var(--gr);font-size:13px}
+
+.links{display:grid;gap:10px}
+.lk{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--bd);border-radius:14px;padding:14px 16px;text-decoration:none;color:var(--nav);font-weight:600;font-size:15px}
+.lk .ico{font-size:22px}
+.lk .ar{margin-left:auto;color:var(--gr)}
+.lk.wa{background:#f0fdf4;border-color:#bbf7d0}
+
+.foot{text-align:center;font-size:11px;color:var(--gr);margin-top:24px}
+.spin{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--nav);border-radius:50%;animation:sp 1s linear infinite;margin:40px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login">
+  <div class="box">
+    <div class="logo">
+      <div class="t">FERIA DEL LITORAL</div>
+      <div class="s">Mi Local</div>
+    </div>
+    <h1>Consultá tu estado de cuenta</h1>
+    <label>Número de local</label>
+    <input id="inLocal" type="tel" inputmode="numeric" placeholder="Ej: 12" autocomplete="off">
+    <label>Clave</label>
+    <input id="inClave" type="password" inputmode="numeric" placeholder="Tu clave" autocomplete="off">
+    <label class="chk"><input type="checkbox" id="inRecordar" checked> Recordar en este celular</label>
+    <button class="btn pri" id="btnEntrar" onclick="entrar()">Entrar</button>
+    <div id="loginErr" class="err hidden"></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" class="hidden">
+  <div class="top">
+    <div class="row">
+      <div>
+        <div class="loc" id="tLocal">Local</div>
+        <div class="nom" id="tNombre"></div>
+        <div class="fecha" id="tFecha"></div>
+      </div>
+      <button class="salir" onclick="salir()">Salir</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div id="contenido"></div>
+    <div class="foot">Feria del Litoral · Santa Fe<br>Consulta de estado de cuenta<br>
+      <span id="footInst" style="display:none"><button onclick="instalarApp()" style="margin-top:10px;background:transparent;border:1px solid var(--bd);border-radius:20px;padding:9px 16px;font-size:12px;color:var(--nav);font-weight:600;cursor:pointer;font-family:inherit">📲 Instalar en mi celular</button></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL PRODUCTO ============ -->
+<div id="prodModal" style="position:fixed;inset:0;z-index:250;background:rgba(8,15,30,.7);display:none;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;width:100%;max-width:560px;max-height:94vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-weight:800;font-size:18px;color:#0a1628" id="pmTitle">Nuevo producto</div>
+      <button onclick="cerrarFormProducto()" style="background:#f1f5f9;border:none;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <input type="hidden" id="pmId">
+    <div id="pmFotoWrap" style="width:100%;padding:20px;border:2px dashed #cbd5e1;border-radius:14px;background:#f8fafc;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:14px;cursor:pointer;text-align:center" onclick="document.getElementById('pmFile').click()">📷 Tocá para agregar fotos (podés varias)</div>
+    <input type="file" id="pmFile" accept="image/*" multiple style="display:none" onchange="previewFotoProducto(this)">
+    <div id="pmThumbs" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"></div>
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:12px">Título *</label>
+    <input id="pmTitulo" type="text" placeholder="Ej: Remera oversize algodón" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px">
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:10px">Precio</label>
+    <input id="pmPrecio" type="tel" inputmode="numeric" placeholder="Ej: 15000" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px">
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:10px">Precio anterior <span style="font-weight:400;color:#94a3b8">(opcional — muestra el descuento)</span></label>
+    <input id="pmPrecioAntes" type="tel" inputmode="numeric" placeholder="Ej: 20000" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px">
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:10px">Talles / variantes (opcional)</label>
+    <input id="pmTalles" type="text" placeholder="Ej: S, M, L, XL" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px">
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:10px">Descripción (opcional)</label>
+    <textarea id="pmDesc" rows="3" placeholder="Colores, material, detalles..." style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px;font-family:inherit;resize:vertical"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <div style="flex:1"><label style="font-size:12px;color:#64748b;font-weight:600">Categoría</label><select id="pmCat" onchange="pmCargarSubs()" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;margin-top:3px"></select></div>
+      <div style="flex:1"><label style="font-size:12px;color:#64748b;font-weight:600">Subcategoría</label><select id="pmSub" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;margin-top:3px"></select></div>
+    </div>
+    <label style="display:flex;align-items:center;gap:9px;margin-top:12px;font-size:14px;color:#334155;cursor:pointer;font-weight:600"><input type="checkbox" id="pmDestacado" style="width:18px;height:18px"> ⭐ Destacar (aparece primero en tu tienda)</label>
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:12px">Stock</label>
+    <select id="pmStock" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;margin-top:3px">
+      <option value="DISPONIBLE">Disponible</option>
+      <option value="ULTIMAS">🔥 ¡Últimas unidades!</option>
+      <option value="AGOTADO">Agotado (no se puede pedir)</option>
+    </select>
+    <div id="pmMsg" style="font-size:13px;text-align:center;margin-top:10px"></div>
+    <button class="btn pri" id="pmSave" style="margin-top:12px" onclick="guardarProducto()">Guardar producto</button>
+  </div>
+</div>
+
+<!-- ============ MODAL PERSONALIZAR TIENDA ============ -->
+<div id="cfgModal" style="position:fixed;inset:0;z-index:250;background:rgba(8,15,30,.7);display:none;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;width:100%;max-width:560px;max-height:94vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="font-weight:800;font-size:18px;color:#0a1628">🎨 Personalizar mi página</div>
+      <button onclick="cerrarConfigTienda()" style="background:#f1f5f9;border:none;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:12px">Así se ve tu tienda para los clientes. Ponele tu marca.</div>
+    <div id="cfgPortadaWrap" style="width:100%;aspect-ratio:16/7;border:2px dashed #cbd5e1;border-radius:14px;background:#f8fafc center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:14px;cursor:pointer;text-align:center;overflow:hidden" onclick="document.getElementById('cfgFile').click()">🖼️ Foto de portada (opcional)</div>
+    <input type="file" id="cfgFile" accept="image/*" style="display:none" onchange="previewPortada(this)">
+    <div style="display:flex;align-items:center;gap:12px;margin-top:12px">
+      <div id="cfgLogoWrap" style="width:74px;height:74px;flex:0 0 74px;border:2px dashed #cbd5e1;border-radius:14px;background:#f8fafc center/contain no-repeat;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:22px;cursor:pointer;overflow:hidden" onclick="document.getElementById('cfgLogoFile').click()">🅰️</div>
+      <div style="flex:1"><div style="font-size:12px;color:#64748b">Tu <b>logo</b> (opcional). Aparece arriba de tu tienda. Cuadrado se ve mejor.</div>
+      <button type="button" id="cfgLogoQuitar" onclick="quitarLogo()" style="display:none;margin-top:6px;background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer">🗑️ Sacar logo</button></div>
+    </div>
+    <input type="file" id="cfgLogoFile" accept="image/*" style="display:none" onchange="previewLogo(this)">
+    <label style="display:flex;align-items:center;gap:9px;font-size:14px;color:#0a1628;cursor:pointer;font-weight:600;margin-top:12px"><input type="checkbox" id="cfgMostrarNombre" style="width:18px;height:18px"> Mostrar el nombre arriba <span style="font-weight:400;color:#94a3b8;font-size:12px">(destildá si tu portada o logo ya lo tiene)</span></label>
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:12px">Nombre de tu tienda</label>
+    <input id="cfgTitulo" type="text" maxlength="60" placeholder="Ej: Indumentaria Sofía" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px">
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:10px">Descripción corta</label>
+    <textarea id="cfgDesc" rows="2" maxlength="300" placeholder="Ej: Ropa urbana y accesorios. Envíos a todo Santa Fe." style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;margin-top:4px;font-family:inherit;resize:vertical"></textarea>
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:12px">Color de tu tienda</label>
+    <div id="cfgSwatches" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px"></div>
+    <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:12px">Velocidad del carrusel grande</label>
+    <select id="cfgCarrusel" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;margin-top:3px">
+      <option value="0">No pasa solo (lo mueve el cliente)</option>
+      <option value="2">Rápido (2 s)</option>
+      <option value="3">3 s</option>
+      <option value="3.8">Normal (3,8 s)</option>
+      <option value="5">Lento (5 s)</option>
+      <option value="7">Muy lento (7 s)</option>
+    </select>
+
+    <div style="border-top:1px solid #e2e8f0;margin:16px 0 4px;padding-top:14px">
+      <label style="display:flex;align-items:center;gap:9px;font-size:15px;color:#0a1628;cursor:pointer;font-weight:700"><input type="checkbox" id="cfgEntOn" style="width:18px;height:18px"> 🛵 Mostrar “Entregas en el día”</label>
+      <div id="cfgEntBox" style="margin-top:10px">
+        <label style="font-size:13px;color:#64748b;font-weight:600;display:block">Título</label>
+        <input id="cfgEntTit" type="text" maxlength="40" placeholder="ENTREGAS EN EL DÍA" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:3px">
+        <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:8px">Texto</label>
+        <input id="cfgEntSub" type="text" maxlength="160" placeholder="Elegís, comprás por WhatsApp y te lo llevamos el mismo día." style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:3px">
+        <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:8px">Días que hacés entregas</label>
+        <div id="cfgDias" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:5px"></div>
+        <label style="font-size:13px;color:#64748b;font-weight:600;display:block;margin-top:8px">Comprando antes de las…</label>
+        <select id="cfgCorte" style="padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;margin-top:3px"></select>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid #e2e8f0;margin:12px 0 4px;padding-top:14px">
+      <label style="font-size:14px;color:#0a1628;font-weight:700;display:block">Beneficios (chips)</label>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:6px">Dejá vacío el que no quieras mostrar.</div>
+      <input id="cfgChip1" type="text" maxlength="60" placeholder="🛵 Envío en el día" style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:4px">
+      <input id="cfgChip2" type="text" maxlength="60" placeholder="💬 Te atendemos al toque" style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:6px">
+      <input id="cfgChip3" type="text" maxlength="60" placeholder="📍 Retiro en el local" style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:6px">
+      <input id="cfgChip4" type="text" maxlength="60" placeholder="🔒 Comprá con confianza" style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:6px">
+    </div>
+
+    <div style="border-top:1px solid #e2e8f0;margin:12px 0 4px;padding-top:14px">
+      <label style="font-size:14px;color:#0a1628;font-weight:700;display:block">Cierre de la página</label>
+      <input id="cfgCierreTit" type="text" maxlength="50" placeholder="¿Alguna duda? 👋" style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:6px">
+      <input id="cfgCierreSub" type="text" maxlength="160" placeholder="Escribinos y te ayudamos a elegir." style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;margin-top:6px">
+    </div>
+
+    <div style="border-top:1px solid #e2e8f0;margin:12px 0 4px;padding-top:14px">
+      <label style="font-size:14px;color:#0a1628;font-weight:700;display:block">Formas de pago (opcional)</label>
+      <div style="font-size:12px;color:#94a3b8;margin-bottom:6px">Ej: Efectivo, transferencia, Mercado Pago, 3 cuotas…</div>
+      <textarea id="cfgFormasPago" rows="2" maxlength="200" placeholder="Efectivo · Transferencia · Mercado Pago" style="width:100%;padding:9px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px;box-sizing:border-box;font-family:inherit;resize:vertical"></textarea>
+    </div>
+
+    <div id="cfgMsg" style="font-size:13px;text-align:center;margin-top:10px"></div>
+    <button class="btn pri" id="cfgSave" style="margin-top:12px" onclick="guardarConfigTienda()">Guardar mi página</button>
+  </div>
+</div>
+
+<div id="catModal" style="position:fixed;inset:0;z-index:260;background:rgba(8,15,30,.7);display:none;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;width:100%;max-width:560px;max-height:94vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="font-weight:800;font-size:18px;color:#0a1628">🗂️ Categorías</div>
+      <button onclick="cerrarCategorias()" style="background:#f1f5f9;border:none;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:12px">Creá tus categorías (ej: Remeras) y adentro subcategorías (ej: Oversize). Después las elegís al cargar cada producto.</div>
+    <div style="display:flex;gap:8px">
+      <input id="catNueva" type="text" maxlength="40" placeholder="Nueva categoría" style="flex:1;padding:10px;border:1px solid #cbd5e1;border-radius:10px;font-size:14px">
+      <button onclick="crearCat('')" style="background:var(--nav);color:#fff;border:none;border-radius:10px;padding:0 16px;font-weight:700;cursor:pointer">Agregar</button>
+    </div>
+    <div id="catLista" style="margin-top:14px"></div>
+    <div id="catMsg" style="font-size:13px;text-align:center;margin-top:10px"></div>
+  </div>
+</div>
+
+<script>
+// ======== CONFIG (editá esto Roberto) ========
+const CONFIG = {
+  API: 'https://script.google.com/macros/s/AKfycbxc2TXvwKC60sBrIUXEdTMRMlCFC1syCQfyPMXr2esqG9XPvHFLX6UWu-HM17lKrOFM/exec',
+  // Poné el número de WhatsApp de la administración (con código país, sin + ni espacios). Ej: 5493425123456
+  WHATSAPP_ADMIN: '5493426111612',
+  // Links extra que quieras mostrar. Dejá la lista vacía [] si no querés ninguno.
+  // Cada uno: { ico:'emoji', txt:'Texto', url:'https://...' }
+  LINKS: [
+    // { ico:'📄', txt:'Reglamento interno', url:'https://...' },
+    // { ico:'📸', txt:'Instagram de la feria', url:'https://instagram.com/...' },
+  ]
+};
+
+const $ = id => document.getElementById(id);
+function money(n){ n=Number(n)||0; const neg=n<0; n=Math.abs(Math.round(n)); return (neg?'-$':'$')+n.toLocaleString('es-AR'); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function parseFecha(s){ try{ const p=String(s).split(' ')[0].split('/'); if(p.length<3) return null; return new Date(+p[2], +p[1]-1, +p[0]); }catch(e){ return null; } }
+function mesDe(s){ return String(s).split(' ')[0].split('/').slice(1).join('/'); } // 'MM/yyyy'
+function rowPago(p){
+  var badge = (p.concepto && p.concepto!=='Alquiler') ? `<span style="font-size:10px;background:#fef3c7;color:#92400e;padding:1px 7px;border-radius:7px;font-weight:800;margin-left:7px;vertical-align:middle">${esc(p.concepto)}</span>` : '';
+  var det = p.detalle ? `<div class="m" style="font-size:11px;color:#94a3b8">${esc(p.detalle)}</div>` : '';
+  return `<div class="mov"><div><div class="f">${esc(p.fecha)}${badge}</div><div class="m">${esc(p.metodo||'')}</div>${det}</div><div class="a money">${money(p.monto)}</div></div>`;
+}
+
+let SES = {}; // sesión actual (num + clave) para acciones que escriben
+let TIENDA = null; // datos de la tienda del local (si está habilitada)
+let PM_ITEMS = []; // fotos en orden: {type:'keep',id} o {type:'new',base64,mime}
+
+async function portalGet(accion, params={}){
+  const url = new URL(CONFIG.API);
+  url.searchParams.set('accion', accion);
+  Object.keys(params).forEach(k=>url.searchParams.set(k, params[k]));
+  const r = await fetch(url.toString());
+  return await r.json();
+}
+async function portalPost(accion, body={}){
+  const r = await fetch(CONFIG.API, {method:'POST', headers:{'Content-Type':'text/plain'}, body:JSON.stringify(Object.assign({accion}, body))});
+  return await r.json();
+}
+async function recargar(){
+  if(!SES.num) return;
+  try{ const d = await portalGet('portal_local', {num:SES.num, clave:SES.clave}); if(d && d.ok) mostrar(d); }catch(e){}
+}
+
+// ======== LOGIN ========
+async function entrar(){
+  const local = $('inLocal').value.trim();
+  const clave = $('inClave').value.trim();
+  const err = $('loginErr');
+  err.classList.add('hidden');
+  if(!local || !clave){ err.textContent='Completá tu número de local y tu clave.'; err.classList.remove('hidden'); return; }
+  const btn = $('btnEntrar'); btn.disabled=true; btn.textContent='Entrando...';
+  try{
+    const d = await portalGet('portal_local', {num:local, clave:clave});
+    if(d && d.ok){
+      SES = {num:local, clave:clave};
+      if($('inRecordar').checked){
+        try{ localStorage.setItem('milocal', JSON.stringify({local, clave})); }catch(e){}
+      } else { try{ localStorage.removeItem('milocal'); }catch(e){} }
+      mostrar(d);
+    } else {
+      err.textContent = (d && d.error) || 'No pude entrar. Revisá los datos.';
+      err.classList.remove('hidden');
+    }
+  }catch(e){
+    err.textContent='Sin conexión. Probá de nuevo.'; err.classList.remove('hidden');
+  }
+  btn.disabled=false; btn.textContent='Entrar';
+}
+
+function salir(){
+  try{ localStorage.removeItem('milocal'); }catch(e){}
+  $('app').classList.add('hidden');
+  $('login').classList.remove('hidden');
+  $('inClave').value='';
+}
+
+// ======== RENDER ESTADO ========
+function mostrar(d){
+  $('login').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  $('tLocal').textContent = 'Local '+d.local;
+  $('tNombre').textContent = d.nombre || '';
+  $('tFecha').textContent = 'Al '+d.fecha;
+  TIENDA = d.tienda || null;
+
+  const debe = d.deuda_combinada > 0;
+  let html = '';
+
+  // ── Rubro autorizado (lo PRIMERO que ven al abrir) ──
+  var _rubs=(d.rubros&&d.rubros.length)?d.rubros:(d.rubro?[d.rubro]:[]);
+  if(_rubs.length){
+    html += `<div style="margin:14px 4px 0;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:14px;padding:14px 16px">
+      <div style="font-size:12px;color:#047857;font-weight:700;text-transform:uppercase;letter-spacing:.5px">🏷️ ${_rubs.length>1?'Tus rubros habilitados':'Tu rubro habilitado'}</div>
+      <div style="font-size:18px;font-weight:800;color:#065f46;margin-top:2px">${_rubs.map(esc).join(' · ')}</div>
+      ${d.rubro_detalle?`<div style="font-size:13px;color:#047857;margin-top:4px">${esc(d.rubro_detalle)}</div>`:''}
+      <div style="font-size:12px;color:#059669;margin-top:6px">Es lo que estás autorizado a vender según tu contrato.</div>
+    </div>`;
+  }
+
+  // ── Cuenta regresiva hasta el 10 (sin intereses) ──
+  if(debe){
+    const diaHoy = new Date().getDate();
+    const limite = 10;
+    if(diaHoy <= limite){
+      const faltan = limite - diaHoy;
+      const urgente = faltan <= 3;
+      const txt = faltan===0 ? 'Hoy es el último día para pagar sin intereses'
+                : (faltan===1 ? 'Te queda 1 día para pagar sin intereses'
+                : 'Te quedan '+faltan+' días para pagar sin intereses');
+      html += `<div style="margin:14px 4px 0;background:${urgente?'#fff7ed':'#f8fafc'};border:1px solid ${urgente?'#fdba74':'var(--bd)'};border-left:4px solid ${urgente?'#f97316':'#94a3b8'};border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px">
+        <div style="font-size:24px">${urgente?'⏰':'🗓️'}</div>
+        <div><div style="font-weight:700;font-size:14px;color:${urgente?'#9a3412':'var(--nav)'}">${txt}</div>
+        <div style="font-size:12px;color:var(--gr);margin-top:2px">El vencimiento es el día ${limite} de cada mes.</div></div>
+      </div>`;
+    } else {
+      html += `<div style="margin:14px 4px 0;background:#fef2f2;border:1px solid #fecaca;border-left:4px solid var(--co);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px">
+        <div style="font-size:24px">⚠️</div>
+        <div><div style="font-weight:700;font-size:14px;color:#991b1b">Pasó la fecha de vencimiento</div>
+        <div style="font-size:12px;color:var(--gr);margin-top:2px">A partir del día 10 se aplican intereses. Cualquier duda, escribinos.</div></div>
+      </div>`;
+    }
+  }
+
+  // ── Estado del último comprobante enviado ──
+  if(d.comprobantes && d.comprobantes.length){
+    const u = d.comprobantes[0];
+    const est = String(u.estado||'PENDIENTE').toUpperCase();
+    const ap = est==='APROBADO', rech = est==='RECHAZADO';
+    const col = ap?'var(--ve)':(rech?'var(--co)':'#f59e0b');
+    const bg  = ap?'#f0fdf4':(rech?'#fef2f2':'#fffbeb');
+    const bd  = ap?'#bbf7d0':(rech?'#fecaca':'#fde68a');
+    const ico = ap?'✅':(rech?'❌':'⏳');
+    const tit = ap?'¡Comprobante aprobado!':(rech?'Comprobante rechazado':'Comprobante recibido');
+    const sub = ap?'La administración ya lo revisó y confirmó. ¡Gracias!'
+              :(rech?'Hubo un problema. Escribinos por WhatsApp así lo vemos.'
+              :'Lo estamos revisando. Te avisamos por acá cuando lo confirmemos.');
+    html += `<div style="margin:10px 4px 0;background:${bg};border:1px solid ${bd};border-left:4px solid ${col};border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px">
+      <div style="font-size:24px">${ico}</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:${col}">${tit}</div>
+      <div style="font-size:12px;color:var(--gr);margin-top:2px">${sub}</div>
+      <div style="font-size:11px;color:var(--gr);margin-top:3px">Enviado el ${esc(u.fecha)}</div></div>
+    </div>`;
+  }
+
+  // ── Tu promo: gancho de ventas, bien arriba ──
+  if(d.promo){
+    html += `<div style="margin:10px 4px 0;background:#f0fdf4;border:1px solid #bbf7d0;border-left:4px solid var(--ve);border-radius:12px;padding:13px 15px;display:flex;align-items:center;gap:12px">
+      <div style="font-size:24px">🤖</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:14px;color:var(--ve)">Tu promo está activa</div>
+      <div style="font-size:12px;color:var(--gr);margin-top:2px">Lito se la está ofreciendo a los clientes de la feria. ¡Mantenela fresca para vender más!</div></div>
+    </div>`;
+  } else {
+    html += `<div onclick="irAPromo()" style="cursor:pointer;margin:10px 4px 0;background:linear-gradient(135deg,#0a1628,#1f3a6b);border-radius:14px;padding:16px;color:#fff;display:flex;align-items:center;gap:12px;box-shadow:0 6px 18px rgba(10,22,40,.25)">
+      <div style="font-size:28px">📣</div>
+      <div style="flex:1"><div style="font-weight:700;font-size:15px;color:var(--do)">¿Querés vender más?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:3px">Cargá tu promo y <b>Lito</b>, el asistente de la feria, se la va a recomendar a los clientes que pregunten. Es gratis y te lleva 30 segundos.</div>
+      <div style="font-size:12px;color:var(--do);font-weight:700;margin-top:6px">Cargar mi promo ›</div></div>
+    </div>`;
+  }
+
+  // ── Mi tienda online (solo si Roberto la habilitó como premio) ──
+  if(d.tienda && d.tienda.autorizado){
+    const t=d.tienda; const prods=t.productos||[];
+    const tiendaUrl = location.origin + '/l/' + d.local;
+    html += `<div class="sec" id="secTienda"><div class="sec-t">🛍️ Mi tienda online</div>
+      <div class="pay">
+        <div style="background:linear-gradient(135deg,#0a1628,#1f3a6b);border-radius:12px;padding:13px 15px;color:#fff;margin-bottom:12px">
+          <div style="font-weight:800;color:var(--do);font-size:15px">¡Tenés la tienda habilitada! 🎉</div>
+          <div style="font-size:12.5px;color:rgba(255,255,255,.85);margin-top:3px">Subí tus productos con foto y precio. Los clientes los ven y te escriben directo por WhatsApp.${t.visitas>0?` <b style="color:var(--do)">Ya la visitaron ${t.visitas} ${t.visitas===1?'vez':'veces'}.</b>`:''}</div>
+          <div style="font-size:12px;color:var(--do);margin-top:6px;font-weight:600">🤖 Lo que subís acá, Lito ya lo ofrece solo — no hace falta cargar promo aparte.</div>
+        </div>
+        <label style="font-size:13px;color:var(--gr);font-weight:600">Tu WhatsApp de ventas (donde te escriben los clientes)</label>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <input id="tiWa" type="tel" inputmode="numeric" value="${esc(t.whatsapp||'')}" placeholder="Ej: 3426123456" style="flex:1;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;min-width:0">
+          <button class="btn pri" style="margin:0;width:auto;padding:0 16px" onclick="guardarWhatsappTienda()">Guardar</button>
+        </div>
+        <div style="font-size:11px;color:var(--gr);margin-top:4px">Con característica, sin 0 ni 15. Ahí te llegan las consultas.</div>
+        <div id="tiWaMsg" style="font-size:12px;text-align:center;margin-top:6px"></div>
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <a href="${esc(tiendaUrl)}" target="_blank" style="flex:1;margin:0;text-align:center;text-decoration:none;background:#fff;border:1px solid var(--bd);color:var(--nav);padding:11px;border-radius:10px;font-weight:600">👁️ Ver mi tienda</a>
+          <button onclick="compartirTienda('${esc(tiendaUrl)}')" style="flex:1;margin:0;background:#fff;border:1px solid var(--bd);color:var(--nav);padding:11px;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit">📤 Compartir</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <div style="flex:1;text-align:center;background:#f8fafc;border:1px solid var(--bd);border-radius:10px;padding:8px"><div style="font-size:18px;font-weight:800;color:var(--nav)">${t.visitas||0}</div><div style="font-size:11px;color:var(--gr)">Visitas</div></div>
+          <div style="flex:1;text-align:center;background:#f8fafc;border:1px solid var(--bd);border-radius:10px;padding:8px"><div style="font-size:18px;font-weight:800;color:var(--nav)">${t.pedidos||0}</div><div style="font-size:11px;color:var(--gr)">Pedidos</div></div>
+          <div style="flex:1;text-align:center;background:#f8fafc;border:1px solid var(--bd);border-radius:10px;padding:8px"><div style="font-size:18px;font-weight:800;color:var(--nav)">${prods.length}</div><div style="font-size:11px;color:var(--gr)">Productos</div></div>
+        </div>
+        <button style="margin-top:10px;width:100%;background:#fff;border:1px solid var(--bd);color:var(--nav);padding:11px;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit" onclick="mostrarQR('${esc(tiendaUrl)}')">📱 QR para imprimir y pegar en el local</button>
+        <button style="margin-top:10px;width:100%;background:#fff;border:1px solid var(--bd);color:var(--nav);padding:11px;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit" onclick="abrirConfigTienda()">🎨 Personalizar mi página</button>
+        <button style="margin-top:10px;width:100%;background:#fff;border:1px solid var(--bd);color:var(--nav);padding:11px;border-radius:10px;font-weight:600;cursor:pointer;font-family:inherit" onclick="abrirCategorias()">🗂️ Categorías</button>
+        <button class="btn gold" style="margin-top:10px" onclick="abrirFormProducto('')">➕ Agregar producto</button>
+        <div style="margin-top:14px">
+          <div style="font-size:12px;color:var(--gr);font-weight:600;margin-bottom:8px">Mis productos (${prods.length})</div>
+          ${prods.length? prods.map(p=>`
+            <div style="display:flex;gap:10px;align-items:center;padding:8px;border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;${p.estado==='PAUSADO'?'opacity:.55':''}">
+              <div style="width:52px;height:52px;border-radius:8px;flex-shrink:0;background:#e9eef5 center/cover no-repeat;${p.foto_url?`background-image:url('${esc(p.foto_url)}');`:''}display:flex;align-items:center;justify-content:center;color:#b8c2d0">${p.foto_url?'':'🖼️'}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:700;font-size:14px;color:var(--nav);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.titulo)}</div>
+                <div style="font-size:13px;color:var(--nav);font-weight:600">${p.precio>0?money(p.precio):''}${p.estado==='PAUSADO'?' <span style="font-size:11px;color:var(--co)">· pausado</span>':''}</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <button onclick="moverProducto('${p.id}',-1)" style="background:#eef2f7;border:none;border-radius:8px;padding:3px 9px;font-size:12px;cursor:pointer" title="Subir">▲</button>
+                <button onclick="moverProducto('${p.id}',1)" style="background:#eef2f7;border:none;border-radius:8px;padding:3px 9px;font-size:12px;cursor:pointer" title="Bajar">▼</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <button onclick="abrirFormProducto('${p.id}')" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer">✏️</button>
+                <button onclick="pausarProducto('${p.id}','${p.estado==='PAUSADO'?'ACTIVO':'PAUSADO'}')" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer">${p.estado==='PAUSADO'?'▶️':'⏸️'}</button>
+                <button onclick="borrarProducto('${p.id}')" style="background:#fef2f2;border:none;border-radius:8px;padding:6px 9px;font-size:13px;cursor:pointer">🗑️</button>
+              </div>
+            </div>`).join('') : `<div style="font-size:13px;color:var(--gr);text-align:center;padding:16px 0">Todavía no cargaste productos. Tocá "Agregar producto" y subí el primero.</div>`}
+        </div>
+        <details style="margin-top:14px;border-top:1px solid #eef2f7;padding-top:12px">
+          <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--nav);list-style:none">💡 Cómo vender y enviar (consejos)</summary>
+          <div style="margin-top:10px;font-size:13px;color:#334155;line-height:1.5">
+            <div style="font-weight:700;color:var(--nav);margin-bottom:2px">💵 Cómo cobrar (antes de enviar)</div>
+            <div style="margin-bottom:10px">Cobrá <b>por adelantado</b>: transferencia a tu alias o link de Mercado Pago / MODO. No mandes sin cobrar, así no fiás ni te cancelan. Para pedidos grandes, pedí una <b>seña del 50%</b> y el resto al recibir. Si el cliente pasa a retirar, podés cobrar en efectivo.</div>
+            <div style="font-weight:700;color:var(--nav);margin-bottom:2px">📦 Cómo enviar (Uber / cadetería)</div>
+            <div style="margin-bottom:10px">En Santa Fe: <b>Uber Flete</b> o <b>Uber Moto</b> desde la app (poné retiro en la feria y el destino del cliente), o una moto/cadetería de confianza. El <b>envío lo paga el cliente</b>: sumalo al total antes de despachar, o que él pida el Uber y vos le entregás el paquete. Etiquetá con nombre y teléfono del cliente y <b>sacale una foto al paquete</b> antes de mandarlo.</div>
+            <div style="font-weight:700;color:var(--nav);margin-bottom:2px">🕒 En qué horario</div>
+            <div style="margin-bottom:10px">Acordá una <b>franja, no un horario exacto</b> (ej: "entre las 15 y las 18"). Evitá el mediodía (13 a 15) y el horario de cierre: la media tarde es lo más seguro para que haya alguien. Ofrecé siempre <b>retiro en el local</b> como opción sin costo.</div>
+            <div style="font-weight:700;color:var(--nav);margin-bottom:2px">🚀 Para vender más</div>
+            <div>Contestá <b>rápido</b> (la venta se enfría en minutos), poné fotos reales con buena luz y precio visible, y confirmá que tenés el producto antes de cobrar.</div>
+          </div>
+        </details>
+      </div></div>`;
+  }
+
+  // AVISOS: la última arriba; las anteriores se archivan abajo de todo (últimos 90 días)
+  let avisosArchivadosHtml = '';
+  if(d.avisos && d.avisos.length){
+    let vistos={};
+    try{ vistos = JSON.parse(localStorage.getItem('avisos_vistos_'+d.local)||'{}'); }catch(e){}
+    const ult = d.avisos[0]; // el más nuevo
+    const esNuevo = !vistos[ult.id];
+    html += `<div class="sec" style="margin-top:16px"><div class="sec-t">📣 Aviso de la feria${esNuevo?` <span style="background:var(--co);color:#fff;border-radius:10px;padding:1px 8px;font-size:11px;margin-left:4px">nuevo</span>`:''}</div>`;
+    html += `<div style="background:#fff;border:1px solid ${esNuevo?'#fcd34d':'var(--bd)'};border-left:4px solid ${esNuevo?'#f59e0b':'#cbd5e1'};border-radius:12px;padding:13px 15px">
+      ${ult.titulo?`<div style="font-weight:700;font-size:15px;color:var(--nav);margin-bottom:3px">${esNuevo?'🔔 ':''}${esc(ult.titulo)}</div>`:''}
+      <div style="font-size:14px;color:#334155;white-space:pre-wrap">${!ult.titulo&&esNuevo?'🔔 ':''}${esc(ult.mensaje)}</div>
+      <div style="font-size:11px;color:var(--gr);margin-top:6px">${esc(ult.fecha)}</div>
+    </div></div>`;
+    // anteriores (de los últimos 90 días) → archivadas abajo de todo
+    const viejos = d.avisos.slice(1).filter(a=>{ const dt=parseFecha(a.fecha); return !dt || (Date.now()-dt.getTime()) < 90*24*3600*1000; });
+    if(viejos.length){
+      avisosArchivadosHtml = `<div class="sec"><details><summary style="cursor:pointer;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;color:var(--gr);list-style:none;padding:6px 8px">📁 Avisos anteriores (${viejos.length})</summary><div style="margin-top:10px">`
+        + viejos.map(a=>`<div style="background:#f8fafc;border:1px solid var(--bd);border-radius:10px;padding:11px 13px;margin-bottom:8px">
+            ${a.titulo?`<div style="font-weight:600;font-size:14px;color:var(--nav);margin-bottom:3px">${esc(a.titulo)}</div>`:''}
+            <div style="font-size:13px;color:#475569;white-space:pre-wrap">${esc(a.mensaje)}</div>
+            <div style="font-size:11px;color:var(--gr);margin-top:5px">${esc(a.fecha)}</div></div>`).join('')
+        + `</div></details></div>`;
+    }
+    try{ const nv={}; d.avisos.forEach(a=>nv[a.id]=1); localStorage.setItem('avisos_vistos_'+d.local, JSON.stringify(nv)); }catch(e){}
+  }
+
+  // HERO estado
+  if(debe){
+    html += `<div class="hero debe">
+      <div class="lbl">Tu saldo a pagar</div>
+      <div class="big money">${money(d.deuda_combinada)}</div>
+      <div class="sub">Alquileres ${money(d.deuda_total)}${d.extra.total>0?' + otros conceptos '+money(d.extra.total):''}</div>
+    </div>`;
+  } else {
+    html += `<div class="hero ok">
+      <div class="lbl">Estado</div>
+      <div class="big">✓ AL DÍA</div>
+      ${d.a_favor>0?`<div class="favor">Tenés ${money(d.a_favor)} a favor</div>`:`<div class="sub">No tenés deuda pendiente. ¡Gracias!</div>`}
+    </div>`;
+  }
+
+  // Detalle del mes
+  html += `<div class="sec"><div class="sec-t">Detalle del mes</div><div class="grid">
+    <div class="kc"><div class="k">Alquiler del mes</div><div class="v money">${money(d.alquiler)}</div></div>
+    <div class="kc"><div class="k">Pagaste este mes</div><div class="v money">${money(d.pagado)}</div></div>
+    <div class="kc ${d.deuda>0?'rojo':''}"><div class="k">Deuda del mes</div><div class="v money">${d.deuda<0?'A favor '+money(Math.abs(d.deuda)):money(d.deuda)}</div></div>
+    <div class="kc ${(d.mora_saldo!=null?d.mora_saldo:d.mora)>0?'rojo':''}"><div class="k">Mora (meses ant.)</div><div class="v money">${(d.mora_original>0 && d.mora_original>(d.mora_saldo!=null?d.mora_saldo:d.mora)) ? `<span style="text-decoration:line-through;color:#94a3b8;font-size:.8em;font-weight:600">${money(d.mora_original)}</span> ${money(d.mora_saldo!=null?d.mora_saldo:d.mora)}` : money(d.mora_saldo!=null?d.mora_saldo:d.mora)}</div></div>
+    ${d.intereses>0?`<div class="kc rojo"><div class="k">Intereses</div><div class="v money">${money(d.intereses)}</div></div>`:''}
+    <div class="kc total full"><div class="k">Total a pagar (alquileres)</div><div class="v money">${money(d.deuda_total)}</div></div>
+  </div></div>`;
+
+  // Otros conceptos (llave / expensas / multas)
+  if(d.extra && d.extra.total>0){
+    html += `<div class="sec"><div class="sec-t">Otros conceptos</div><div class="grid">
+      ${d.extra.llave>0?`<div class="kc"><div class="k">Llave</div><div class="v money">${money(d.extra.llave)}</div></div>`:''}
+      ${d.extra.expensas>0?`<div class="kc"><div class="k">Expensas</div><div class="v money">${money(d.extra.expensas)}</div></div>`:''}
+      ${d.extra.multas>0?`<div class="kc"><div class="k">Multas</div><div class="v money">${money(d.extra.multas)}</div></div>`:''}
+      <div class="kc total full"><div class="k">Total otros conceptos</div><div class="v money">${money(d.extra.total)}</div></div>
+    </div></div>`;
+  }
+
+  // Cómo pagar
+  if(d.alias){
+    html += `<div class="sec"><div class="sec-t">Cómo pagar</div>
+      <div class="pay">
+        <div style="font-size:13px;color:var(--gr)">Transferí al alias:</div>
+        <div class="alias-row"><span class="alias" id="aliasTxt">${esc(d.alias)}</span>
+        <button class="copy" id="btnCopy" onclick="copiarAlias()">Copiar</button></div>
+        <div style="font-size:12px;color:var(--gr);margin-top:10px">Después de transferir, guardá el comprobante por si te lo piden.</div>
+      </div></div>`;
+  }
+
+  // Subir comprobante de pago
+  html += `<div class="sec"><div class="sec-t">Subir comprobante</div>
+    <div class="pay">
+      <div style="font-size:13px;color:var(--gr);margin-bottom:10px">¿Ya transferiste? Subí la foto del comprobante y queda registrado.</div>
+      <input type="file" id="compFile" accept="image/*" style="display:none" onchange="subirComprobante(this)">
+      <button class="btn gold" style="margin-top:0" onclick="document.getElementById('compFile').click()">📎 Adjuntar comprobante (foto o galería)</button>
+      <div id="compEstado" style="font-size:13px;text-align:center;margin-top:10px"></div>
+      ${(d.comprobantes&&d.comprobantes.length)?`<div style="margin-top:12px">
+        <div style="font-size:12px;color:var(--gr);font-weight:600;margin-bottom:6px">Tus comprobantes subidos:</div>
+        ${d.comprobantes.map(c=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f1f5f9;font-size:13px">
+          <a href="${esc(c.url)}" target="_blank" style="color:var(--nav);font-weight:600;text-decoration:none">📄 ${esc(c.fecha)}</a>
+          <span style="font-size:11px;color:var(--gr)">${c.estado==='APROBADO'?'✅ '+esc(c.estado):'⏳ '+esc(c.estado||'PENDIENTE')}</span>
+        </div>`).join('')}
+      </div>`:''}
+    </div></div>`;
+
+  // Historial de pagos: mes vigente + desplegable con los anteriores
+  html += `<div class="sec"><div class="sec-t">Pagos de este mes</div>`;
+  if(d.pagos && d.pagos.length){
+    const mesAct = mesDe(d.fecha||'');
+    const orden = d.pagos.slice().reverse(); // más nuevos primero
+    const esteMes = orden.filter(p=> mesDe(p.fecha)===mesAct );
+    const anteriores = orden.filter(p=> mesDe(p.fecha)!==mesAct );
+    html += `<div class="movs">${ esteMes.length ? esteMes.map(rowPago).join('') : '<div class="empty">Todavía no registraste pagos este mes.</div>' }</div>`;
+    if(anteriores.length){
+      html += `<details style="margin-top:10px"><summary style="cursor:pointer;font-size:13px;color:var(--nav);font-weight:600;text-align:center;list-style:none;padding:8px">▾ Ver pagos anteriores (${anteriores.length})</summary><div class="movs" style="margin-top:8px">${anteriores.map(rowPago).join('')}</div></details>`;
+    }
+  } else {
+    html += `<div class="movs"><div class="empty">Todavía no hay pagos registrados.</div></div>`;
+  }
+  html += `</div>`;
+
+  // Mi promo (para Lito, la IA de la feria)
+  html += `<div class="sec" id="secPromo"><div class="sec-t">Mi promo · Vendé más con Lito 🤖</div>
+    <div class="pay">
+      ${d.promo?`<div style="font-size:13px;color:var(--ve);font-weight:700">✅ Tu promo está activa</div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;margin-top:6px;font-size:14px;color:#166534;white-space:pre-wrap">${esc(d.promo)}</div>
+        <div style="font-size:12px;color:var(--gr);margin-top:8px">💡 Cambiala seguido: las promos nuevas llaman más la atención de los clientes.</div>`
+      :`<div style="font-size:14px;color:#334155;font-weight:600">Cuando un cliente le pregunta a Lito qué hay en la feria, él recomienda los locales que tienen promo cargada.</div>
+        <div style="font-size:13px;color:var(--gr);margin-top:6px">Cargá la tuya y aparecé en esas recomendaciones. No cuesta nada.</div>`}
+      <textarea id="promoTxt" rows="2" placeholder="Ej: 2x1 en empanadas hasta el domingo" style="width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;box-sizing:border-box;font-family:inherit;resize:vertical;margin-top:10px"></textarea>
+      <div style="font-size:11px;color:var(--gr);margin-top:5px">💡 Las que mejor funcionan dicen <b>qué producto</b>, <b>qué beneficio</b> y <b>hasta cuándo</b>.</div>
+      <button class="btn pri" style="margin-top:8px" onclick="enviarPromo()">${d.promo?'Cambiar mi promo':'🚀 Cargar mi promo'}</button>
+      <div id="promoEstado" style="font-size:13px;text-align:center;margin-top:8px"></div>
+    </div></div>`;
+
+  // Info general de la feria
+  if(d.info && d.info.length){
+    html += `<div class="sec"><div class="sec-t">Info de la feria</div>`;
+    html += d.info.map(it=>`<div style="background:#fff;border:1px solid var(--bd);border-radius:12px;padding:13px 15px;margin-bottom:8px">
+      ${it.titulo?`<div style="font-weight:700;font-size:14px;color:var(--nav);margin-bottom:3px">${esc(it.titulo)}</div>`:''}
+      <div style="font-size:13px;color:#334155;white-space:pre-wrap">${esc(it.texto)}</div>
+    </div>`).join('');
+    html += `</div>`;
+  }
+
+  let linksHtml = '';
+  if(CONFIG.WHATSAPP_ADMIN){
+    const msg = encodeURIComponent(`Hola, soy del Local ${d.local} (${d.nombre}). `);
+    linksHtml += `<a class="lk wa" href="https://wa.me/${CONFIG.WHATSAPP_ADMIN}?text=${msg}" target="_blank"><span class="ico">💬</span> Escribir a la administración <span class="ar">›</span></a>`;
+  }
+  (CONFIG.LINKS||[]).forEach(l=>{
+    if(l && l.url) linksHtml += `<a class="lk" href="${esc(l.url)}" target="_blank"><span class="ico">${esc(l.ico||'🔗')}</span> ${esc(l.txt||'Link')} <span class="ar">›</span></a>`;
+  });
+  if(linksHtml){
+    html += `<div class="sec"><div class="sec-t">Contacto y links</div><div class="links">${linksHtml}</div></div>`;
+  }
+
+  // Avisos anteriores, archivados abajo de todo
+  html += avisosArchivadosHtml;
+
+  const fi=$('footInst'); if(fi) fi.style.display = yaInstalada()? 'none' : 'inline';
+
+  $('contenido').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function copiarAlias(){
+  const t = $('aliasTxt').textContent;
+  const done = ()=>{ const b=$('btnCopy'); b.textContent='✓ Copiado'; b.classList.add('done'); setTimeout(()=>{b.textContent='Copiar';b.classList.remove('done');},1800); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done)); }
+  else fallbackCopy(t,done);
+}
+function fallbackCopy(t,cb){ const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); cb&&cb(); }
+
+// ======== SUBIR COMPROBANTE ========
+async function subirComprobante(input){
+  const file = input.files && input.files[0];
+  input.value='';
+  if(!file) return;
+  const est = $('compEstado');
+  est.style.color='var(--gr)'; est.textContent='Procesando imagen...';
+  try{
+    const img = await comprimirImagen(file, 1400, 0.7);
+    est.textContent='Subiendo... (aguantá unos segundos)';
+    const r = await portalPost('portal_subir_comprobante', {num:SES.num, clave:SES.clave, base64:img.base64, mime:img.mime});
+    if(r && r.ok){ est.style.color='var(--ve)'; est.textContent='✅ ¡Comprobante subido! Gracias.'; setTimeout(recargar, 1300); }
+    else { est.style.color='var(--co)'; est.textContent='No se pudo subir: '+((r&&r.error)||'error'); }
+  }catch(e){ est.style.color='var(--co)'; est.textContent='No se pudo procesar la imagen. Probá con otra foto.'; }
+}
+function comprimirImagen(file, maxLado, calidad){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        if(w>maxLado||h>maxLado){ if(w>h){ h=Math.round(h*maxLado/w); w=maxLado; } else { w=Math.round(w*maxLado/h); h=maxLado; } }
+        const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        const dataUrl=cv.toDataURL('image/jpeg', calidad);
+        resolve({base64:dataUrl.split(',')[1], mime:'image/jpeg'});
+      };
+      img.onerror=reject; img.src=e.target.result;
+    };
+    reader.onerror=reject; reader.readAsDataURL(file);
+  });
+}
+
+// ======== CARGAR PROMO ========
+function irAPromo(){
+  const s=document.getElementById('secPromo');
+  if(s){ s.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>{ const t=$('promoTxt'); if(t) t.focus(); }, 600); }
+}
+async function enviarPromo(){
+  const txt=($('promoTxt').value||'').trim();
+  const est=$('promoEstado');
+  if(!txt){ est.style.color='var(--co)'; est.textContent='Escribí tu promo.'; return; }
+  est.style.color='var(--gr)'; est.textContent='Enviando...';
+  const r=await portalPost('portal_cargar_promo', {num:SES.num, clave:SES.clave, texto:txt});
+  if(r && r.ok){ est.style.color='var(--ve)'; est.textContent='✅ ¡Promo cargada! Lito ya la puede ofrecer.'; setTimeout(recargar,1300); }
+  else { est.style.color='var(--co)'; est.textContent='No se pudo: '+((r&&r.error)||'error'); }
+}
+
+// ======== MI TIENDA ONLINE ========
+async function guardarWhatsappTienda(){
+  const wa=($('tiWa').value||'').replace(/[^\d]/g,'');
+  const m=$('tiWaMsg');
+  if(wa.length<8){ m.style.color='var(--co)'; m.textContent='Poné un WhatsApp válido (con característica, sin 0 ni 15).'; return; }
+  m.style.color='var(--gr)'; m.textContent='Guardando...';
+  const r=await portalPost('tienda_whatsapp',{num:SES.num,clave:SES.clave,whatsapp:wa});
+  if(r&&r.ok){ m.style.color='var(--ve)'; m.textContent='✅ WhatsApp guardado'; }
+  else { m.style.color='var(--co)'; m.textContent='No se pudo: '+((r&&r.error)||'error'); }
+}
+async function moverProducto(id, dir){
+  const arr=(TIENDA&&TIENDA.productos||[]).map(function(p){return p.id;});
+  const i=arr.indexOf(id); const j=i+dir; if(i<0||j<0||j>=arr.length) return;
+  arr[i]=arr[j]; arr[j]=id;
+  toast('Guardando orden...');
+  const r=await portalPost('tienda_orden_guardar',{num:SES.num,clave:SES.clave,orden:arr});
+  if(r&&r.ok){ recargar(); } else { toast('No se pudo mover','co'); }
+}
+function mostrarQR(url){
+  const qr='https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data='+encodeURIComponent(url);
+  let ov=document.getElementById('qrOverlay');
+  if(!ov){ ov=document.createElement('div'); ov.id='qrOverlay'; ov.style.cssText='position:fixed;inset:0;z-index:300;background:rgba(8,15,30,.8);display:flex;align-items:center;justify-content:center;padding:20px'; document.body.appendChild(ov); }
+  ov.innerHTML='<div style="background:#fff;border-radius:18px;padding:20px;max-width:340px;text-align:center">'+
+    '<div style="font-weight:800;color:#0a1628;font-size:16px;margin-bottom:4px">📱 QR de tu tienda</div>'+
+    '<div style="font-size:12px;color:#64748b;margin-bottom:12px">Imprimilo y pegalo en la vidriera o el mostrador. Los clientes lo escanean con la cámara y entran directo a tu tienda.</div>'+
+    '<img src="'+qr+'" style="width:100%;max-width:260px;border-radius:10px" alt="QR">'+
+    '<div style="display:flex;gap:8px;margin-top:14px">'+
+      '<a href="'+qr+'" download="mi-tienda-qr.png" target="_blank" style="flex:1;text-decoration:none;background:var(--nav);color:#fff;padding:11px;border-radius:10px;font-weight:700">⬇️ Descargar</a>'+
+      '<button onclick="document.getElementById(\'qrOverlay\').style.display=\'none\'" style="flex:1;background:#f1f5f9;border:none;padding:11px;border-radius:10px;font-weight:700;cursor:pointer">Cerrar</button>'+
+    '</div></div>';
+  ov.style.display='flex';
+  ov.onclick=function(e){ if(e.target===ov) ov.style.display='none'; };
+}
+function compartirTienda(url){
+  if(navigator.share){ navigator.share({title:'Mirá mi tienda online', url:url}).catch(()=>{}); }
+  else if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(()=>alert('Link copiado:\n'+url)).catch(()=>prompt('Copiá tu link:',url)); }
+  else prompt('Copiá tu link:',url);
+}
+let CFG_FOTO=null, CFG_COLOR='', CFG_LOGO=null, CFG_LOGO_QUITAR=false;
+const CFG_COLORES=['#111827','#0a1628','#7c3aed','#db2777','#dc2626','#ea580c','#16a34a','#0891b2','#4f46e5','#a16207'];
+function abrirConfigTienda(){
+  CFG_FOTO=null; CFG_LOGO=null;
+  const c=(TIENDA&&TIENDA.config)||{};
+  $('cfgTitulo').value=c.titulo||'';
+  $('cfgDesc').value=c.descripcion||'';
+  CFG_COLOR=c.color||'#111827';
+  const pw=$('cfgPortadaWrap');
+  if(c.portada_url){ pw.style.backgroundImage="url('"+c.portada_url+"')"; pw.textContent=''; }
+  else { pw.style.backgroundImage=''; pw.textContent='🖼️ Foto de portada (opcional)'; }
+  const lw=$('cfgLogoWrap');
+  if(lw){ if(c.logo_url){ lw.style.backgroundImage="url('"+c.logo_url+"')"; lw.textContent=''; } else { lw.style.backgroundImage=''; lw.textContent='🅰️'; } }
+  CFG_LOGO_QUITAR=false;
+  if($('cfgLogoQuitar')) $('cfgLogoQuitar').style.display = c.logo_url ? 'inline-block' : 'none';
+  if($('cfgMostrarNombre')) $('cfgMostrarNombre').checked = (c.mostrar_nombre!==false);
+  if($('cfgFormasPago')) $('cfgFormasPago').value = c.formas_pago||'';
+  pintarSwatches();
+  // Entregas
+  const on = c.entrega_on!==false;
+  $('cfgEntOn').checked = on;
+  $('cfgEntTit').value = c.entrega_tit||'';
+  $('cfgEntSub').value = c.entrega_sub||'';
+  const dias = (c.entrega_dias&&c.entrega_dias.length)?c.entrega_dias:[3,4,5,6,0];
+  const nombresDia=[['Lun',1],['Mar',2],['Mié',3],['Jue',4],['Vie',5],['Sáb',6],['Dom',0]];
+  $('cfgDias').innerHTML = nombresDia.map(function(d){ const sel=dias.indexOf(d[1])>=0; return '<label style="display:flex;align-items:center;gap:5px;background:'+(sel?'#dcfce7':'#f1f5f9')+';border:1px solid '+(sel?'#86efac':'#e2e8f0')+';border-radius:8px;padding:6px 10px;font-size:13px;font-weight:600;cursor:pointer"><input type="checkbox" class="cfgDia" value="'+d[1]+'" '+(sel?'checked':'')+' onchange="this.parentNode.style.background=this.checked?\'#dcfce7\':\'#f1f5f9\';this.parentNode.style.borderColor=this.checked?\'#86efac\':\'#e2e8f0\'">'+d[0]+'</label>'; }).join('');
+  let opts=''; for(let hqq=8;hqq<=22;hqq++){ opts+='<option value="'+hqq+'" '+(Number(c.entrega_corte||17)===hqq?'selected':'')+'>'+hqq+':00 h</option>'; }
+  $('cfgCorte').innerHTML=opts;
+  $('cfgEntBox').style.display = on?'block':'none';
+  $('cfgEntOn').onchange=function(){ $('cfgEntBox').style.display=this.checked?'block':'none'; };
+  // Chips
+  const ch=(c.chips&&c.chips.length)?c.chips:['','','',''];
+  $('cfgChip1').value=ch[0]||''; $('cfgChip2').value=ch[1]||''; $('cfgChip3').value=ch[2]||''; $('cfgChip4').value=ch[3]||'';
+  // Cierre
+  $('cfgCierreTit').value=c.cierre_tit||''; $('cfgCierreSub').value=c.cierre_sub||'';
+  $("cfgCarrusel").value=String(c.carrusel_seg!=null?c.carrusel_seg:3.8);
+  $('cfgMsg').textContent='';
+  $('cfgModal').style.display='flex'; document.body.style.overflow='hidden';
+}
+function pintarSwatches(){
+  $('cfgSwatches').innerHTML=CFG_COLORES.map(col=>`<div onclick="setColorTienda('${col}')" style="width:34px;height:34px;border-radius:50%;background:${col};cursor:pointer;border:3px solid ${(CFG_COLOR||'').toLowerCase()===col.toLowerCase()?'#0a1628':'#fff'};box-shadow:0 0 0 1px #e2e8f0"></div>`).join('');
+}
+function setColorTienda(col){ CFG_COLOR=col; pintarSwatches(); }
+function cerrarConfigTienda(){ $('cfgModal').style.display='none'; document.body.style.overflow=''; }
+async function previewPortada(input){
+  const file=input.files&&input.files[0]; input.value='';
+  if(!file) return;
+  const m=$('cfgMsg'); m.style.color='var(--gr)'; m.textContent='Procesando portada...';
+  try{
+    CFG_FOTO=await comprimirImagen(file,1600,0.72);
+    const pw=$('cfgPortadaWrap'); pw.style.backgroundImage="url('data:"+CFG_FOTO.mime+";base64,"+CFG_FOTO.base64+"')"; pw.textContent='';
+    m.textContent='';
+  }catch(e){ m.style.color='var(--co)'; m.textContent='No pude procesar la foto. Probá otra.'; }
+}
+async function previewLogo(input){
+  const file=input.files&&input.files[0]; input.value='';
+  if(!file) return;
+  const m=$('cfgMsg'); m.style.color='var(--gr)'; m.textContent='Procesando logo...';
+  try{
+    CFG_LOGO=await comprimirImagen(file,600,0.85); CFG_LOGO_QUITAR=false;
+    const lw=$('cfgLogoWrap'); lw.style.backgroundImage="url('data:"+CFG_LOGO.mime+";base64,"+CFG_LOGO.base64+"')"; lw.textContent='';
+    if($('cfgLogoQuitar')) $('cfgLogoQuitar').style.display='inline-block';
+    m.textContent='';
+  }catch(e){ m.style.color='var(--co)'; m.textContent='No pude procesar el logo. Probá otro.'; }
+}
+function quitarLogo(){
+  CFG_LOGO=null; CFG_LOGO_QUITAR=true;
+  const lw=$('cfgLogoWrap'); if(lw){ lw.style.backgroundImage=''; lw.textContent='🅰️'; }
+  if($('cfgLogoQuitar')) $('cfgLogoQuitar').style.display='none';
+}
+async function guardarConfigTienda(){
+  const dias=Array.prototype.slice.call(document.querySelectorAll('.cfgDia:checked')).map(function(x){return Number(x.value);});
+  const body={ num:SES.num, clave:SES.clave, titulo:($('cfgTitulo').value||'').trim(), descripcion:($('cfgDesc').value||'').trim(), color:CFG_COLOR||'',
+    entrega_on: $('cfgEntOn').checked,
+    entrega_tit: ($('cfgEntTit').value||'').trim(),
+    entrega_sub: ($('cfgEntSub').value||'').trim(),
+    entrega_dias: dias,
+    entrega_corte: Number($('cfgCorte').value)||17,
+    chips: [($('cfgChip1').value||'').trim(),($('cfgChip2').value||'').trim(),($('cfgChip3').value||'').trim(),($('cfgChip4').value||'').trim()],
+    cierre_tit: ($('cfgCierreTit').value||'').trim(),
+    cierre_sub: ($("cfgCierreSub").value||"").trim(), carrusel_seg: Number($("cfgCarrusel").value),
+    mostrar_nombre: $("cfgMostrarNombre")?$("cfgMostrarNombre").checked:true,
+    formas_pago: $("cfgFormasPago")?($("cfgFormasPago").value||"").trim():"" };
+  if(CFG_LOGO_QUITAR) body.logo_quitar=true;
+  if(CFG_FOTO){ body.base64=CFG_FOTO.base64; body.mime=CFG_FOTO.mime; }
+  if(CFG_LOGO){ body.logo_base64=CFG_LOGO.base64; body.logo_mime=CFG_LOGO.mime; }
+  const btn=$('cfgSave'); btn.disabled=true; btn.textContent='Guardando...';
+  const m=$('cfgMsg'); m.style.color='var(--gr)'; m.textContent='Guardando... (si subís portada, aguantá unos segundos)';
+  const r=await portalPost('tienda_config_guardar', body);
+  btn.disabled=false; btn.textContent='Guardar mi página';
+  if(r&&r.ok){ cerrarConfigTienda(); recargar(); }
+  else { m.style.color='var(--co)'; m.textContent='No se pudo: '+((r&&r.error)||'error'); }
+}
+let CATS=[];
+async function loadCats(){
+  const r=await portalPost('tienda_categorias', {num:SES.num, local:SES.num, clave:SES.clave});
+  CATS=(r&&r.ok&&r.data)?r.data:[]; return CATS;
+}
+async function abrirCategorias(){
+  $('catModal').style.display='flex'; document.body.style.overflow='hidden';
+  $('catLista').innerHTML='<div style="color:#94a3b8;text-align:center;padding:10px">Cargando...</div>';
+  await loadCats(); renderCatLista();
+}
+function cerrarCategorias(){ $('catModal').style.display='none'; document.body.style.overflow=''; }
+function renderCatLista(){
+  const cont=$('catLista'); if(!cont) return;
+  if(!CATS.length){ cont.innerHTML='<div style="color:#94a3b8;text-align:center;padding:10px">Todavía no tenés categorías.</div>'; return; }
+  cont.innerHTML=CATS.map(function(c){
+    return '<div style="border:1px solid #e2e8f0;border-radius:12px;padding:10px;margin-bottom:8px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center"><b style="color:#0a1628">'+esc(c.nombre)+'</b>'+
+      '<button onclick="borrarCat(\''+c.id+'\')" style="background:#fee2e2;color:#b91c1c;border:none;border-radius:8px;padding:5px 9px;font-size:12px;cursor:pointer;font-weight:700">Borrar</button></div>'+
+      ((c.subs&&c.subs.length)?'<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px">'+c.subs.map(function(s){return '<span style="background:#f1f5f9;border-radius:8px;padding:3px 8px;font-size:12px">'+esc(s.nombre)+' <a onclick="borrarCat(\''+s.id+'\')" style="color:#b91c1c;cursor:pointer">✕</a></span>';}).join('')+'</div>':'')+
+      '<div style="display:flex;gap:6px;margin-top:8px"><input id="sub_'+c.id+'" type="text" maxlength="40" placeholder="+ subcategoría" style="flex:1;padding:7px;border:1px solid #cbd5e1;border-radius:8px;font-size:13px"><button onclick="crearCat(\''+c.id+'\')" style="background:#e2e8f0;border:none;border-radius:8px;padding:0 12px;font-size:13px;cursor:pointer;font-weight:600">+</button></div>'+
+    '</div>';
+  }).join('');
+}
+async function crearCat(padre){
+  const inp = padre ? $('sub_'+padre) : $('catNueva');
+  const nombre=(inp.value||'').trim(); if(!nombre) return; inp.value='';
+  const r=await portalPost('tienda_categoria_guardar', {num:SES.num, clave:SES.clave, op:'crear', nombre:nombre, padre:padre||''});
+  if(r&&r.ok){ CATS=r.data||[]; renderCatLista(); }
+}
+async function borrarCat(id){
+  if(!confirm('¿Borrar? Los productos que la tenían quedan sin categoría.')) return;
+  const r=await portalPost('tienda_categoria_guardar', {num:SES.num, clave:SES.clave, op:'borrar', id:id});
+  if(r&&r.ok){ CATS=r.data||[]; renderCatLista(); }
+}
+function pmCargarCats(selCat, selSub){
+  const cs=$('pmCat'); if(!cs) return;
+  cs.innerHTML='<option value="">(Sin categoría)</option>'+CATS.map(function(c){return '<option value="'+c.id+'" '+(c.id===selCat?'selected':'')+'>'+esc(c.nombre)+'</option>';}).join('');
+  pmCargarSubs(selSub);
+}
+function pmCargarSubs(selSub){
+  const cs=$('pmSub'); if(!cs) return;
+  const cat=CATS.filter(function(c){return c.id===$('pmCat').value;})[0];
+  const subs=(cat&&cat.subs)||[];
+  cs.innerHTML='<option value="">(Sin subcategoría)</option>'+subs.map(function(s){return '<option value="'+s.id+'" '+(s.id===selSub?'selected':'')+'>'+esc(s.nombre)+'</option>';}).join('');
+}
+function abrirFormProducto(id){
+  PM_ITEMS=[];
+  const prod = id ? ((TIENDA&&TIENDA.productos||[]).find(p=>p.id===id)) : null;
+  $('pmId').value = prod?prod.id:'';
+  $('pmTitle').textContent = prod?'Editar producto':'Nuevo producto';
+  $('pmTitulo').value = prod?prod.titulo:'';
+  $('pmPrecio').value = prod&&prod.precio?prod.precio:'';
+  $('pmPrecioAntes').value = prod&&prod.precio_antes?prod.precio_antes:'';
+  $('pmTalles').value = prod?prod.talles:'';
+  $('pmDesc').value = prod?prod.descripcion:'';
+  $('pmDestacado').checked = !!(prod&&prod.destacado);
+  $('pmStock').value = (prod&&prod.stock)?prod.stock:'DISPONIBLE';
+  if(prod&&prod.fotos&&prod.fotos.length){ PM_ITEMS=prod.fotos.map(function(fid){return {type:'keep',id:fid};}); }
+  renderPmThumbs();
+  (CATS.length?Promise.resolve():loadCats()).then(function(){ pmCargarCats(prod?prod.cat:'', prod?prod.subcat:''); });
+  $('pmMsg').textContent='';
+  $('prodModal').style.display='flex'; document.body.style.overflow='hidden';
+}
+function _pmThumbUrl(it){ return it.type==='keep' ? ('https://drive.google.com/thumbnail?id='+it.id+'&sz=w400') : ('data:'+it.mime+';base64,'+it.base64); }
+function renderPmThumbs(){
+  const cont=$('pmThumbs'); if(!cont) return;
+  if(!PM_ITEMS.length){ cont.innerHTML='<div style="font-size:12px;color:#94a3b8;padding:4px">Todavía no cargaste fotos. La primera es la principal.</div>'; return; }
+  cont.innerHTML=PM_ITEMS.map(function(it,k){
+    const url=_pmThumbUrl(it);
+    const principal = k===0 ? '<div style="position:absolute;bottom:0;left:0;right:0;background:rgba(16,185,129,.92);color:#fff;font-size:9px;font-weight:800;text-align:center;padding:1px">PRINCIPAL</div>' : '';
+    return '<div style="position:relative;width:78px;height:78px;border-radius:10px;background:#eee center/cover no-repeat;background-image:url(\''+url+'\')">'+
+      principal+
+      '<button onclick="pmQuitar('+k+')" style="position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;border:none;background:#e11d48;color:#fff;font-size:12px;cursor:pointer;font-weight:800">✕</button>'+
+      '<div style="position:absolute;top:2px;left:2px;display:flex;gap:2px">'+
+        (k>0?'<button onclick="pmMover('+k+',-1)" style="width:20px;height:20px;border:none;border-radius:5px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;cursor:pointer" title="Mover antes">◀</button>':'')+
+        (k<PM_ITEMS.length-1?'<button onclick="pmMover('+k+',1)" style="width:20px;height:20px;border:none;border-radius:5px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;cursor:pointer" title="Mover después">▶</button>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+function pmQuitar(k){ PM_ITEMS.splice(k,1); renderPmThumbs(); }
+function pmMover(k,dir){ const j=k+dir; if(j<0||j>=PM_ITEMS.length) return; const t=PM_ITEMS[k]; PM_ITEMS[k]=PM_ITEMS[j]; PM_ITEMS[j]=t; renderPmThumbs(); }
+function cerrarFormProducto(){ $('prodModal').style.display='none'; document.body.style.overflow=''; }
+async function previewFotoProducto(input){
+  const files=input.files?Array.prototype.slice.call(input.files):[]; input.value='';
+  if(!files.length) return;
+  const m=$('pmMsg'); m.style.color='var(--gr)'; m.textContent='Procesando fotos...';
+  try{
+    for(let i=0;i<files.length;i++){ const c=await comprimirImagen(files[i],1400,0.72); PM_ITEMS.push({type:'new',base64:c.base64,mime:c.mime}); }
+    renderPmThumbs(); m.textContent='';
+  }catch(e){ m.style.color='var(--co)'; m.textContent='No pude procesar una foto. Probá otra.'; }
+}
+async function guardarProducto(){
+  const titulo=($('pmTitulo').value||'').trim();
+  const m=$('pmMsg');
+  if(!titulo){ m.style.color='var(--co)'; m.textContent='Ponele un título.'; return; }
+  const body={ num:SES.num, clave:SES.clave, id:$('pmId').value||'', titulo:titulo,
+    precio:Number(($('pmPrecio').value||'').replace(/[^\d]/g,''))||0,
+    precio_antes:Number(($('pmPrecioAntes').value||'').replace(/[^\d]/g,''))||0,
+    talles:($('pmTalles').value||'').trim(), descripcion:($('pmDesc').value||'').trim(), destacado:$('pmDestacado').checked?1:0,
+    cat:($('pmCat')?$('pmCat').value:''), subcat:($('pmSub')?$('pmSub').value:''), stock:($('pmStock')?$('pmStock').value:'DISPONIBLE'),
+    fotos_final: PM_ITEMS.map(function(it){ return it.type==='keep'?{id:it.id}:{base64:it.base64,mime:it.mime}; }) };
+  const btn=$('pmSave'); btn.disabled=true; btn.textContent='Guardando...';
+  m.style.color='var(--gr)'; m.textContent='Guardando... (si subís fotos, aguantá unos segundos)';
+  const r=await portalPost('tienda_producto_guardar', body);
+  btn.disabled=false; btn.textContent='Guardar producto';
+  if(r&&r.ok){ cerrarFormProducto(); recargar(); }
+  else { m.style.color='var(--co)'; m.textContent='No se pudo: '+((r&&r.error)||'error'); }
+}
+async function pausarProducto(id,estado){
+  const r=await portalPost('tienda_producto_estado',{num:SES.num,clave:SES.clave,id:id,estado:estado});
+  if(r&&r.ok) recargar();
+}
+async function borrarProducto(id){
+  if(!confirm('¿Borrar este producto de tu tienda?')) return;
+  const r=await portalPost('tienda_producto_borrar',{num:SES.num,clave:SES.clave,id:id});
+  if(r&&r.ok) recargar();
+}
+
+// ======== INSTALAR APP (banner) ========
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredPrompt = e; mostrarBannerInstalar(); });
+function yaInstalada(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function esIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream; }
+function mostrarBannerInstalar(){
+  if(yaInstalada()) return;
+  try{ if(localStorage.getItem('instalar_no')==='1') return; }catch(e){}
+  if(document.getElementById('bannerInst')) return;
+  const b=document.createElement('div');
+  b.id='bannerInst';
+  b.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:200;background:#0a1628;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -6px 20px rgba(0,0,0,.3)';
+  b.innerHTML = `<div style="flex:1;font-size:13px;line-height:1.35"><b style="color:#e8b64c">Instalá Mi Local</b><br>Tenela como app en tu celu, con su ícono.</div>
+    <button id="btnInstNo" style="background:transparent;color:rgba(255,255,255,.6);border:none;font-size:13px;cursor:pointer;padding:8px">Ahora no</button>
+    <button id="btnInstSi" style="background:#e8b64c;color:#0a1628;border:none;border-radius:10px;padding:11px 16px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">Instalar</button>`;
+  document.body.appendChild(b);
+  document.getElementById('btnInstNo').onclick = ()=>{ try{localStorage.setItem('instalar_no','1');}catch(e){} b.remove(); };
+  document.getElementById('btnInstSi').onclick = instalarApp;
+}
+async function instalarApp(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    try{ await deferredPrompt.userChoice; }catch(e){}
+    deferredPrompt=null;
+    const b=document.getElementById('bannerInst'); if(b) b.remove();
+  } else {
+    instruccionesInstalar();
+  }
+}
+function instruccionesInstalar(){
+  const ios = esIOS();
+  const pasos = ios
+    ? '1) Tocá el botón <b>Compartir</b> ⬆️ (abajo en el centro)<br>2) Bajá y tocá <b>"Agregar a inicio"</b><br>3) Tocá <b>Agregar</b>'
+    : '1) Tocá los <b>tres puntitos ⋮</b> (arriba a la derecha)<br>2) Tocá <b>"Agregar a la pantalla principal"</b> o <b>"Instalar aplicación"</b><br>3) Confirmá';
+  let m=document.getElementById('modalInst');
+  if(!m){ m=document.createElement('div'); m.id='modalInst'; document.body.appendChild(m); }
+  m.style.cssText='position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:20px';
+  m.innerHTML=`<div style="background:#fff;border-radius:18px;padding:22px;max-width:340px;width:100%">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:#0a1628;letter-spacing:1px">CÓMO INSTALARLA</div>
+    <div style="font-size:14px;color:#334155;margin-top:10px;line-height:1.6">${pasos}</div>
+    <button onclick="document.getElementById('modalInst').remove()" style="width:100%;margin-top:16px;background:#0a1628;color:#fff;border:none;border-radius:10px;padding:13px;font-weight:700;font-size:15px;cursor:pointer;font-family:inherit">Entendido</button>
+  </div>`;
+}
+
+// ======== PWA (instalable en el celular) ========
+if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+// En iPhone no existe el evento automático: mostramos el banner igual
+window.addEventListener('load', ()=>{ if(esIOS() && !yaInstalada()) setTimeout(mostrarBannerInstalar, 2500); });
+
+// ======== AUTO-LOGIN ========
+(async function(){
+  let saved=null;
+  try{ saved = JSON.parse(localStorage.getItem('milocal')||'null'); }catch(e){}
+  if(saved && saved.local && saved.clave){
+    try{
+      const d = await portalGet('portal_local', {num:saved.local, clave:saved.clave});
+      if(d && d.ok){ SES={num:saved.local, clave:saved.clave}; mostrar(d); return; }
+    }catch(e){}
+  }
+  // sin sesión: mostrar login
+  $('inLocal') && $('inLocal').focus();
+})();
+
+// Enter para entrar
+['inLocal','inClave'].forEach(id=>{
+  const el=$(id); if(el) el.addEventListener('keydown',e=>{ if(e.key==='Enter') entrar(); });
+});
+</script>
+</body>
+</html>
