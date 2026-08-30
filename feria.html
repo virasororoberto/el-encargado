@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feria del Litoral — Comprá online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{ --ink:#0f1115; --ink2:#1b1e26; --bg:#f6f6f8; --card:#fff; --bd:#eceded; --mut:#82858e; --ac:#ff5747; --wa:#25d366; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:#14161b;-webkit-font-smoothing:antialiased}
+  a{text-decoration:none;color:inherit}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+  .loading,.empty{text-align:center;padding:70px 20px;color:var(--mut);font-weight:500}
+  .top{background:rgba(15,17,21,.92);backdrop-filter:blur(10px);color:#fff;position:sticky;top:0;z-index:40;border-bottom:1px solid rgba(255,255,255,.06)}
+  .top .wrap{display:flex;align-items:center;gap:14px;padding:13px 16px}
+  .brand{font-family:'Archivo';font-weight:900;font-size:19px;letter-spacing:-.6px;line-height:1}
+  .brand small{display:block;font-family:'Inter';font-weight:600;font-size:9.5px;letter-spacing:3px;color:var(--ac);margin-top:2px}
+  .search{flex:1;max-width:440px;display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:100px;padding:10px 16px;transition:border-color .15s}
+  .search:focus-within{border-color:var(--ac)}
+  .search input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:14px}
+  .search input::placeholder{color:rgba(255,255,255,.5)}
+  @media(max-width:640px){ .search{order:3;max-width:none;flex-basis:100%} .top .wrap{flex-wrap:wrap;gap:10px} }
+  .hero{position:relative;background:var(--ink)}
+  .hcarru{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none}
+  .hcarru::-webkit-scrollbar{display:none}
+  .hslide{position:relative;flex:0 0 100%;scroll-snap-align:center;height:clamp(240px,42vw,420px);background-position:center;background-size:cover;background-repeat:no-repeat;display:flex;align-items:flex-end}
+  .hslide .ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,9,12,.9) 0%,rgba(8,9,12,.25) 55%,rgba(8,9,12,.4) 100%)}
+  .hslide .in{position:relative;z-index:2;padding:26px;max-width:1180px;margin:0 auto;width:100%;display:flex;align-items:flex-end;gap:16px}
+  .hslide .lg{width:64px;height:64px;border-radius:16px;background:#fff center/cover no-repeat;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+  .hslide .txt{flex:1;color:#fff;min-width:0}
+  .hslide .kick{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ac)}
+  .hslide .nm{font-family:'Archivo';font-weight:900;font-size:clamp(24px,5.5vw,40px);line-height:1;letter-spacing:-1px;text-shadow:0 2px 16px rgba(0,0,0,.5)}
+  .hslide .rb{font-size:13px;color:rgba(255,255,255,.8);margin-top:6px}
+  .hslide .cta{background:#fff;color:var(--ink);font-weight:800;font-size:13px;padding:11px 18px;border-radius:100px;white-space:nowrap;align-self:center}
+  .hdots{position:absolute;bottom:12px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:3}
+  .hdots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .2s}
+  .hdots i.on{background:#fff;width:20px;border-radius:4px}
+  @media(max-width:640px){ .hslide .cta{display:none} .hslide .lg{width:50px;height:50px;font-size:24px} }
+  .marq{background:var(--ink2);overflow:hidden;white-space:nowrap;border-top:1px solid rgba(255,255,255,.05)}
+  .marq .track{display:inline-flex;animation:marq 45s linear infinite}
+  .marq a{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;font-size:13px;font-weight:600;color:rgba(255,255,255,.82)}
+  .marq a .d{width:5px;height:5px;border-radius:50%;background:var(--ac)}
+  @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .section{margin:26px 0}
+  .shead{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;gap:10px}
+  .shead .t{font-family:'Archivo';font-weight:900;font-size:22px;letter-spacing:-.5px}
+  .shead .t .em{color:var(--ac)}
+  .shead .c{font-size:12.5px;color:var(--mut);font-weight:600}
+  .promos{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+  .promos::-webkit-scrollbar{display:none}
+  .promo{flex:0 0 auto;max-width:340px;background:linear-gradient(135deg,var(--ink),var(--ink2));color:#fff;border-radius:16px;padding:16px 18px;position:relative;overflow:hidden}
+  .promo::before{content:'%';position:absolute;right:-10px;top:-18px;font-family:'Archivo';font-weight:900;font-size:90px;color:rgba(255,87,71,.16)}
+  .promo .lc{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);position:relative}
+  .promo .tx{font-family:'Archivo';font-weight:700;font-size:15px;margin-top:4px;line-height:1.25;position:relative}
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:14px}
+  .p{background:var(--card);border:1px solid var(--bd);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;transition:transform .12s,box-shadow .12s}
+  .p:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.08)}
+  .p .ph{aspect-ratio:1/1;background-position:center;background-size:cover;background-color:#eef0f3;position:relative;cursor:pointer}
+  .p .ph .tag{position:absolute;top:9px;left:9px;background:var(--ac);color:#fff;font-size:11px;font-weight:800;padding:3px 9px;border-radius:100px}
+  .p .ph .tag.ag{background:#4b5563}
+  .p .info{padding:11px 12px 13px;display:flex;flex-direction:column;flex:1}
+  .p .nm{font-weight:600;font-size:13.5px;line-height:1.3;min-height:35px}
+  .p .pr{margin-top:6px;display:flex;align-items:baseline;gap:6px}
+  .p .pr .now{font-family:'Archivo';font-weight:900;font-size:18px}
+  .p .pr .old{font-size:12px;color:var(--mut);text-decoration:line-through}
+  .p .st{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid #f2f3f4;font-size:11.5px;color:var(--mut);font-weight:600;white-space:nowrap;overflow:hidden}
+  .p .st .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .p .buy{margin-top:10px;background:var(--wa);color:#0a2e17;border:none;border-radius:11px;padding:10px;font-weight:800;font-size:12.5px;cursor:pointer;text-align:center}
+  .tstrip{background:var(--card);border-top:1px solid var(--bd);margin-top:30px}
+  .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+  .t{border:1px solid var(--bd);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s;background:var(--card)}
+  .t:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.08)}
+  .t .cov{height:64px;background-position:center;background-size:cover;position:relative}
+  .t .lg{position:absolute;bottom:-18px;left:12px;width:44px;height:44px;border-radius:12px;background:#fff center/cover no-repeat;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:21px;box-shadow:0 3px 8px rgba(0,0,0,.15)}
+  .t .bd{padding:24px 12px 13px}
+  .t .nm{font-family:'Archivo';font-weight:800;font-size:14px;line-height:1.1}
+  .t .rb2{font-size:11px;color:var(--mut);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .t .np{font-size:11px;color:var(--ac);font-weight:700;margin-top:7px}
+  .foot{background:var(--ink);color:rgba(255,255,255,.6);text-align:center;padding:30px 16px;font-size:13px}
+  .foot .fb{font-family:'Archivo';font-weight:900;color:#fff;font-size:18px;letter-spacing:-.5px;margin-bottom:4px}
+</style>
+</head>
+<body>
+  <div id="app"><div class="loading">Cargando la feria… 🛍️</div></div>
+<script>
+  const CONFIG={ API:'https://script.google.com/macros/s/AKfycbxc2TXvwKC60sBrIUXEdTMRMlCFC1syCQfyPMXr2esqG9XPvHFLX6UWu-HM17lKrOFM/exec', TOKEN:'x' };
+  const $=id=>document.getElementById(id);
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=n=>'$'+(Number(n)||0).toLocaleString('es-AR');
+  let DATA=null, FILTRO='', _hTimer=null, _hIdx=0;
+  fetch(CONFIG.API+'?accion=feria_portal&token='+CONFIG.TOKEN).then(r=>r.json()).then(d=>{ DATA=d; if(DATA&&DATA.productos) shuffle(DATA.productos); render(); }).catch(()=>{ $('app').innerHTML='<div class="empty">No se pudo cargar la feria. Probá de nuevo en un momento.</div>'; });
+  function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } }
+  function waLink(wa,prod,num,id){ const t='¡Hola! Vi *'+prod+'* en la Feria del Litoral online 👋 ¿Está disponible?'; let n=String(wa||'').replace(/[^0-9]/g,''); if(n&&n.length<=11)n='549'+n.replace(/^0/,''); return n?('https://wa.me/'+n+'?text='+encodeURIComponent(t)):('/l/'+num+'/'+id); }
+  const tiendaLink=num=>location.origin+'/l/'+num;
+  const prodLink=(num,id)=>location.origin+'/l/'+num+'/'+id;
+  function render(){
+    if(!DATA||!DATA.ok){ $('app').innerHTML='<div class="empty">La feria no está disponible en este momento.</div>'; return; }
+    const cfg=DATA.config||{}, tiendas=DATA.tiendas||[], prods=DATA.productos||[], promos=DATA.promos||[], locales=DATA.locales||[];
+    const titulo=cfg.titulo||'Feria del Litoral';
+    const heroT=tiendas.slice().sort((a,b)=>(b.portada_url?1:0)-(a.portada_url?1:0)).slice(0,8);
+    let html=`<div class="top"><div class="wrap"><div class="brand">${esc(titulo)}<small>SANTA FE</small></div><div class="search">🔎 <input placeholder="Buscá en toda la feria..." oninput="buscar(this.value)"></div></div></div>`;
+    if(heroT.length){
+      html+=`<div class="hero"><div class="hcarru" id="hcarru">`+heroT.map(t=>{
+        const bgc=t.portada_url?`background-image:url('${esc(t.portada_url)}')`:`background:linear-gradient(135deg,${esc(t.color||'#1b1e26')},#0f1115)`;
+        return `<a class="hslide" href="${tiendaLink(t.num)}" style="${bgc}"><div class="ov"></div><div class="in"><div class="lg" style="${t.logo_url?`background-image:url('${esc(t.logo_url)}')`:''}">${t.logo_url?'':'🛍️'}</div><div class="txt"><div class="kick">${esc((t.rubros&&t.rubros[0])||'Tienda de la feria')}</div><div class="nm">${esc(t.nombre)}</div><div class="rb">${t.n} productos · envío en el día 🛵</div></div><span class="cta">Ver tienda →</span></div></a>`;
+      }).join('')+`</div><div class="hdots" id="hdots">`+heroT.map((_,k)=>`<i class="${k===0?'on':''}"></i>`).join('')+`</div></div>`;
+    }
+    if(locales.length){ const strip=locales.map(n=>`<a><span class="d"></span>${esc(n)}</a>`).join(''); html+=`<div class="marq"><div class="track">${strip}${strip}</div></div>`; }
+    html+=`<div class="wrap">`;
+    if(promos.length){ html+=`<div class="section"><div class="shead"><div class="t">🔥 Promos <span class="em">de hoy</span></div><div class="c">${promos.length} ofertas</div></div><div class="promos">`+promos.map(pr=>`<div class="promo"><div class="lc">${esc(pr.local)}</div><div class="tx">${esc(pr.texto)}</div></div>`).join('')+`</div></div>`; }
+    html+=`<div class="section"><div class="shead"><div class="t">🛍️ Todos los <span class="em">productos</span></div><div class="c">${prods.length} artículos · ${tiendas.length} tiendas</div></div><div class="pgrid" id="pgrid"></div></div></div>`;
+    html+=`<div class="tstrip"><div class="wrap"><div class="section"><div class="shead"><div class="t">🏬 Todas las <span class="em">tiendas</span></div></div><div class="tgrid">`+tiendas.map(t=>tcard(t)).join('')+`</div></div></div></div>`;
+    html+=`<div class="foot"><div class="fb">${esc(titulo)}</div>${esc(cfg.cierre_texto||'Comprá por WhatsApp y recibí en el día 🛵')}</div>`;
+    $('app').innerHTML=html; pintarGrid(); heroAuto();
+  }
+  function pcard(p){ const agot=p.stock==='AGOTADO';
+    return `<div class="p"><div class="ph" style="${p.foto_url?`background-image:url('${esc(p.foto_url)}')`:''}" onclick="location.href='${prodLink(p.tienda_num,p.id)}'">${p.descuento>0?`<span class="tag">-${p.descuento}%</span>`:(agot?`<span class="tag ag">Agotado</span>`:'')}</div><div class="info"><div class="nm">${esc(p.titulo)}</div><div class="pr">${p.precio>0?`<span class="now">${money(p.precio)}</span>`:''}${p.precio_antes>p.precio?`<span class="old">${money(p.precio_antes)}</span>`:''}</div><div class="st"><span class="dot" style="background:${esc(p.color||'#888')}"></span>${esc(p.tienda_nombre)}</div><a class="buy" href="${waLink(p.whatsapp,p.titulo,p.tienda_num,p.id)}" target="_blank">💬 Comprar</a></div></div>`; }
+  function tcard(t){ return `<a class="t" href="${tiendaLink(t.num)}"><div class="cov" style="${t.portada_url?`background-image:url('${esc(t.portada_url)}')`:`background:linear-gradient(135deg,${esc(t.color||'#1b1e26')},#0f1115)`}"><div class="lg" style="${t.logo_url?`background-image:url('${esc(t.logo_url)}')`:''}">${t.logo_url?'':'🛍️'}</div></div><div class="bd"><div class="nm">${esc(t.nombre)}</div><div class="rb2">${esc((t.rubros||[]).join(' · ')||'Tienda de la feria')}</div><div class="np">${t.n} productos · Ver →</div></div></a>`; }
+  function visibles(){ const f=FILTRO.toLowerCase().trim(); return (DATA.productos||[]).filter(p=> !f || (p.titulo||'').toLowerCase().indexOf(f)>=0 || (p.tienda_nombre||'').toLowerCase().indexOf(f)>=0 ); }
+  function pintarGrid(){ const g=$('pgrid'); if(!g)return; const v=visibles(); g.innerHTML=v.length?v.map(pcard).join(''):'<div class="empty">No encontramos productos con esa búsqueda.</div>'; }
+  function buscar(q){ FILTRO=q; pintarGrid(); }
+  function heroAuto(){ const t=$('hcarru'),dots=$('hdots'); if(!t)return; if(_hTimer)clearInterval(_hTimer); const n=t.querySelectorAll('.hslide').length; if(n<2)return;
+    t.addEventListener('scroll',()=>{ const i=Math.round(t.scrollLeft/t.clientWidth); if(dots)Array.prototype.forEach.call(dots.children,(el,k)=>el.className=k===i?'on':''); },{passive:true});
+    _hTimer=setInterval(()=>{ if(!document.body.contains(t)){clearInterval(_hTimer);return;} _hIdx=(_hIdx+1)%n; t.scrollTo({left:_hIdx*t.clientWidth,behavior:'smooth'}); },4500); }
+</script>
+</body>
+</html>
