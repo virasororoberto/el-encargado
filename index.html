@@ -130,6 +130,9 @@ body{font-family:'DM Sans',sans-serif;background:linear-gradient(135deg,#0a1628,
 
 .search{background:#fff;padding:14px;border-radius:14px;border:1px solid #e2e8f0;margin-bottom:14px}
 .search input{width:100%;border:none;outline:none;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--az)}
+.inp{width:100%;border:1px solid #e2e8f0;border-radius:10px;padding:11px 13px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;margin-top:4px;background:#fff}
+.inp:focus{border-color:var(--az)}
+.lbl{display:block;font-size:13px;color:#64748b;font-weight:600;margin-top:12px}
 
 .btn{background:var(--az);color:#fff;border:none;padding:14px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;width:100%;margin-top:10px;font-family:'DM Sans',sans-serif}
 .btn.co{background:var(--co)}
@@ -368,6 +371,7 @@ const MENU_PC = [
     {id:'compslocales', ic:'📎', label:'Comprobantes de locales', fn:'rComprobantesLocales'},
     {id:'tiendas', ic:'🛍️', label:'Tiendas online', fn:'rTiendas'},
     {id:'rubros', ic:'🏷️', label:'Rubros', fn:'rRubros'},
+    {id:'portal', ic:'🌐', label:'Portal Feria', fn:'rPortal'},
     // {id:'whatsapp', ic:'📱', label:'WhatsApp masivo', fn:'rWhatsApp'},     // Oculto del menú a pedido de Roberto - función disponible en el código
     // {id:'avisos', ic:'📢', label:'Avisos al equipo', fn:'rAvisos'},         // Oculto del menú a pedido de Roberto - función disponible en el código
     {id:'reuniones', ic:'🤝', label:'Reuniones', fn:'rReuniones'},
@@ -449,6 +453,7 @@ function hLogin() {
   state.user={id:u,...CONFIG.USERS[u]};
   iniciarAutoRefresh();
   iniciarVigilanteComprobantes();
+  apiGet('ping').then(function(d){ if(d&&d.backend_version){ state.backendVersion=d.backend_version; try{var el=document.querySelector('.header-info p'); if(el&&el.querySelector('.bkv')) el.querySelector('.bkv').textContent=' · '+d.backend_version; }catch(e){} } });
   rInicio();
 }
 function logout(){
@@ -569,7 +574,7 @@ function render(view) {
     <div class="header">
       <div class="header-left">
         <button class="burger" onclick="abrirMenu()" title="Menú">☰</button>
-        <div class="header-info"><h1>EL ENCARGADO</h1><p><span class="conn-dot ${state.online?'':'off'}"></span>${state.online?'En vivo':'Sin conexión'} · ${state.user.role}</p></div>
+        <div class="header-info"><h1>EL ENCARGADO</h1><p><span class="conn-dot ${state.online?'':'off'}"></span>${state.online?'En vivo':'Sin conexión'} · ${state.user.role}<span class="bkv" style="color:#9aa0a6">${state.backendVersion?(' · '+state.backendVersion):''}</span></p></div>
       </div>
       <div class="header-user"><div class="user-avatar" onclick="logout()" title="Cerrar sesión">${state.user.ini}</div></div>
     </div>
@@ -2493,6 +2498,71 @@ async function rTiendas(){
     </div>
   `);
 }
+async function rPortal(){
+  state.view='portal'; loading('Cargando portal...');
+  const r=await apiGet('feria_config');
+  const pr=await apiGet('feria_portal');
+  const c=(r&&r.ok&&r.config)||{};
+  const nT=(pr&&pr.total_tiendas)||0, nP=(pr&&pr.total_productos)||0;
+  const portalUrl=location.origin.replace(/\/[^/]*$/,'')+'/feria.html';
+  const chk=(k,def)=>((c[k]!==undefined?c[k]:def)?'checked':'');
+  render(`
+    <div class="greet"><h2>🌐 Portal de la Feria</h2><p>La página con TODAS las tiendas juntas. Configurala a gusto.</p></div>
+    <div class="section">
+      <div class="alert" style="background:#ecfdf5;border-color:#a7f3d0"><div class="alert-text">📊 Ahora mismo el portal muestra <b>${nT} tiendas</b> y <b>${nP} productos</b>.</div></div>
+      <div style="display:flex;gap:8px;margin:10px 0 16px">
+        <a class="btn" href="/feria.html" target="_blank" style="flex:1;text-align:center;text-decoration:none">👁️ Ver el portal</a>
+        <button class="btn ol" style="flex:1" onclick="compartirPortal()">📤 Compartir / QR</button>
+      </div>
+
+      <label class="lbl">Título del portal</label>
+      <input id="poTitulo" class="inp" value="${escapeHTML(c.titulo||'Feria del Litoral')}">
+      <label class="lbl">Subtítulo</label>
+      <input id="poSub" class="inp" value="${escapeHTML(c.subtitulo||'')}">
+      <label class="lbl">Color principal</label>
+      <input id="poColor" class="inp" type="text" value="${escapeHTML(c.color||'#0e1013')}" placeholder="#0e1013">
+
+      <div style="border-top:1px solid var(--bd);margin:16px 0 8px;padding-top:12px">
+        <label style="display:flex;align-items:center;gap:9px;font-weight:700;cursor:pointer"><input type="checkbox" id="poBannerOn" ${chk('banner_on',true)}> 🏆 Mostrar banner (Suramericano / campaña)</label>
+        <label class="lbl">Título del banner</label>
+        <input id="poBannerTit" class="inp" value="${escapeHTML(c.banner_titulo||'')}">
+        <label class="lbl">Texto del banner</label>
+        <input id="poBannerTxt" class="inp" value="${escapeHTML(c.banner_texto||'')}">
+      </div>
+
+      <div style="border-top:1px solid var(--bd);margin:12px 0 8px;padding-top:12px">
+        <label style="display:flex;align-items:center;gap:9px;font-weight:700;cursor:pointer"><input type="checkbox" id="poCarrOn" ${chk('carrusel_on',true)}> 🎠 Mostrar carrusel de destacados arriba</label>
+        <label class="lbl">Velocidad del carrusel (segundos, 0 = no pasa solo)</label>
+        <input id="poCarrSeg" class="inp" type="number" step="0.5" value="${c.carrusel_seg!=null?c.carrusel_seg:3.5}">
+        <label style="display:flex;align-items:center;gap:9px;font-weight:700;cursor:pointer;margin-top:10px"><input type="checkbox" id="poBanderas" ${chk('mostrar_carrusel_banderas',true)}> 🌎 Mostrar franja de banderas (Suramericano)</label>
+      </div>
+
+      <label class="lbl">Texto del pie de página</label>
+      <input id="poCierre" class="inp" value="${escapeHTML(c.cierre_texto||'')}">
+
+      <div id="poMsg" style="text-align:center;font-size:13px;margin-top:10px"></div>
+      <button class="btn pri" style="margin-top:10px" onclick="guardarPortal()">💾 Guardar configuración</button>
+    </div>
+  `);
+}
+function compartirPortal(){
+  const url=location.origin+'/feria.html';
+  if(navigator.share){ navigator.share({title:'Feria del Litoral',url}).catch(()=>{}); }
+  else { navigator.clipboard&&navigator.clipboard.writeText(url); toast('Link copiado: '+url,'ve'); }
+}
+async function guardarPortal(){
+  const body={
+    titulo:val('poTitulo'), subtitulo:val('poSub'), color:val('poColor'),
+    banner_on:$('poBannerOn').checked, banner_titulo:val('poBannerTit'), banner_texto:val('poBannerTxt'),
+    carrusel_on:$('poCarrOn').checked, carrusel_seg:Number(val('poCarrSeg'))||0,
+    mostrar_carrusel_banderas:$('poBanderas').checked, cierre_texto:val('poCierre')
+  };
+  $('poMsg').textContent='Guardando...';
+  const r=await apiPost('feria_config_guardar', body);
+  if(r&&r.ok){ toast('✓ Portal actualizado','ve'); $('poMsg').textContent='✓ Guardado. Abrí el portal y hacé Ctrl+F5 para verlo.'; }
+  else { $('poMsg').textContent='Error: '+((r&&r.error)||''); }
+}
+function val(id){ const e=$(id); return e?e.value.trim():''; }
 async function rRubros(){
   state.view='rubros'; loading('Cargando rubros...');
   const r=await apiGet('rubros_listar');
