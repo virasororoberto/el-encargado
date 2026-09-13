@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EL ENCARGADO — Nuevo</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--az:#0f1b2d;--do:#e8b23a;--bg:#f4f5f7;--card:#fff;--bd:#e6e8eb;--gr:#7a828c;--ve:#16a34a;--co:#e11d48;--nav:#0f1b2d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:#1a2230}
+  .hidden{display:none!important}
+  /* login */
+  .login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f1b2d,#1e3352);padding:20px}
+  .login-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:34px 28px;width:100%;max-width:380px;text-align:center;backdrop-filter:blur(8px)}
+  .login-box h1{font-family:'Archivo';font-weight:900;color:#fff;font-size:26px;letter-spacing:-.5px}
+  .login-box .sub{color:rgba(255,255,255,.55);font-size:13px;margin-top:4px;margin-bottom:22px}
+  .login-box input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:14px 16px;border-radius:12px;font-size:15px;font-family:inherit;outline:none;margin-bottom:10px}
+  .login-box input::placeholder{color:rgba(255,255,255,.4)}
+  .login-box button{width:100%;background:var(--do);color:#0f1b2d;border:none;padding:14px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+  .login-err{color:#ff9a9a;font-size:13px;min-height:18px;margin-top:6px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+  .chips span{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:11px;padding:4px 10px;border-radius:100px}
+  /* app */
+  .app{display:flex;min-height:100vh}
+  .side{width:230px;background:var(--nav);color:#fff;flex-shrink:0;padding:18px 0}
+  .side .brand{font-family:'Archivo';font-weight:900;font-size:19px;padding:0 20px 4px}
+  .side .st{font-size:11px;padding:0 20px 18px;color:rgba(255,255,255,.5)}
+  .side .st .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ve);margin-right:5px}
+  .side a{display:flex;align-items:center;gap:11px;padding:12px 20px;color:rgba(255,255,255,.75);cursor:pointer;font-weight:500;font-size:14px}
+  .side a.on{background:rgba(255,255,255,.08);color:#fff;border-left:3px solid var(--do)}
+  .side a:hover{color:#fff}
+  .main{flex:1;padding:24px 26px;overflow-y:auto}
+  @media(max-width:760px){ .app{flex-direction:column} .side{width:100%;display:flex;overflow-x:auto;padding:10px 0} .side .brand,.side .st{display:none} .side a{white-space:nowrap;padding:10px 14px} }
+  .greet h2{font-family:'Archivo';font-weight:900;font-size:24px;letter-spacing:-.5px}
+  .greet p{color:var(--gr);font-size:14px;margin-top:2px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:18px 0}
+  .kpi{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px}
+  .kpi .l{font-size:12px;color:var(--gr);font-weight:600}
+  .kpi .v{font-family:'Archivo';font-weight:900;font-size:24px;margin-top:4px;letter-spacing:-.5px}
+  .kpi.ve .v{color:var(--ve)} .kpi.co .v{color:var(--co)}
+  .search{width:100%;padding:12px 15px;border:1px solid var(--bd);border-radius:12px;font-size:14px;font-family:inherit;outline:none;margin:8px 0 14px}
+  .lc{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:13px 15px;margin-bottom:9px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:box-shadow .1s}
+  .lc:hover{box-shadow:0 6px 16px rgba(0,0,0,.07)}
+  .lc .num{width:40px;height:40px;border-radius:10px;background:var(--az);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-family:'Archivo'}
+  .lc .info{flex:1;min-width:0}
+  .lc .nm{font-weight:700;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lc .det{font-size:12.5px;color:var(--gr);margin-top:1px}
+  .lc .deu{text-align:right;flex-shrink:0}
+  .lc .deu .m{font-family:'Archivo';font-weight:900;font-size:16px}
+  .lc .deu .m.debe{color:var(--co)} .lc .deu .m.ok{color:var(--ve)}
+  .lc .deu .t{font-size:10.5px;color:var(--gr)}
+  .loading{text-align:center;padding:50px;color:var(--gr)}
+  .badge{font-size:10px;background:#fef3c7;color:#92700a;padding:2px 8px;border-radius:100px;font-weight:700;vertical-align:middle;margin-left:6px}
+</style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="login" class="login">
+    <div class="login-box">
+      <h1>EL ENCARGADO <span class="badge">NUEVO</span></h1>
+      <div class="sub">Feria del Litoral · versión rápida</div>
+      <input id="u" placeholder="Usuario" autocomplete="off">
+      <input id="p" type="password" placeholder="PIN" autocomplete="off">
+      <button onclick="login()">Ingresar</button>
+      <div id="lerr" class="login-err"></div>
+      <div class="chips" id="uchips"></div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="app hidden">
+    <div class="side">
+      <div class="brand">EL ENCARGADO</div>
+      <div class="st"><span class="dot"></span><span id="stTxt">Conectado</span> · <span id="uRole"></span></div>
+      <a data-v="inicio" class="on" onclick="ir('inicio')">🏠 Inicio</a>
+      <a data-v="locales" onclick="ir('locales')">🏪 Locales</a>
+      <a onclick="logout()" style="margin-top:20px;color:rgba(255,255,255,.5)">🚪 Salir</a>
+    </div>
+    <div class="main" id="main"><div class="loading">Cargando…</div></div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="hidden" style="position:fixed;inset:0;z-index:100;background:rgba(10,15,25,.6);display:flex;align-items:flex-end;justify-content:center;padding:0" onclick="if(event.target===this)cerrarModal()">
+    <div id="modalBox" style="background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px;max-height:92vh;overflow-y:auto"></div>
+  </div>
+
+<script>
+  const SB_URL='https://gygjvlrudrqtwoqblywj.supabase.co';
+  const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5Z2p2bHJ1ZHJxdHdvcWJseXdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzMDAwMjEsImV4cCI6MjEwNDg3NjAyMX0.BJGAV_csE4bQYJX9Jgdik8ZLlLgT028lW7g8Pd_zhlo';
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  const USERS={ roberto:{pin:'1234',name:'Roberto',role:'Admin'}, sebastian:{pin:'1234',name:'Sebastián',role:'Operador'}, fernando:{pin:'1234',name:'Fernando',role:'Operador'}, victoria:{pin:'1234',name:'Victoria',role:'Operadora'} };
+  let USER=null, DATA={locales:[]}, FILTRO='';
+  const $=id=>document.getElementById(id);
+  const money=n=>'$'+Math.round(Number(n)||0).toLocaleString('es-AR');
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  $('uchips').innerHTML=Object.keys(USERS).map(u=>`<span>${u}</span>`).join('');
+  $('p').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+
+  function login(){
+    const u=($('u').value||'').toLowerCase().trim(), p=$('p').value;
+    if(!USERS[u]||USERS[u].pin!==p){ $('lerr').textContent='Usuario o PIN incorrecto'; return; }
+    USER={id:u,...USERS[u]};
+    $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+    $('uRole').textContent=USER.name;
+    cargarTodo();
+  }
+  function logout(){ USER=null; $('app').classList.add('hidden'); $('login').classList.remove('hidden'); $('u').value='';$('p').value='';$('lerr').textContent=''; }
+
+  // ── Cálculo de deuda (misma lógica que el sistema viejo, pero en la base) ──
+  function calcInteres(alq, pagado, dia){
+    const E=Number(alq)||0, F=Number(pagado)||0;
+    if(F>=E*0.5) return 0;
+    if(dia<=10) return 0;
+    return Math.round(E*0.005*(dia-1));
+  }
+
+  async function cargarTodo(){
+    $('main').innerHTML='<div class="loading">Cargando tus datos…</div>';
+    const hoy=new Date(); const y=hoy.getFullYear(), m=hoy.getMonth()+1, dia=hoy.getDate();
+    const desde=`${y}-${String(m).padStart(2,'0')}-01`;
+    const hasta=`${m===12?y+1:y}-${String(m===12?1:m+1).padStart(2,'0')}-01`;
+    // traer locales, pagos del mes, sin_interes  (3 consultas rápidas)
+    const [locR, pagR, siR] = await Promise.all([
+      sb.from('locales').select('local,nombre,clave,alquiler_actual,mora,intereses_acumulado').order('local'),
+      sb.from('pagos').select('local,monto,fecha').gte('fecha',desde).lt('fecha',hasta),
+      sb.from('sin_interes').select('local')
+    ]);
+    if(locR.error){ $('main').innerHTML='<div class="loading">Error de conexión: '+esc(locR.error.message)+'</div>'; $('stTxt').textContent='Sin conexión'; return; }
+    const pagosPorLocal={}; (pagR.data||[]).forEach(p=>{ if(p.local!=null){ pagosPorLocal[p.local]=(pagosPorLocal[p.local]||0)+(Number(p.monto)||0); } });
+    const sinInt={}; (siR.data||[]).forEach(s=>sinInt[s.local]=true);
+    DATA.locales=(locR.data||[]).filter(l=>Number(l.alquiler_actual)>0).map(l=>{
+      const alq=Number(l.alquiler_actual)||0;
+      const pagado=pagosPorLocal[l.local]||0;
+      const deuda=Math.max(0,alq-pagado);
+      const mora=Number(l.mora)||0;
+      // interés IDÉNTICO al sistema viejo: usamos el valor ya guardado (no lo recalculamos en vivo)
+      const interes=sinInt[l.local]?0:(Number(l.intereses_acumulado)||0);
+      return {...l, alquiler:alq, pagado, deuda, mora, interes, deuda_total:deuda+mora+interes};
+    });
+    ir(state.view||'inicio');
+  }
+
+  const state={view:'inicio'};
+  function ir(v){
+    state.view=v;
+    document.querySelectorAll('.side a[data-v]').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+    if(v==='inicio') rInicio(); else if(v==='locales') rLocales();
+  }
+
+  function rInicio(){
+    const L=DATA.locales;
+    const facturacion=L.reduce((s,l)=>s+l.alquiler,0);
+    const cobrado=L.reduce((s,l)=>s+l.pagado,0);
+    const deudaTotal=L.reduce((s,l)=>s+l.deuda_total,0);
+    const morosos=L.filter(l=>l.deuda_total>l.alquiler*0.5).length;
+    const hora=new Date().getHours();
+    const saludo=hora<13?'Buenos días':hora<20?'Buenas tardes':'Buenas noches';
+    $('main').innerHTML=`
+      <div class="greet"><h2>${saludo}, ${esc(USER.name)} 👋</h2><p>Feria del Litoral · ${L.length} locales activos</p></div>
+      <div class="kpis">
+        <div class="kpi"><div class="l">Facturación del mes</div><div class="v">${money(facturacion)}</div></div>
+        <div class="kpi ve"><div class="l">Cobrado este mes</div><div class="v">${money(cobrado)}</div></div>
+        <div class="kpi co"><div class="l">Deuda total por cobrar</div><div class="v">${money(deudaTotal)}</div></div>
+        <div class="kpi"><div class="l">Locales con deuda alta</div><div class="v">${morosos}</div></div>
+      </div>
+      <div style="background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:12px 15px;font-size:13.5px;color:#065f46">
+        ⚡ Estás en la <b>versión nueva y rápida</b> (base de datos). Los datos son los mismos que el sistema viejo. Andá a <b>Locales</b> para verlos.
+      </div>`;
+  }
+
+  // ═══════════ MÓDULO 2: detalle del local + pagos ═══════════
+  function uuid(){ return 'xxxxxxxx'.replace(/x/g,()=>((Math.random()*16)|0).toString(16)); }
+  function cerrarModal(){ $('modal').classList.add('hidden'); }
+  function modal(html){ $('modalBox').innerHTML=html; $('modal').classList.remove('hidden'); }
+  function nowISO(){ return new Date().toISOString(); }
+
+  async function verLocal(num){
+    modal('<div class="loading">Cargando local…</div>');
+    const y=new Date().getFullYear(), m=new Date().getMonth()+1;
+    const desde=`${y}-${String(m).padStart(2,'0')}-01`;
+    const hasta=`${m===12?y+1:y}-${String(m===12?1:m+1).padStart(2,'0')}-01`;
+    const [locR,pagR,pmR] = await Promise.all([
+      sb.from('locales').select('*').eq('local',num).single(),
+      sb.from('pagos').select('id,fecha,monto,metodo,cargado_por,observaciones').eq('local',num).gte('fecha',desde).lt('fecha',hasta).order('fecha',{ascending:false}),
+      sb.from('pagos_mora').select('id,fecha,monto,metodo,cargado_por').eq('local',num).gte('fecha',desde).lt('fecha',hasta).order('fecha',{ascending:false})
+    ]);
+    if(locR.error){ modal('<div class="loading">Error: '+esc(locR.error.message)+'</div>'); return; }
+    const l=locR.data;
+    const pagosMes=(pagR.data||[]);
+    const pagadoAlq=pagosMes.reduce((s,p)=>s+(Number(p.monto)||0),0);
+    const alq=Number(l.alquiler_actual)||0, mora=Number(l.mora)||0, interes=Number(l.intereses_acumulado)||0;
+    const deuda=Math.max(0,alq-pagadoAlq);
+    const dtot=deuda+mora+interes;
+    const nombre=(l.nombre||'').replace(/^\d+\s*-\s*/,'')||'(sin nombre)';
+    let hist=pagosMes.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f1f3;font-size:13px">
+        <div><b>${money(p.monto)}</b> · ${esc(p.metodo||'')}<div style="font-size:11px;color:var(--gr)">${new Date(p.fecha).toLocaleDateString('es-AR')} · ${esc(p.cargado_por||'')}${p.observaciones?' · '+esc(p.observaciones):''}</div></div>
+        <button onclick="anularPago('${p.id}',${num},${p.monto},'${esc(p.metodo)}')" style="background:#fef2f2;color:#b91c1c;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer">✗ Anular</button>
+      </div>`).join('');
+    (pmR.data||[]).forEach(p=>{ hist+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f1f3;font-size:13px">
+        <div><b>${money(p.monto)}</b> · ${esc(p.metodo||'')} <span style="font-size:10px;background:#fef3c7;color:#92700a;padding:1px 6px;border-radius:100px">a mora</span><div style="font-size:11px;color:var(--gr)">${new Date(p.fecha).toLocaleDateString('es-AR')} · ${esc(p.cargado_por||'')}</div></div>
+        <button onclick="anularPago('${p.id}',${num},${p.monto},'${esc(p.metodo)}',true)" style="background:#fef2f2;color:#b91c1c;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer">✗</button>
+      </div>`; });
+    modal(`
+      <div style="display:flex;justify-content:space-between;align-items:start"><div><div style="font-family:'Archivo';font-weight:900;font-size:20px">${l.local} · ${esc(nombre)}</div><div style="font-size:12px;color:var(--gr)">Clave: ${esc(String(l.clave||'').replace(/\.0$/,''))}</div></div><button onclick="cerrarModal()" style="background:#f1f5f9;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px">✕</button></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0">
+        <div style="background:#f8fafc;border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--gr)">Alquiler</div><div style="font-weight:800">${money(alq)}</div></div>
+        <div style="background:#f0fdf4;border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--gr)">Pagado (mes)</div><div style="font-weight:800;color:var(--ve)">${money(pagadoAlq)}</div></div>
+        <div style="background:#fff7ed;border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--gr)">Mora</div><div style="font-weight:800">${money(mora)}</div></div>
+        <div style="background:#fff7ed;border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--gr)">Interés</div><div style="font-weight:800">${money(interes)}</div></div>
+      </div>
+      <div style="background:${dtot>0?'#fef2f2':'#f0fdf4'};border-radius:12px;padding:12px;text-align:center;margin-bottom:14px"><div style="font-size:12px;color:var(--gr)">Deuda total</div><div style="font-family:'Archivo';font-weight:900;font-size:26px;color:${dtot>0?'var(--co)':'var(--ve)'}">${dtot>0?money(dtot):'Al día ✓'}</div></div>
+      <button onclick="modalPago(${num})" style="width:100%;background:var(--ve);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer">💵 Cargar pago</button>
+      <div style="font-size:12px;color:var(--gr);font-weight:600;margin:16px 0 6px">Pagos de este mes</div>
+      ${hist||'<div style="font-size:13px;color:var(--gr);text-align:center;padding:10px">Sin pagos este mes.</div>'}
+    `);
+  }
+
+  function modalPago(num){
+    modal(`
+      <div style="font-family:'Archivo';font-weight:900;font-size:19px;margin-bottom:14px">💵 Cargar pago — Local ${num}</div>
+      <label style="font-size:12px;color:var(--gr);font-weight:600">Monto</label>
+      <input id="pMonto" type="number" placeholder="Ej: 500000" style="width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;font-size:15px;margin:4px 0 10px">
+      <label style="font-size:12px;color:var(--gr);font-weight:600">Método</label>
+      <select id="pMet" style="width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;font-size:15px;margin:4px 0 10px">
+        <option value="EFECTIVO">💵 Efectivo</option><option value="TRANSFERENCIA">🏦 Transferencia</option>
+      </select>
+      <label style="font-size:12px;color:var(--gr);font-weight:600">Observación (opcional)</label>
+      <input id="pObs" type="text" style="width:100%;padding:12px;border:1px solid var(--bd);border-radius:10px;font-size:15px;margin:4px 0 14px">
+      <div style="font-size:11px;color:var(--gr);margin-bottom:12px">El pago baja primero la mora (si tiene), y lo que sobra va al alquiler del mes.</div>
+      <button id="pBtn" onclick="confPago(${num})" style="width:100%;background:var(--ve);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer">Confirmar pago</button>
+      <div id="pMsg" style="text-align:center;font-size:13px;margin-top:10px;min-height:18px"></div>
+    `);
+  }
+
+  let _cargando=false;
+  async function confPago(num){
+    if(_cargando) return;
+    const monto=Math.abs(parseFloat($('pMonto').value)||0);
+    const met=$('pMet').value, obs=($('pObs').value||'').trim();
+    if(monto<=0){ $('pMsg').style.color='var(--co)'; $('pMsg').textContent='Poné un monto válido'; return; }
+    _cargando=true; const btn=$('pBtn'); btn.disabled=true; btn.textContent='Guardando…';
+    try{
+      const {data:loc}=await sb.from('locales').select('mora,clave,alquiler_actual').eq('local',num).single();
+      const mora=Number(loc.mora)||0;
+      const aMora=Math.min(monto,mora), resto=monto-aMora;
+      if(aMora>0){
+        await sb.from('locales').update({mora:mora-aMora}).eq('local',num);
+        await sb.from('pagos_mora').insert({id:uuid(),fecha:nowISO(),local:num,clave:String(loc.clave||''),monto:aMora,metodo:met,cargado_por:USER.name,mora_antes:mora,mora_despues:mora-aMora});
+      }
+      if(resto>0){
+        await sb.from('pagos').insert({id:uuid(),local:num,clave:String(loc.clave||''),fecha:nowISO(),monto:resto,metodo:met,cargado_por:USER.name,observaciones:obs||null});
+      }
+      await moverSaldo(met, monto);
+      await recalcInteres(num, loc.alquiler_actual);
+      await sb.from('auditoria').insert({usuario:USER.name,accion:'CARGAR_PAGO',detalle:`L${num}: $${monto} ${met} · mora $${aMora} · alquiler $${resto}`});
+      cerrarModal();
+      await cargarTodo();
+      verLocal(num);
+    }catch(e){ $('pMsg').style.color='var(--co)'; $('pMsg').textContent='Error: '+e.message; btn.disabled=false; btn.textContent='Confirmar pago'; }
+    _cargando=false;
+  }
+
+  async function anularPago(id, num, monto, metodo, esMora){
+    if(!confirm('¿Anular este pago de '+money(monto)+'?')) return;
+    try{
+      const m=Math.abs(Number(monto)||0);
+      if(esMora){
+        // devolver a la mora y sacar la fila de pagos_mora
+        const {data:loc}=await sb.from('locales').select('mora').eq('local',num).single();
+        await sb.from('locales').update({mora:(Number(loc.mora)||0)+m}).eq('local',num);
+        await sb.from('pagos_mora').delete().eq('id',id);
+      } else {
+        // fila negativa que cancela el pago
+        await sb.from('pagos').insert({id:uuid(),local:num,fecha:nowISO(),monto:-m,metodo,cargado_por:USER.name,observaciones:'ANUL'});
+      }
+      await moverSaldo(metodo, -m);
+      await sb.from('auditoria').insert({usuario:USER.name,accion:'ANULAR_PAGO',detalle:`L${num}: -$${m} ${metodo}`});
+      await cargarTodo(); verLocal(num);
+    }catch(e){ alert('Error: '+e.message); }
+  }
+
+  async function moverSaldo(metodo, delta){
+    const clave = (String(metodo).toUpperCase()==='TRANSFERENCIA')?'banco_aprox':'caja_efectivo';
+    const {data}=await sb.from('config').select('valor').eq('clave',clave).single();
+    const actual=Number(data?.valor)||0;
+    await sb.from('config').update({valor:String(actual+delta)}).eq('clave',clave);
+  }
+
+  async function recalcInteres(num, alq){
+    const y=new Date().getFullYear(), m=new Date().getMonth()+1, dia=new Date().getDate();
+    const desde=`${y}-${String(m).padStart(2,'0')}-01`;
+    const hasta=`${m===12?y+1:y}-${String(m===12?1:m+1).padStart(2,'0')}-01`;
+    const {data}=await sb.from('pagos').select('monto').eq('local',num).gte('fecha',desde).lt('fecha',hasta);
+    const pagado=(data||[]).reduce((s,p)=>s+(Number(p.monto)||0),0);
+    const interes=calcInteres(alq,pagado,dia);
+    await sb.from('locales').update({intereses_acumulado:interes}).eq('local',num);
+  }
+
+  function rLocales(){
+    const f=FILTRO.toLowerCase().trim();
+    const L=DATA.locales.filter(l=>!f || String(l.local).includes(f) || (l.nombre||'').toLowerCase().includes(f));
+    $('main').innerHTML=`
+      <div class="greet"><h2>🏪 Locales</h2><p>${DATA.locales.length} locales · tocá uno para ver el detalle</p></div>
+      <input class="search" placeholder="🔎 Buscar por número o nombre..." value="${esc(FILTRO)}" oninput="FILTRO=this.value;rLocales()" autofocus>
+      <div>${L.map(l=>{
+        const nombre=(l.nombre||'').replace(/^\d+\s*-\s*/,'')||'(sin nombre)';
+        const debe=l.deuda_total>0;
+        return `<div class="lc" onclick="verLocal(${l.local})">
+          <div class="num">${l.local}</div>
+          <div class="info"><div class="nm">${esc(nombre)}</div><div class="det">Alquiler ${money(l.alquiler)} · pagó ${money(l.pagado)}</div></div>
+          <div class="deu"><div class="m ${debe?'debe':'ok'}">${debe?money(l.deuda_total):'Al día'}</div><div class="t">${debe?'debe':'✓'}</div></div>
+        </div>`;
+      }).join('')||'<div class="loading">No se encontraron locales.</div>'}</div>`;
+    const inp=document.querySelector('.search'); if(inp){ const v=inp.value; inp.focus(); inp.setSelectionRange(v.length,v.length); }
+  }
+</script>
+</body>
+</html>
