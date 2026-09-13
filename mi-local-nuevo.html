@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi Local — Feria del Litoral</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{--az:#0f1b2d;--do:#e8b23a;--bg:#f4f5f7;--bd:#e6e8eb;--gr:#7a828c;--ve:#16a34a;--co:#e11d48}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:#1a2230}
+  .hidden{display:none!important}
+  .login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f1b2d,#1e3352);padding:20px}
+  .lbox{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:34px 28px;width:100%;max-width:360px;text-align:center}
+  .lbox h1{font-family:'Archivo';font-weight:900;color:#fff;font-size:24px}
+  .lbox p{color:rgba(255,255,255,.55);font-size:13px;margin:4px 0 20px}
+  .lbox input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:14px 16px;border-radius:12px;font-size:15px;margin-bottom:10px;outline:none}
+  .lbox input::placeholder{color:rgba(255,255,255,.4)}
+  .lbox button{width:100%;background:var(--do);color:#0f1b2d;border:none;padding:14px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+  .lerr{color:#ff9a9a;font-size:13px;min-height:18px;margin-top:6px}
+  .top{background:var(--az);color:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center}
+  .top h2{font-family:'Archivo';font-weight:900;font-size:17px}
+  .top .out{background:rgba(255,255,255,.12);border:none;color:#fff;border-radius:8px;padding:7px 12px;cursor:pointer;font-size:12px}
+  .wrap{max-width:640px;margin:0 auto;padding:16px}
+  .btn-add{width:100%;background:var(--ve);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:14px}
+  .prod{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+  .prod img{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#eef0f3;flex-shrink:0}
+  .prod .inf{flex:1;min-width:0}
+  .prod .nm{font-weight:700;font-size:14px}
+  .prod .pr{color:var(--ve);font-weight:700;font-size:14px}
+  .prod .x{background:#fef2f2;color:#b91c1c;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px}
+  .modal{position:fixed;inset:0;z-index:100;background:rgba(10,15,25,.6);display:flex;align-items:flex-end;justify-content:center}
+  .mbox{background:#fff;width:100%;max-width:560px;border-radius:20px 20px 0 0;padding:20px;max-height:92vh;overflow-y:auto}
+  .mbox label{font-size:12px;color:var(--gr);font-weight:600;display:block;margin-top:8px}
+  .mbox input,.mbox textarea,.mbox select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;font-size:15px;margin-top:4px;font-family:inherit}
+  .loading{text-align:center;padding:40px;color:var(--gr)}
+</style>
+</head>
+<body>
+  <div id="login" class="login"><div class="lbox">
+    <h1>🏪 Mi Local</h1><p>Feria del Litoral</p>
+    <input id="num" type="number" placeholder="Número de local" autocomplete="off">
+    <input id="clave" type="password" placeholder="Clave" autocomplete="off">
+    <button onclick="login()">Entrar</button>
+    <div id="lerr" class="lerr"></div>
+  </div></div>
+
+  <div id="app" class="hidden">
+    <div class="top"><h2 id="topTit">Mi Local</h2><button class="out" onclick="logout()">Salir</button></div>
+    <div class="wrap">
+      <button class="btn-add" onclick="modalProd()">➕ Agregar producto</button>
+      <div id="lista"><div class="loading">Cargando…</div></div>
+    </div>
+  </div>
+  <div id="modal" class="hidden"></div>
+
+<script>
+  const SB_URL='https://gygjvlrudrqtwoqblywj.supabase.co';
+  const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd5Z2p2bHJ1ZHJxdHdvcWJseXdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzMDAwMjEsImV4cCI6MjEwNDg3NjAyMX0.BJGAV_csE4bQYJX9Jgdik8ZLlLgT028lW7g8Pd_zhlo';
+  const sb=supabase.createClient(SB_URL,SB_KEY);
+  const $=id=>document.getElementById(id);
+  const money=n=>'$'+Math.round(Number(n)||0).toLocaleString('es-AR');
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const uuid=()=>'xxxxxxxx'.replace(/x/g,()=>((Math.random()*16)|0).toString(16));
+  let LOCAL=null;
+
+  $('clave').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+  async function login(){
+    const num=parseInt($('num').value), clave=($('clave').value||'').trim();
+    if(!num||!clave){ $('lerr').textContent='Completá número y clave'; return; }
+    const {data,error}=await sb.from('locales').select('local,nombre,clave').eq('local',num).maybeSingle();
+    if(error||!data){ $('lerr').textContent='Local no encontrado'; return; }
+    const claveBase=String(data.clave||'').replace(/\.0$/,'').trim();
+    if(claveBase!==clave){ $('lerr').textContent='Clave incorrecta'; return; }
+    LOCAL=data;
+    $('login').classList.add('hidden'); $('app').classList.remove('hidden');
+    $('topTit').textContent='L'+num+' · '+((data.nombre||'').replace(/^\d+\s*-\s*/,''));
+    cargar();
+  }
+  function logout(){ LOCAL=null; $('app').classList.add('hidden'); $('login').classList.remove('hidden'); $('num').value='';$('clave').value='';$('lerr').textContent=''; }
+
+  async function cargar(){
+    $('lista').innerHTML='<div class="loading">Cargando productos…</div>';
+    const {data}=await sb.from('productos').select('*').eq('local',LOCAL.local).order('orden',{ascending:true});
+    const prods=(data||[]).filter(p=>(p.estado||'ACTIVO').toUpperCase()!=='ELIMINADO');
+    $('lista').innerHTML=prods.length?prods.map(p=>{
+      const foto=(p.foto||'').split(',')[0].trim();
+      const src=foto?(foto.startsWith('http')?foto:'https://drive.google.com/thumbnail?id='+foto):'';
+      return `<div class="prod">
+        ${src?`<img src="${esc(src)}" onerror="this.style.visibility='hidden'">`:'<div style="width:60px;height:60px;border-radius:10px;background:#eef0f3;flex-shrink:0"></div>'}
+        <div class="inf"><div class="nm">${esc(p.titulo||'')}</div><div class="pr">${money(p.precio)}</div><div style="font-size:11px;color:var(--gr)">${esc(p.stock||'DISPONIBLE')}</div></div>
+        <button class="x" onclick="borrar('${p.id}')">✕</button>
+      </div>`;
+    }).join(''):'<div class="loading">Todavía no cargaste productos. Tocá ➕ Agregar producto.</div>';
+  }
+
+  function modalProd(){
+    $('modal').innerHTML=`<div class="modal" onclick="if(event.target===this)cerrar()"><div class="mbox">
+      <div style="font-family:'Archivo';font-weight:900;font-size:19px;margin-bottom:10px">➕ Nuevo producto</div>
+      <label>Foto</label>
+      <input id="pFoto" type="file" accept="image/*">
+      <label>Nombre</label>
+      <input id="pTit" type="text" placeholder="Ej: Remera negra">
+      <label>Precio</label>
+      <input id="pPrecio" type="number" placeholder="Ej: 25000">
+      <label>Talles / detalle (opcional)</label>
+      <input id="pTalles" type="text" placeholder="Ej: S M L XL">
+      <label>Descripción (opcional)</label>
+      <textarea id="pDesc" rows="2"></textarea>
+      <label>Stock</label>
+      <select id="pStock"><option value="DISPONIBLE">Disponible</option><option value="ULTIMAS">Últimas unidades</option><option value="AGOTADO">Agotado</option></select>
+      <button id="pBtn" onclick="guardar()" style="width:100%;background:var(--ve);color:#fff;border:none;padding:14px;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:14px">Guardar producto</button>
+      <div id="pMsg" style="text-align:center;font-size:13px;margin-top:10px;min-height:18px"></div>
+    </div></div>`;
+    $('modal').classList.remove('hidden');
+  }
+  function cerrar(){ $('modal').classList.add('hidden'); $('modal').innerHTML=''; }
+
+  let _guardando=false;
+  async function guardar(){
+    if(_guardando) return;
+    const tit=($('pTit').value||'').trim(), precio=Math.abs(parseFloat($('pPrecio').value)||0);
+    if(!tit||precio<=0){ $('pMsg').style.color='var(--co)'; $('pMsg').textContent='Poné nombre y precio'; return; }
+    _guardando=true; const btn=$('pBtn'); btn.disabled=true; btn.textContent='Guardando…';
+    try{
+      let fotoUrl='';
+      const file=$('pFoto').files[0];
+      if(file){
+        $('pMsg').style.color='var(--gr)'; $('pMsg').textContent='Subiendo foto…';
+        const ext=(file.name.split('.').pop()||'jpg').toLowerCase();
+        const path=LOCAL.local+'/'+uuid()+'.'+ext;
+        const {error:upErr}=await sb.storage.from('productos').upload(path,file,{upsert:true});
+        if(upErr) throw new Error('foto: '+upErr.message);
+        fotoUrl=sb.storage.from('productos').getPublicUrl(path).data.publicUrl;
+      }
+      await sb.from('productos').insert({
+        id:uuid(), local:LOCAL.local, titulo:tit, precio, talles:($('pTalles').value||'').trim()||null,
+        descripcion:($('pDesc').value||'').trim()||null, foto:fotoUrl||null, estado:'ACTIVO',
+        fecha:new Date().toLocaleDateString('es-AR'), stock:$('pStock').value, orden:0, destacado:false
+      });
+      cerrar(); cargar();
+    }catch(e){ $('pMsg').style.color='var(--co)'; $('pMsg').textContent='Error: '+e.message; btn.disabled=false; btn.textContent='Guardar producto'; }
+    _guardando=false;
+  }
+
+  async function borrar(id){
+    if(!confirm('¿Borrar este producto?')) return;
+    await sb.from('productos').update({estado:'ELIMINADO'}).eq('id',id);
+    cargar();
+  }
+</script>
+</body>
+</html>
