@@ -731,7 +731,8 @@ const _supaPost={
   'reactivar_intereses':async(b)=>{const num=parseInt(b.local||b.num);await _sb.from('sin_interes').delete().eq('local',num);try{const {data:l}=await _sb.from('locales').select('alquiler_actual').eq('local',num).single();if(l)await _recalcInt(num,l.alquiler_actual);}catch(e){}return{ok:true};},
   'ingresar_caja':async(b)=>{const met=(b.metodo||'EFECTIVO').toUpperCase();const monto=Math.abs(Number(b.monto))||0;await _sb.from('pagos').insert({id:_uid(),local:null,fecha:new Date().toISOString(),monto,metodo:met,cargado_por:b.cargadoPor||'?',observaciones:'INGRESO A CAJA: '+(b.motivo||'')});await _moverSaldo(met,monto);return{ok:true};},
   'ajustar_caja':async(b)=>{
-    const clave=(b.campo==='banco'||b.campo==='banco_aprox'||String(b.metodo).toUpperCase()==='TRANSFERENCIA')?'banco_aprox':'caja_efectivo';
+    const _cu=String(b.campo||'').toUpperCase();
+    const clave=(_cu.indexOf('BANCO')>=0||_cu==='BANCO_APROX'||String(b.metodo).toUpperCase()==='TRANSFERENCIA')?'banco_aprox':'caja_efectivo';
     const val=(b.nuevoSaldo!==undefined&&b.nuevoSaldo!==null&&b.nuevoSaldo!=='')?Number(b.nuevoSaldo):(b.monto!==undefined?Number(b.monto):NaN);
     if(isNaN(val)) return {ok:false,error:'No se recibió el monto a ajustar'};
     await _sb.from('config').update({valor:String(val)}).eq('clave',clave);
@@ -778,7 +779,18 @@ const _supaPost={
   ,'rubro_catalogo_guardar':async(b)=>{if(b.borrar){await _sb.from('rubros_catalogo').delete().eq('nombre',b.borrar);}else if(b.nombre){await _sb.from('rubros_catalogo').insert({nombre:b.nombre});}return{ok:true};}
   ,'gastos_fijos_agregar':async(b)=>{await _sb.from('gastos_base').insert({id:_uid(),detalle:b.detalle,total:Number(b.total)||0,entregas:0,saldo:Number(b.total)||0,total2:Number(b.total)||0});return{ok:true};}
   ,'gastos_fijos_borrar':async(b)=>{await _sb.from('gastos_base').delete().eq('id',b.id);return{ok:true};}
-  ,'gastos_fijos_editar':async(b)=>{await _sb.from('gastos_base').update({detalle:b.detalle,total:Number(b.total)||0}).eq('id',b.id);return{ok:true};}
+  ,'gastos_fijos_editar':async(b)=>{
+    const upd={};
+    const det=(b.detalle!==undefined&&b.detalle!==null&&b.detalle!=='')?b.detalle:((b.descripcion!==undefined&&b.descripcion!==null)?b.descripcion:undefined);
+    if(det!==undefined) upd.detalle=det;
+    const tot=(b.total!==undefined&&b.total!=='')?b.total:((b.monto_total!==undefined&&b.monto_total!=='')?b.monto_total:undefined);
+    if(tot!==undefined){ const n=Number(tot); if(!isNaN(n)) upd.total=n; }
+    if(Object.keys(upd).length===0) return {ok:false,error:'No había nada para modificar'};
+    const r=await _sb.from('gastos_base').update(upd).eq('id',b.id).select('id');
+    if(r.error) return {ok:false,error:r.error.message};
+    if(!r.data||!r.data.length) return {ok:false,error:'No se encontró el gasto fijo (id '+b.id+')'};
+    return {ok:true};
+  }
   ,'cargar_retiro':async(b)=>{const met=(b.metodo||'EFECTIVO').toUpperCase();const monto=Math.abs(Number(b.monto||b.retiro))||0;await _sb.from('retiros').insert({id:_uid(),fecha:new Date().toISOString(),retiro:monto,saldo:null,nombre:b.nombre||b.socio||''});await _sb.from('socios_mov').insert({fecha:new Date().toISOString(),socio:b.nombre||b.socio||'',tipo:'RETIRO',periodo:'',monto:monto,detalle:b.detalle||'Retiro'});await _moverSaldo(met,-monto);return{ok:true};}
   ,'registrar_retiro_socio':async(b)=>{const monto=Math.abs(Number(b.monto))||0;await _sb.from('socios_mov').insert({fecha:new Date().toISOString(),socio:b.socio,tipo:'RETIRO',periodo:'',monto:monto,detalle:b.detalle||'Retiro'});await _moverSaldo('EFECTIVO',-monto);return{ok:true};}
   ,'ajustar_saldo_socio':async(b)=>{await _sb.from('socios_mov').insert({fecha:new Date().toISOString(),socio:b.socio,tipo:'AJUSTE',periodo:'',monto:Number(b.monto)||0,detalle:b.detalle||'Ajuste'});return{ok:true};}
