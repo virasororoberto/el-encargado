@@ -4437,7 +4437,7 @@ async function verLocal(num) {
             <button class="btn wa" onclick="notiL(${num},'final_1')" style="background:#dc2626">Final</button>
             <button class="btn wa" onclick="notiL(${num},'cierre_mes')" style="background:#7c3aed">📅 Cierre de mes</button>
             <button class="btn wa" onclick="notiL(${num},'antes_10')" style="background:#0ea5e9">📆 Antes del 10</button>
-            <button class="btn wa" onclick="modPushLocal(${num}, ${JSON.stringify((l.NOMBRE||'').replace(/^\d+\s*-\s*/,''))})" style="background:#2563eb">🔔 Push al cel</button>
+            <button class="btn wa" onclick="modPushLocal(${num})" style="background:#2563eb">🔔 Push al cel</button>
           </div>
           <button class="btn do" onclick="modMensajeLibre(${num},'${(l.NOMBRE||'').replace(/'/g,"\\'")}')" style="margin-top:10px">✏️ Mensaje personalizado libre</button>
           ${promo && promo.promo && promo.promo!=='SIN PROMO'?`<button class="btn ve" onclick="difundirPromoLocal(${num})" style="margin-top:8px">📣 Difundir esta promo</button>`:''}
@@ -4496,8 +4496,9 @@ async function enviarPushAdmin(locales, titulo, cuerpo){
     return {ok:false,error:(d&&d.error)||'Error'};
   }catch(e){ return {ok:false,error:e.message}; }
 }
-async function modPushLocal(num, nombre){
+async function modPushLocal(num){
   const fila=(state.data.alquileres||[]).find(a=>String(a.LOCAL)===String(num));
+  const nombre=fila?String(fila.NOMBRE||'').replace(/^\d+\s*-\s*/,'').trim():'';
   const deuda=fila?(Number(fila['DEUDA TOTAL'])||0):0;
   const sug = deuda>0 ? ('Hola '+(nombre||'')+', te recordamos que tenés un saldo pendiente de '+money(deuda)+' en la Feria del Litoral. ¡Gracias!') : ('Hola '+(nombre||'')+', novedades de la Feria del Litoral.');
   modal(`<h3>🔔 Mandar aviso push</h3>
