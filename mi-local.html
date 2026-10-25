@@ -1325,6 +1325,9 @@ function _b64ToUint8(base64){
 async function activarAvisos(){
   try{
     if(!('serviceWorker' in navigator) || !('PushManager' in window)){ alert('Tu teléfono no soporta notificaciones. Probá instalando Mi Local en la pantalla de inicio.'); return; }
+    if(Notification.permission==='default'){
+      if(!confirm('🔔 Para recibir los avisos de la Feria, en el siguiente cartel tocá PERMITIR.\n\n¿Continuar?')) return;
+    }
     if(Notification.permission==='denied'){
       alert('⚠️ Las notificaciones están BLOQUEADAS en este navegador.\n\nPara activarlas:\n1) Tocá el candado 🔒 al lado de la dirección web (arriba).\n2) Entrá a Permisos / Configuración del sitio.\n3) En Notificaciones, elegí PERMITIR.\n4) Recargá y tocá Activar avisos de nuevo.\n\nSi no aparece, revisá: Ajustes del teléfono → Chrome → Notificaciones → activado.');
       return;
