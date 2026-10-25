@@ -1370,7 +1370,20 @@ function renderPushBanner(activo){
     c.innerHTML='<div style="margin:12px 4px 0;padding:14px;background:#eff6ff;border:1.5px solid #93c5fd;border-radius:12px"><div style="font-size:14px;color:#1e40af;font-weight:700;margin-bottom:8px">🔔 Activá los avisos de la Feria</div><div style="font-size:12px;color:#475569;margin-bottom:10px">Recibí recordatorios de pago y novedades directo en tu teléfono. Es gratis.</div><button onclick="activarAvisos()" style="width:100%;background:#2563eb;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:800;cursor:pointer">🔔 Activar avisos</button></div>';
   }
 }
-async function cargarPushBanner(){ renderPushBanner(await estadoPush()); }
+async function cargarPushBanner(){
+  try{
+    if(('serviceWorker' in navigator) && ('PushManager' in window) && Notification.permission==='granted'){
+      const reg=await navigator.serviceWorker.ready;
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub){ sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:_b64ToUint8(VAPID_PUBLIC)}); }
+      const j=sub.toJSON();
+      await portalPost('guardar_push',{num:SES.num, clave:SES.clave, endpoint:sub.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth});
+      renderPushBanner(true);
+      return;
+    }
+  }catch(e){}
+  renderPushBanner(await estadoPush());
+}
 
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
 // En iPhone no existe el evento automático: mostramos el banner igual
