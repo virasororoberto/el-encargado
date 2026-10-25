@@ -391,6 +391,7 @@ const MENU_PC = [
     {id:'auditoria', ic:'🧾', label:'Auditoría', fn:'rAuditoria'},
     {id:'mensajeevento', ic:'📣', label:'Mensaje de evento', fn:'rCampanias'},
     {id:'campaniascom', ic:'❤️', label:'Campañas comerciales', fn:'rCampaniasAdmin'},
+    {id:'pushestado', ic:'🔔', label:'Estado de avisos', fn:'rPushEstado'},
     {id:'sorteos', ic:'🎁', label:'Sorteos', fn:'rSorteos'},
     {id:'logout', ic:'🚪', label:'Cerrar sesión', fn:'confirmarLogout'}
   ]}
@@ -499,6 +500,13 @@ const _supaGet={
     return {ok:true,activa:val};
   },
   'campania_borrar':async(b)=>{ const r=await _sb.from('campanias').delete().eq('id',b.id); if(r.error)return{ok:false,error:r.error.message}; return {ok:true}; },
+  'push_estado':async()=>{
+    const [base,ps]=await Promise.all([_cargarBase(),_sb.from('push_subs').select('local').eq('activo',true)]);
+    const activos={}; (ps.data||[]).forEach(r=>{ activos[Number(r.local)]=true; });
+    const locales=base.filter(o=>(o.NOMBRE||'').trim()).map(o=>({local:o.LOCAL,nombre:String(o.NOMBRE||'').replace(/^\d+\s*-\s*/,'').trim(),activo:!!activos[Number(o.LOCAL)]}));
+    const con=locales.filter(l=>l.activo).length;
+    return {ok:true,data:locales,con:con,sin:locales.length-con,total:locales.length};
+  },
   'campania_adheridos_list':async(b)=>{
     const [ad,base]=await Promise.all([
       _sb.from('campania_adheridos').select('*').eq('campania_id',b.id).order('fecha',{ascending:true}),
@@ -4679,6 +4687,28 @@ async function rSugerencias(){
 }
 
 // === CAMPAÑAS / EVENTOS ===
+async function rPushEstado(){
+  state.view='pushestado'; loading('Cargando estado de avisos...');
+  const r=await apiGet('push_estado');
+  const lista=(r&&r.data)||[];
+  const con=lista.filter(l=>l.activo);
+  const sin=lista.filter(l=>!l.activo);
+  const fila=l=>`<div class="lc" onclick="verLocal(${l.local})"><div class="lc-h"><div><div class="lc-n">${escapeHTML(l.nombre)}</div><div class="lc-num">Local ${l.local}</div></div><div class="lc-d ${l.activo?'ok':''}" style="${l.activo?'color:var(--ve)':'color:#94a3b8'}">${l.activo?'✅ Activado':'❌ Sin activar'}</div></div></div>`;
+  render(`
+    <div class="greet"><h2>🔔 Estado de avisos push</h2><p>Qué locales reciben notificaciones y cuáles todavía no las activaron.</p></div>
+    <div class="kpis" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="kpi do"><div class="kpi-label">Activados</div><div class="kpi-value" style="color:var(--ve)">${(r&&r.con)||0}</div></div>
+      <div class="kpi co"><div class="kpi-label">Sin activar</div><div class="kpi-value">${(r&&r.sin)||0}</div></div>
+      <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">${(r&&r.total)||0}</div></div>
+    </div>
+    <div class="section"><div class="section-title">❌ Sin activar (${sin.length}) <span style="font-size:11px;color:var(--gr);font-weight:400">— pedirles que abran Mi Local y activen</span></div>
+      ${sin.length?sin.map(fila).join(''):'<div class="loading">¡Todos activados! 🎉</div>'}
+    </div>
+    <div class="section"><div class="section-title">✅ Activados (${con.length})</div>
+      ${con.length?con.map(fila).join(''):'<div class="loading">Todavía ninguno. Pedí a los locales que abran Mi Local.</div>'}
+    </div>
+  `);
+}
 async function rCampaniasAdmin(){
   state.view='campaniascom'; loading('Cargando campañas...');
   const r=await apiGet('campanias_list');
