@@ -1371,20 +1371,32 @@ function renderPushBanner(activo){
   }
 }
 async function cargarPushBanner(){
+  let c=document.getElementById('pushBanner');
+  if(!c){ const parent=document.getElementById('contenido'); if(!parent) return; c=document.createElement('div'); c.id='pushBanner'; parent.insertBefore(c, parent.firstChild); }
+  const box=(txt,bg,bd,col)=>{ c.innerHTML='<div style="margin:12px 4px 0;padding:11px 14px;background:'+bg+';border:1px solid '+bd+';border-radius:12px;font-size:12px;color:'+col+'">'+txt+'</div>'; };
   try{
-    if(('serviceWorker' in navigator) && ('PushManager' in window) && Notification.permission==='granted'){
+    if(!('serviceWorker' in navigator) || !('PushManager' in window)){
+      box('📱 Para recibir avisos, agregá Mi Local a la pantalla de inicio (Compartir → Agregar a inicio) y abrilo desde ahí.', '#fffbeb','#fde68a','#92400e'); return;
+    }
+    if(Notification.permission==='denied'){
+      c.innerHTML='<div style="margin:12px 4px 0;padding:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;font-size:12px;color:#b91c1c">🔕 Los avisos están bloqueados. Tocá el candado 🔒 al lado de la dirección → Notificaciones → Permitir, y recargá.</div>'; return;
+    }
+    if(Notification.permission==='granted'){
       const reg=await navigator.serviceWorker.ready;
       let sub=await reg.pushManager.getSubscription();
       if(!sub){ sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:_b64ToUint8(VAPID_PUBLIC)}); }
       const j=sub.toJSON();
-      await portalPost('guardar_push',{num:SES.num, clave:SES.clave, endpoint:sub.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth});
-      renderPushBanner(true);
+      const g=await portalPost('guardar_push',{num:SES.num, clave:SES.clave, endpoint:sub.endpoint, p256dh:(j.keys&&j.keys.p256dh), auth:(j.keys&&j.keys.auth)});
+      if(g && g.ok){ renderPushBanner(true); }
+      else { box('⚠️ Avisos con permiso, pero no se guardó en el sistema'+((g&&g.error)?(': '+g.error):'')+'. Avisale a administración.', '#fef2f2','#fecaca','#b91c1c'); }
       return;
     }
-  }catch(e){}
-  renderPushBanner(await estadoPush());
+    // permission default: mostrar botón activar
+    renderPushBanner(false);
+  }catch(e){
+    box('⚠️ No se pudieron activar los avisos: '+(e&&e.message||e), '#fef2f2','#fecaca','#b91c1c');
+  }
 }
-
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
 // En iPhone no existe el evento automático: mostramos el banner igual
 window.addEventListener('load', ()=>{ if(esIOS() && !yaInstalada()) setTimeout(mostrarBannerInstalar, 2500); });
