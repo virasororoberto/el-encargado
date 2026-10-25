@@ -1341,7 +1341,8 @@ async function activarAvisos(){
       sub=await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:_b64ToUint8(VAPID_PUBLIC)});
     }
     const j=sub.toJSON();
-    await portalPost('guardar_push',{num:SES.num, clave:SES.clave, endpoint:sub.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth});
+    const g=await portalPost('guardar_push',{num:SES.num, clave:SES.clave, endpoint:sub.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth});
+    if(!g || !g.ok){ alert('Se activó el permiso pero no se pudo guardar en el sistema'+((g&&g.error)?(': '+g.error):'. Probá de nuevo.')); return; }
     // notificación de bienvenida (local, para confirmar que anda)
     reg.showNotification('🎉 ¡Avisos activados!',{body:'Vas a recibir los avisos de la Feria del Litoral acá.', icon:'icon-192.png', badge:'icon-192.png'});
     renderPushBanner(true);
