@@ -1304,6 +1304,7 @@ async function rWhatsApp() {
   const sinT=r.data.filter(x=>!x.tiene_telefono);
   render(`
     <div class="greet"><h2>📱 WhatsApp masivo</h2><p>Tocá un mensaje y abre WhatsApp con el texto listo</p></div>
+    <button class="btn pri" onclick="pushMorosos()" style="width:100%;margin-bottom:12px;background:#2563eb">🔔 Mandar aviso push a todos los morosos</button>
     <div class="kpis" style="grid-template-columns:1fr 1fr 1fr">
       <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">${r.data.length}</div></div>
       <div class="kpi" style="background:#d1fae5;border-color:#a7f3d0"><div class="kpi-label">Con tel</div><div class="kpi-value" style="color:#065f46">${conT.length}</div></div>
@@ -4436,6 +4437,7 @@ async function verLocal(num) {
             <button class="btn wa" onclick="notiL(${num},'final_1')" style="background:#dc2626">Final</button>
             <button class="btn wa" onclick="notiL(${num},'cierre_mes')" style="background:#7c3aed">📅 Cierre de mes</button>
             <button class="btn wa" onclick="notiL(${num},'antes_10')" style="background:#0ea5e9">📆 Antes del 10</button>
+            <button class="btn wa" onclick="modPushLocal(${num}, ${JSON.stringify((l.NOMBRE||'').replace(/^\d+\s*-\s*/,''))})" style="background:#2563eb">🔔 Push al cel</button>
           </div>
           <button class="btn do" onclick="modMensajeLibre(${num},'${(l.NOMBRE||'').replace(/'/g,"\\'")}')" style="margin-top:10px">✏️ Mensaje personalizado libre</button>
           ${promo && promo.promo && promo.promo!=='SIN PROMO'?`<button class="btn ve" onclick="difundirPromoLocal(${num})" style="margin-top:8px">📣 Difundir esta promo</button>`:''}
@@ -4486,6 +4488,46 @@ function abrirWhatsApp(mensaje, telefono){
   window.open(url, '_blank');
 }
 
+async function enviarPushAdmin(locales, titulo, cuerpo){
+  try{
+    const r=await fetch('/api/enviar-push',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({locales:locales,titulo:titulo,body:cuerpo})});
+    const d=await r.json();
+    if(d&&d.ok){ return d; }
+    return {ok:false,error:(d&&d.error)||'Error'};
+  }catch(e){ return {ok:false,error:e.message}; }
+}
+async function modPushLocal(num, nombre){
+  const fila=(state.data.alquileres||[]).find(a=>String(a.LOCAL)===String(num));
+  const deuda=fila?(Number(fila['DEUDA TOTAL'])||0):0;
+  const sug = deuda>0 ? ('Hola '+(nombre||'')+', te recordamos que tenés un saldo pendiente de '+money(deuda)+' en la Feria del Litoral. ¡Gracias!') : ('Hola '+(nombre||'')+', novedades de la Feria del Litoral.');
+  modal(`<h3>🔔 Mandar aviso push</h3>
+    <div style="font-size:13px;color:var(--gr);margin-bottom:10px">A: Local ${num}${nombre?' · '+escapeHTML(nombre):''}</div>
+    <label style="font-size:11px;color:var(--gr)">Título</label>
+    <input type="text" id="puTit" value="Feria del Litoral" style="margin-bottom:8px">
+    <label style="font-size:11px;color:var(--gr)">Mensaje</label>
+    <textarea id="puMsg" rows="3">${escapeHTML(sug)}</textarea>
+    <button class="btn pri" style="width:100%;margin-top:12px" onclick="confPushLocal(${num})">🔔 Enviar al teléfono del local</button>
+    <div style="font-size:11px;color:var(--gr);margin-top:8px;text-align:center">Solo le llega si el local activó los avisos en Mi Local.</div>`);
+}
+async function confPushLocal(num){
+  const tit=document.getElementById('puTit').value||'Feria del Litoral';
+  const msg=document.getElementById('puMsg').value.trim();
+  if(!msg){ toast('Escribí el mensaje','co'); return; }
+  const btn=event&&event.target; if(btn){btn.disabled=true;btn.textContent='Enviando...';}
+  const r=await enviarPushAdmin([Number(num)],tit,msg);
+  if(btn){btn.disabled=false;btn.textContent='🔔 Enviar al teléfono del local';}
+  if(r.ok){ cerrarModal(); toast(r.enviados>0?('✓ Enviado ('+r.enviados+')'):'El local no tiene avisos activados','ve'); }
+  else { alert('No se pudo enviar: '+r.error); }
+}
+async function pushMorosos(){
+  const mor=(state.data.morosos||[]).filter(m=>Number(m['DEUDA TOTAL'])>0);
+  if(!mor.length){ toast('No hay morosos','co'); return; }
+  if(!confirm('¿Mandar aviso push a los '+mor.length+' morosos que tengan los avisos activados?')) return;
+  const locales=mor.map(m=>Number(m.LOCAL));
+  const r=await enviarPushAdmin(locales,'Feria del Litoral','Te recordamos que tenés un saldo pendiente. Por favor regularizá tu cuenta. ¡Gracias!');
+  if(r.ok){ alert('Avisos enviados: '+r.enviados+' de '+r.total+' suscriptos.\n(Solo llega a los que activaron avisos en Mi Local)'); }
+  else { alert('No se pudo: '+r.error); }
+}
 async function notiL(num, plantilla) {
   toast('Generando mensaje...');
   const r = await apiGet('generar_link_whatsapp',{local:num,plantilla,operador:state.user.name});
