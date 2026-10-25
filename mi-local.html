@@ -1397,7 +1397,21 @@ async function cargarPushBanner(){
     box('⚠️ No se pudieron activar los avisos: '+(e&&e.message||e), '#fef2f2','#fecaca','#b91c1c');
   }
 }
-if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      // revisar actualizaciones al abrir
+      reg.update();
+      reg.addEventListener('updatefound', ()=>{
+        const nw=reg.installing;
+        if(nw){ nw.addEventListener('statechange', ()=>{ if(nw.state==='activated'){ /* nueva versión lista */ } }); }
+      });
+    }).catch(()=>{});
+    // si el SW cambia el controlador, recargar una vez para tomar la versión nueva
+    let _recargado=false;
+    navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if(_recargado) return; _recargado=true; location.reload(); });
+  });
+}
 // En iPhone no existe el evento automático: mostramos el banner igual
 window.addEventListener('load', ()=>{ if(esIOS() && !yaInstalada()) setTimeout(mostrarBannerInstalar, 2500); });
 
