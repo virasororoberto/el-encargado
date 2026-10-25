@@ -1311,8 +1311,13 @@ async function rWhatsApp() {
   const conT=r.data.filter(x=>x.tiene_telefono);
   const sinT=r.data.filter(x=>!x.tiene_telefono);
   render(`
-    <div class="greet"><h2>📱 WhatsApp masivo</h2><p>Tocá un mensaje y abre WhatsApp con el texto listo</p></div>
-    <button class="btn pri" onclick="pushMorosos()" style="width:100%;margin-bottom:12px;background:#2563eb">🔔 Mandar aviso push a todos los morosos</button>
+    <div class="greet"><h2>💰 Cobrar a los morosos</h2><p>Dos formas de avisarles: todos juntos (push) o uno por uno (WhatsApp)</p></div>
+    <div class="detail" style="background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #bfdbfe;margin-bottom:12px">
+      <h3 style="border-bottom-color:#bfdbfe">🔔 Opción 1 · Push a todos de una</h3>
+      <p style="font-size:11px;color:var(--gr);margin-bottom:10px">Les manda una notificación al celular a <b>todos los morosos juntos</b>. Solo les llega a los que activaron los avisos en Mi Local.</p>
+      <button class="btn pri" onclick="pushMorosos()" style="width:100%;background:#2563eb">🔔 Avisar a todos los morosos</button>
+    </div>
+    <div class="section-title" style="margin-bottom:8px">💬 Opción 2 · WhatsApp uno por uno</div>
     <div class="kpis" style="grid-template-columns:1fr 1fr 1fr">
       <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">${r.data.length}</div></div>
       <div class="kpi" style="background:#d1fae5;border-color:#a7f3d0"><div class="kpi-label">Con tel</div><div class="kpi-value" style="color:#065f46">${conT.length}</div></div>
@@ -4437,20 +4442,28 @@ async function verLocal(num) {
         <div class="detail"><h3>🛍️ Qué vende (Lito)</h3>
           ${cat && cat.descripcion?`<div class="cat-box">${cat.descripcion}</div>`:`<div class="promo-empty">Sin descripción en Lito IA</div>`}
         </div>
-        ${tel?`<div class="detail"><h3>📱 WhatsApp</h3>
-          <p style="font-size:12px;color:var(--gr);margin-bottom:10px">Tel: ${tel}</p>
+        ${tel?`<div class="detail"><h3>📱 Mandar WhatsApp</h3>
+          <p style="font-size:11px;color:var(--gr);margin-bottom:10px">Abre WhatsApp con el mensaje ya escrito. Solo tenés que apretar enviar. &nbsp;·&nbsp; Tel: ${tel}</p>
+          <div style="font-size:11px;font-weight:800;color:var(--gr);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">Recordatorio de deuda</div>
           <div class="btn-row">
-            <button class="btn wa" onclick="notiL(${num},'amable_1')">Amable</button>
-            <button class="btn wa" onclick="notiL(${num},'firme_1')">Firme</button>
-            <button class="btn wa" onclick="notiL(${num},'final_1')" style="background:#dc2626">Final</button>
-            <button class="btn wa" onclick="notiL(${num},'cierre_mes')" style="background:#7c3aed">📅 Cierre de mes</button>
-            <button class="btn wa" onclick="notiL(${num},'antes_10')" style="background:#0ea5e9">📆 Antes del 10</button>
-            <button class="btn wa" onclick="modPushLocal(${num})" style="background:#2563eb">🔔 Push al cel</button>
+            <button class="btn wa" onclick="notiL(${num},'amable_1')">😊 Amable</button>
+            <button class="btn wa" onclick="notiL(${num},'firme_1')" style="background:#f59e0b">⚠️ Firme</button>
+            <button class="btn wa" onclick="notiL(${num},'final_1')" style="background:#dc2626">🚨 Final</button>
           </div>
-          <button class="btn do" onclick="modMensajeLibre(${num},'${(l.NOMBRE||'').replace(/'/g,"\\'")}')" style="margin-top:10px">✏️ Mensaje personalizado libre</button>
+          <div style="font-size:11px;font-weight:800;color:var(--gr);text-transform:uppercase;letter-spacing:.5px;margin:12px 0 5px">Según la fecha del mes</div>
+          <div class="btn-row">
+            <button class="btn wa" onclick="notiL(${num},'antes_10')" style="background:#0ea5e9">📆 Antes del 10</button>
+            <button class="btn wa" onclick="notiL(${num},'cierre_mes')" style="background:#7c3aed">📅 Cierre de mes</button>
+          </div>
+          <button class="btn do" onclick="modMensajeLibre(${num},'${(l.NOMBRE||'').replace(/'/g,"\\'")}')" style="margin-top:12px">✏️ Escribir mensaje libre</button>
           ${promo && promo.promo && promo.promo!=='SIN PROMO'?`<button class="btn ve" onclick="difundirPromoLocal(${num})" style="margin-top:8px">📣 Difundir esta promo</button>`:''}
           ${!promo||promo.promo==='SIN PROMO'?`<button class="btn ol" onclick="notiL(${num},'promo_recordatorio')" style="margin-top:8px">📣 Recordar cargar promo</button>`:''}
-        </div>`:`<div class="alert"><div class="alert-title">⚠️ Sin teléfono</div><div class="alert-text">Cargá en hoja TELEFONOS</div></div>`}
+        </div>`:`<div class="alert"><div class="alert-title">⚠️ Sin teléfono de WhatsApp</div><div class="alert-text">Cargá el número en la hoja TELEFONOS para poder mandarle WhatsApp.</div></div>`}
+        <div class="detail" style="background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #bfdbfe">
+          <h3 style="border-bottom-color:#bfdbfe">🔔 Notificación al celular (Push)</h3>
+          <p style="font-size:11px;color:var(--gr);margin-bottom:10px">Le llega una notificación directa al teléfono, como las de WhatsApp o Instagram. <b>Solo funciona si el local activó los avisos</b> en la app Mi Local.</p>
+          <button class="btn pri" onclick="modPushLocal(${num})" style="width:100%;background:#2563eb">🔔 Enviar notificación al cel</button>
+        </div>
         <div id="contratoFicha_${num}" class="detail"><h3>📄 Contrato</h3><div style="text-align:center;padding:10px;color:var(--gr)">Cargando...</div></div>
       </div>
     </div>
