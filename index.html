@@ -820,7 +820,7 @@ const _supaPost={
     return {ok:true, monto:monto, local:num};
   }
 
-  ,'cambiar_inquilino':async(b)=>{const num=parseInt(b.local);const u={nombre:b.nombreNuevo,alquiler_actual:Number(b.alquilerNuevo)||0,clave:String(b.nuevaClave||'')};if(b.condonarDeuda){u.mora=0;u.intereses_acumulado=0;}await _sb.from('locales').update(u).eq('local',num);await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'CAMBIAR_INQUILINO',detalle:`L${num} -> ${b.nombreNuevo}`});return{ok:true};}
+  ,'cambiar_inquilino':async(b)=>{const num=parseInt(b.local);const u={nombre:b.nombreNuevo};const aNew=Number(b.alquilerNuevo);if(b.alquilerNuevo!=null && String(b.alquilerNuevo).trim()!=='' && aNew>0){u.alquiler_actual=aNew;}if(b.nuevaClave===true||b.nuevaClave==='true'){u.clave='';}if(b.condonarDeuda){u.mora=0;u.intereses_acumulado=0;}await _sb.from('locales').update(u).eq('local',num);await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'CAMBIAR_INQUILINO',detalle:`L${num} -> ${b.nombreNuevo}`});return{ok:true};}
   ,'ejecutar_suba_alquiler':async(b)=>{
     const pct=Number(b.pct||b.porcentaje)||0;
     if(pct<=0)return{ok:false,error:'Porcentaje inválido'};
