@@ -4706,6 +4706,7 @@ async function rPushEstado(){
   const lista=(r&&r.data)||[];
   const con=lista.filter(l=>l.activo);
   const sin=lista.filter(l=>!l.activo);
+  state._pushActivados=con.map(l=>l.local);
   const fila=l=>`<div class="lc" onclick="verLocal(${l.local})"><div class="lc-h"><div><div class="lc-n">${escapeHTML(l.nombre)}</div><div class="lc-num">Local ${l.local}</div></div><div class="lc-d ${l.activo?'ok':''}" style="${l.activo?'color:var(--ve)':'color:#94a3b8'}">${l.activo?'✅ Activado':'❌ Sin activar'}</div></div></div>`;
   render(`
     <div class="greet"><h2>🔔 Estado de avisos push</h2><p>Qué locales reciben notificaciones y cuáles todavía no las activaron.</p></div>
@@ -4714,6 +4715,11 @@ async function rPushEstado(){
       <div class="kpi co"><div class="kpi-label">Sin activar</div><div class="kpi-value">${(r&&r.sin)||0}</div></div>
       <div class="kpi"><div class="kpi-label">Total</div><div class="kpi-value">${(r&&r.total)||0}</div></div>
     </div>
+    <div class="detail" style="background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid #bfdbfe">
+      <h3 style="border-bottom-color:#bfdbfe">📣 Mandar un aviso a todos</h3>
+      <p style="font-size:11px;color:var(--gr);margin-bottom:10px">Les llega una notificación a los <b>${con.length}</b> locales que tienen los avisos activados. Ideal para agradecer, anunciar un evento o saludar.</p>
+      <button class="btn pri" onclick="pushTodosActivados()" style="width:100%;background:#2563eb"${con.length?'':' disabled'}>📣 Escribir y enviar a todos</button>
+    </div>
     <div class="section"><div class="section-title">❌ Sin activar (${sin.length}) <span style="font-size:11px;color:var(--gr);font-weight:400">— pedirles que abran Mi Local y activen</span></div>
       ${sin.length?sin.map(fila).join(''):'<div class="loading">¡Todos activados! 🎉</div>'}
     </div>
@@ -4721,6 +4727,30 @@ async function rPushEstado(){
       ${con.length?con.map(fila).join(''):'<div class="loading">Todavía ninguno. Pedí a los locales que abran Mi Local.</div>'}
     </div>
   `);
+}
+function pushTodosActivados(){
+  const n=(state._pushActivados||[]).length;
+  if(!n){ toast('Todavía ningún local activó los avisos','co'); return; }
+  modal(`<h3>📣 Aviso a todos los locales</h3>
+    <div style="font-size:13px;color:var(--gr);margin-bottom:10px">Le llega a los <b>${n}</b> locales que tienen los avisos activados.</div>
+    <label style="font-size:11px;color:var(--gr)">Título</label>
+    <input type="text" id="ptTit" value="🎃 ¡Gracias por un Halloween increíble!" style="margin-bottom:8px">
+    <label style="font-size:11px;color:var(--gr)">Mensaje</label>
+    <textarea id="ptMsg" rows="7">La Feria se llenó de magia y fue gracias a ustedes. Gracias por decorar, por ponerle onda y por bancar este proyecto. Sabemos que hay momentos difíciles, y es justo ahí donde más unidos tenemos que estar para crecer y buscar nuevas alternativas 💪 Esto recién arranca… ¡ya nos preparamos para la Navidad! 🎄 Gracias por ser parte de la familia de la Feria del Litoral.</textarea>
+    <button class="btn pri" style="width:100%;margin-top:12px" onclick="confPushTodos()">📣 Enviar a los ${n} locales</button>
+    <div style="font-size:11px;color:var(--gr);margin-top:8px;text-align:center">Solo le llega a los que tienen los avisos activados en Mi Local.</div>`);
+}
+async function confPushTodos(){
+  const tit=document.getElementById('ptTit').value||'Feria del Litoral';
+  const msg=document.getElementById('ptMsg').value.trim();
+  if(!msg){ toast('Escribí el mensaje','co'); return; }
+  const locales=(state._pushActivados||[]);
+  if(!locales.length){ toast('No hay locales activados','co'); return; }
+  const btn=event&&event.target; if(btn){btn.disabled=true;btn.textContent='Enviando...';}
+  const r=await enviarPushAdmin(locales,tit,msg);
+  if(btn){btn.disabled=false;btn.textContent='📣 Enviar a los '+locales.length+' locales';}
+  if(r.ok){ cerrarModal(); alert('✅ Avisos enviados: '+(r.enviados||0)+' de '+(r.total||locales.length)+' suscriptos.'); }
+  else { alert('No se pudo enviar: '+r.error); }
 }
 async function rCampaniasAdmin(){
   state.view='campaniascom'; loading('Cargando campañas...');
