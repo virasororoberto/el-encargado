@@ -361,9 +361,9 @@
     if(_camp){
       const _burl=_camp.banner_url||'';
       if(_burl){
-        html+=`<div class="campbanner campbanner-img" onclick="abrirCampania()" style="--cc:${esc(_camp.color||'#e11d48')};background-image:url('${esc(_burl)}')"><button class="cb-cta">${esc(_camp.cta_texto||'Ver evento')} →</button></div><div class="cb-bar" onclick="abrirCampania()">🎃 ${esc(_camp.cta_texto||'Ver el evento')} →</div>`;
+        html+=`<div class="campbanner campbanner-img" onclick="abrirCampania()" style="--cc:${esc(_camp.color||'#e11d48')};background-image:url('${esc(_burl)}')"><button class="cb-cta">${esc(_camp.cta_texto||'Ver evento')} →</button></div><div class="cb-bar" onclick="abrirCampania()">📣 ${esc(_camp.cta_texto||'Ver el evento')} →</div>`;
       } else {
-        html+=`<div class="campbanner" onclick="abrirCampania()" style="--cc:${esc(_camp.color||'#e11d48')}"><div class="wrap"><div class="cb-tag">🎃 ${esc(String(_camp.titulo_publico||'').toUpperCase())}</div><div class="cb-tit">${esc(_camp.titulo_publico||'')}</div><div class="cb-baj">${esc(_camp.bajada||'')}</div><button class="cb-cta">${esc(_camp.cta_texto||'Ver evento')} →</button></div></div>`;
+        html+=`<div class="campbanner" onclick="abrirCampania()" style="--cc:${esc(_camp.color||'#e11d48')}"><div class="wrap"><div class="cb-tag">📣 ${esc(String(_camp.titulo_publico||'').toUpperCase())}</div><div class="cb-tit">${esc(_camp.titulo_publico||'')}</div><div class="cb-baj">${esc(_camp.bajada||'')}</div><button class="cb-cta">${esc(_camp.cta_texto||'Ver evento')} →</button></div></div>`;
       }
     }
     html+=`<div class="wrap">`;
