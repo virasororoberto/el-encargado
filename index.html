@@ -438,7 +438,7 @@ async function _cargarBase(){
 }
 async function _saldos(){const {data}=await _sb.from('config').select('clave,valor').in('clave',['caja_efectivo','banco_aprox']);const o={};(data||[]).forEach(r=>o[r.clave]=Number(r.valor)||0);return{ef:o.caja_efectivo||0,ba:o.banco_aprox||0};}
 async function _moverSaldo(met,delta){const clave=(String(met).toUpperCase()==='TRANSFERENCIA')?'banco_aprox':'caja_efectivo';const {data}=await _sb.from('config').select('valor').eq('clave',clave).single();await _sb.from('config').update({valor:String((Number(data?.valor)||0)+delta)}).eq('clave',clave);}
-async function _recalcInt(num,alq){const {desde,hasta,dia}=_mesRango();const [{data:pg},{data:l}]=await Promise.all([_sb.from('pagos').select('monto').eq('local',num).gte('fecha',desde).lt('fecha',hasta),_sb.from('locales').select('intereses_acumulado').eq('local',num).single()]);const pagado=(pg||[]).reduce((s,p)=>s+(Number(p.monto)||0),0);const E=Number(alq)||0,act=Number(l?.intereses_acumulado)||0;let nv;if(pagado>=E*0.5)nv=act;else if(dia<=10)nv=0;else nv=Math.round(E*0.005*(dia-1));await _sb.from('locales').update({intereses_acumulado:nv}).eq('local',num);}
+async function _recalcInt(num,alq){const {desde,hasta,dia}=_mesRango();const [{data:pg},{data:l}]=await Promise.all([_sb.from('pagos').select('monto').eq('local',num).gte('fecha',desde).lt('fecha',hasta),_sb.from('locales').select('intereses_acumulado').eq('local',num).single()]);const pagado=(pg||[]).reduce((s,p)=>s+(Number(p.monto)||0),0);const E=Number(alq)||0;let nv;if(E<=0)nv=0;else if(pagado>=E*0.5)nv=0;else if(dia<=10)nv=0;else nv=Math.round(E*0.005*(dia-1));await _sb.from('locales').update({intereses_acumulado:nv}).eq('local',num);}
 
 const _supaGet={
   'ping':async()=>({ok:true,backend_version:'supabase-v1'}),
@@ -758,7 +758,7 @@ const _supaPost={
   ,'cargar_gasto':async(b)=>{const det=(b.detalle||b.concepto||b.DETALLE||'').trim();const monto=Math.abs(Number(b.monto||b.total))||0;const met=(b.metodo||'EFECTIVO').toUpperCase();if(monto<=0)return{ok:false,error:'Monto inválido'};await _sb.from('gastos').insert({id:_uid(),detalle:det,total:monto,entregas:0,saldo:monto,fecha:new Date().toISOString(),observacion:det,metodo:met});await _moverSaldo(met,-monto);await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'CARGAR_GASTO',detalle:det+': $'+monto});return{ok:true};}
   ,'anular_gasto':async(b)=>{await _sb.from('gastos').update({total:0,observacion:'ANULADO'}).eq('id',b.id);return{ok:true};}
   ,'cargar_aviso':async(b)=>{await _sb.from('avisos').insert({id:_uid(),mensaje:b.mensaje,fecha:new Date().toISOString()});return{ok:true};}
-  ,'comprobante_portal_marcar':async(b)=>{await _sb.from('comprobantes_portal').update({estado:b.estado||'AUTORIZADO'}).eq('id',b.id);return{ok:true};}
+  ,'comprobante_portal_marcar':async(b)=>{const up={estado:b.estado||'AUTORIZADO'};if(b.motivo&&String(b.motivo).trim()){up.obs='✗ '+String(b.motivo).trim();}await _sb.from('comprobantes_portal').update(up).eq('id',b.id);if(b.motivo&&String(b.motivo).trim()){try{await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'COMPROBANTE_RECHAZADO',detalle:'id '+b.id+': '+String(b.motivo).trim()});}catch(e){}}return{ok:true};}
   ,'tienda_autorizar':async(b)=>{
     const val=(b.valor!==undefined)?(Number(b.valor)===1):!!b.autorizar;
     const loc=parseInt(b.local);
@@ -811,9 +811,10 @@ const _supaPost={
     const num=parseInt(comp&&comp.local); const monto=Math.abs(Number(b.monto))||0; const met='TRANSFERENCIA';
     if(!num||monto<=0) return {ok:false,error:'Comprobante sin local o monto'};
     const {data:l}=await _sb.from('locales').select('mora,clave,alquiler_actual').eq('local',num).single();
+    const fch=(b.fecha&&String(b.fecha).trim())?new Date(b.fecha).toISOString():new Date().toISOString();
     const mora=Number(l.mora)||0; const aMora=Math.min(monto,mora), resto=monto-aMora;
-    if(aMora>0){ await _sb.from('locales').update({mora:mora-aMora}).eq('local',num); await _sb.from('pagos_mora').insert({id:_uid(),fecha:new Date().toISOString(),local:num,clave:_lim(l.clave),monto:aMora,metodo:met,cargado_por:b.cargadoPor||'?',mora_antes:mora,mora_despues:mora-aMora}); }
-    if(resto>0){ await _sb.from('pagos').insert({id:_uid(),local:num,clave:_lim(l.clave),fecha:new Date().toISOString(),monto:resto,metodo:met,cargado_por:b.cargadoPor||'?',observaciones:'Pago por comprobante'}); }
+    if(aMora>0){ await _sb.from('locales').update({mora:mora-aMora}).eq('local',num); await _sb.from('pagos_mora').insert({id:_uid(),fecha:fch,local:num,clave:_lim(l.clave),monto:aMora,metodo:met,cargado_por:b.cargadoPor||'?',mora_antes:mora,mora_despues:mora-aMora}); }
+    if(resto>0){ await _sb.from('pagos').insert({id:_uid(),local:num,clave:_lim(l.clave),fecha:fch,monto:resto,metodo:met,cargado_por:b.cargadoPor||'?',observaciones:'Pago por comprobante'}); }
     await _moverSaldo(met,monto); await _recalcInt(num,l.alquiler_actual);
     await _sb.from('comprobantes_portal').update({estado:'APROBADO'}).eq('id',b.id);
     await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'COMPROBANTE_PAGO',detalle:'L'+num+': $'+monto});
@@ -2998,7 +2999,7 @@ async function rComprobantesLocales(){
           <a href="${escapeHTML(c.url)}" target="_blank" class="btn ol" style="margin-top:0;padding:7px 12px;width:auto;text-decoration:none">👁️ Ver foto</a>
           ${(est!=='APROBADO'&&est!=='RECHAZADO')?`<button class="btn do" style="margin-top:0;padding:6px 10px;font-size:11px;width:auto" onclick="cargarPagoDesdeComprobante('${c.id}',${Number(c.monto)||0})">💵 Cargar transferencia</button>`:''}
           ${est!=='APROBADO'?`<button class="btn ve" style="margin-top:0;padding:6px 10px;font-size:11px;width:auto" onclick="marcarComprobante('${c.id}','APROBADO')">✓ Aprobar</button>`:`<button class="btn ol" style="margin-top:0;padding:6px 10px;font-size:11px;width:auto" onclick="marcarComprobante('${c.id}','PENDIENTE')">↶ Pendiente</button>`}
-          ${est!=='RECHAZADO'?`<button class="btn ol" style="margin-top:0;padding:6px 10px;font-size:11px;width:auto;color:var(--co);border-color:#fecaca" onclick="marcarComprobante('${c.id}','RECHAZADO')">✗ Rechazar</button>`:''}
+          ${est!=='RECHAZADO'?`<button class="btn ol" style="margin-top:0;padding:6px 10px;font-size:11px;width:auto;color:var(--co);border-color:#fecaca" onclick="rechazarComprobante('${c.id}',${Number(c.local)||0})">✗ Rechazar</button>`:''}
         </div>
       </div>
     </div>`;
@@ -3021,17 +3022,57 @@ async function marcarComprobante(id, estado){
   if(r.ok){ toast(estado==='APROBADO'?'✓ Aprobado':'✓ Actualizado','ve'); revisarComprobantes(); rComprobantesLocales(); }
   else toast('Error: '+(r.error||''),'co');
 }
-async function cargarPagoDesdeComprobante(id, montoSugerido){
+function rechazarComprobante(id, local){
+  modal(`<h3>✗ Rechazar comprobante</h3>
+    <div style="font-size:13px;color:var(--gr);margin-bottom:10px">Local ${Number(local)||'?'}</div>
+    <label style="font-size:11px;color:var(--gr)">Motivo (elegí uno o escribilo)</label>
+    <select id="rcPreset" onchange="document.getElementById('rcMotivo').value=this.value" style="width:100%;padding:11px;border:1px solid #e2e8f0;border-radius:10px;margin-bottom:8px;font-size:14px">
+      <option value="">Elegí un motivo...</option>
+      <option value="El comprobante no se ve bien / no es legible. Por favor reenvialo más claro. ¡Gracias!">No es legible</option>
+      <option value="El monto del comprobante no coincide con lo que figura. Revisalo y reenvialo, por favor.">El monto no coincide</option>
+      <option value="Ese comprobante ya estaba cargado (está duplicado).">Duplicado</option>
+      <option value="Falta el comprobante o está incompleto. Reenvialo, por favor.">Falta / incompleto</option>
+    </select>
+    <textarea id="rcMotivo" rows="3" placeholder="El local recibe este texto en la notificación"></textarea>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;margin:10px 0"><input type="checkbox" id="rcPush" checked> Avisarle al local con una notificación push</label>
+    <button class="btn co" style="width:100%" onclick="confRechazar('${id}',${Number(local)||0})">✗ Rechazar y avisar</button>`);
+}
+async function confRechazar(id, local){
+  const motivo=(document.getElementById('rcMotivo').value||'').trim();
+  const avisar=document.getElementById('rcPush').checked;
+  if(!motivo){ toast('Escribí o elegí el motivo','co'); return; }
+  const btn=event&&event.target; if(btn){btn.disabled=true;btn.textContent='Procesando...';}
+  const r=await apiPost('comprobante_portal_marcar',{id,estado:'RECHAZADO',motivo,cargadoPor:state.user.name});
+  let avisoTxt='';
+  if(avisar && Number(local)>0){
+    const p=await enviarPushAdmin([Number(local)],'📎 Comprobante rechazado',motivo);
+    avisoTxt=(p&&p.ok&&p.enviados>0)?' · 🔔 Avisado':' · ⚠️ El local no tiene avisos activados';
+  }
+  if(btn){btn.disabled=false;btn.textContent='✗ Rechazar y avisar';}
+  if(r.ok){ cerrarModal(); toast('✗ Rechazado'+avisoTxt,'ve'); revisarComprobantes(); rComprobantesLocales(); }
+  else { toast('Error: '+(r.error||''),'co'); }
+}
+function cargarPagoDesdeComprobante(id, montoSugerido){
   const def = (Number(montoSugerido)>0) ? String(Number(montoSugerido)) : '';
-  const val = prompt('¿Qué monto pagó por transferencia? (en pesos, sin puntos)', def);
-  if(val===null) return; // canceló
-  const monto = Number(String(val).replace(/[^\d.-]/g,''));
-  if(!monto || monto<=0){ toast('Monto inválido','co'); return; }
-  if(!confirm(`Cargar $${monto.toLocaleString('es-AR')} como TRANSFERENCIA y aprobar el comprobante?`)) return;
-  loading('Cargando pago...');
-  const r=await apiPost('comprobante_cargar_pago',{id,monto,cargadoPor:state.user.name});
-  if(r.ok){ toast(`✓ Pago $${Number(r.monto).toLocaleString('es-AR')} cargado al local ${r.local}`,'ve'); revisarComprobantes(); rComprobantesLocales(); }
-  else { toast('Error: '+(r.error||''),'co'); rComprobantesLocales(); }
+  const hoy=new Date(); const fHoy=hoy.getFullYear()+'-'+String(hoy.getMonth()+1).padStart(2,'0')+'-'+String(hoy.getDate()).padStart(2,'0');
+  modal(`<h3>💵 Cargar transferencia</h3>
+    <label style="font-size:11px;color:var(--gr)">Monto (sin puntos)</label>
+    <input type="number" id="cpMonto" inputmode="numeric" value="${def}" placeholder="Ej: 150000" style="margin-bottom:8px">
+    <label style="font-size:11px;color:var(--gr)">Fecha del comprobante</label>
+    <input type="date" id="cpFecha" value="${fHoy}" max="${fHoy}" style="margin-bottom:4px">
+    <div style="font-size:11px;color:var(--gr);margin-bottom:8px">Poné la fecha en que hicieron la transferencia. Si la cargás días después, usá la fecha real del comprobante para no cobrar intereses de más.</div>
+    <button class="btn ve" style="width:100%;margin-top:6px" onclick="confCargarPagoComp('${id}')">💵 Cargar y aprobar</button>`);
+}
+async function confCargarPagoComp(id){
+  const monto=Number(String(document.getElementById('cpMonto').value||'').replace(/[^\d.-]/g,''));
+  const fecha=document.getElementById('cpFecha').value;
+  if(!monto||monto<=0){ toast('Monto inválido','co'); return; }
+  const fchISO = fecha ? new Date(fecha+'T12:00:00').toISOString() : null;
+  const btn=event&&event.target; if(btn){btn.disabled=true;btn.textContent='Cargando...';}
+  const r=await apiPost('comprobante_cargar_pago',{id,monto,fecha:fchISO,cargadoPor:state.user.name});
+  if(btn){btn.disabled=false;btn.textContent='💵 Cargar y aprobar';}
+  if(r.ok){ cerrarModal(); toast(`✓ Pago $${Number(r.monto).toLocaleString('es-AR')} cargado al local ${r.local}`,'ve'); revisarComprobantes(); rComprobantesLocales(); }
+  else { toast('Error: '+(r.error||''),'co'); }
 }
 
 // ===== TIENDAS ONLINE (admin) =====
