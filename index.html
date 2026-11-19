@@ -376,6 +376,7 @@ const MENU_PC = [
     {id:'cobranzas', ic:'💰', label:'Cobranzas', fn:'rCobranzas'},
     {id:'facturacion', ic:'📑', label:'Facturación', fn:'rFacturacion'},
     {id:'retiros', ic:'🤝', label:'Retiros socios', fn:'rRetiros'},
+    {id:'llaves', ic:'🔑', label:'Llaves', fn:'rLlaves'},
     {id:'cierremes', ic:'📅', label:'Cierre de mes', fn:'cierreMesPaso1'},
     {id:'subaipc', ic:'📈', label:'Suba de alquiler (IPC)', fn:'subaAlquilerInicio'},
     {id:'calendario', ic:'📅', label:'Calendario', fn:'rCalendario'},
@@ -443,6 +444,20 @@ async function _recalcInt(num,alq){const {desde,hasta,dia}=_mesRango();const [{d
 const _supaGet={
   'ping':async()=>({ok:true,backend_version:'supabase-v1'}),
   'listar_alquileres':async()=>{const d=await _cargarBase();return{ok:true,data:d,total:d.length};},
+  'llaves_listar':async()=>{
+    const [{data:vs},{data:locs}]=await Promise.all([
+      _sb.from('varios').select('local,llave,expensas,multas,pagado'),
+      _sb.from('locales').select('local,nombre').order('local')
+    ]);
+    const nombres={}; (locs||[]).forEach(l=>{nombres[l.local]=l.nombre||('Local '+l.local);});
+    const lista=(vs||[]).map(v=>{
+      const llave=Number(v.llave)||0, exp=Number(v.expensas)||0, mul=Number(v.multas)||0, pag=Number(v.pagado)||0;
+      const total=llave+exp+mul; const pend=Math.max(0,total-pag);
+      return {local:v.local, nombre:nombres[v.local]||('Local '+v.local), llave, expensas:exp, multas:mul, total, pagado:pag, pendiente:pend};
+    }).filter(x=>x.total>0).sort((a,b)=>b.pendiente-a.pendiente);
+    const totPend=lista.reduce((s,x)=>s+x.pendiente,0);
+    return {ok:true, lista, total_pendiente:totPend, cantidad:lista.filter(x=>x.pendiente>0).length, locales:(locs||[]).map(l=>({local:l.local,nombre:nombres[l.local]}))};
+  },
   'morosos_top':async(p)=>{const d=(await _cargarBase()).filter(o=>Number(o['DEUDA TOTAL'])>0).sort((a,b)=>b['DEUDA TOTAL']-a['DEUDA TOTAL']).slice(0,Number(p.cantidad||p.cant)||50);return{ok:true,data:d,total:d.length};},
   'generar_link_whatsapp':async(p)=>{
     const num=parseInt(p.local); const plantilla=(p.plantilla||'amable');
@@ -699,6 +714,29 @@ const _supaGet={
 
 };
 const _supaPost={
+  'llave_cobrar':async(b)=>{
+    const num=parseInt(b.local); const monto=Math.abs(Number(b.monto))||0; const met=(b.metodo||'EFECTIVO').toUpperCase();
+    if(!num||monto<=0) return {ok:false,error:'Local o monto inválido'};
+    const {data:v}=await _sb.from('varios').select('llave,expensas,multas,pagado').eq('local',num).maybeSingle();
+    if(!v) return {ok:false,error:'Ese local no tiene llave cargada'};
+    const total=(Number(v.llave)||0)+(Number(v.expensas)||0)+(Number(v.multas)||0);
+    const pag=Number(v.pagado)||0; const pend=Math.max(0,total-pag);
+    if(pend<=0) return {ok:false,error:'La llave ya está saldada'};
+    const aCobrar=Math.min(monto,pend); const nuevoPag=pag+aCobrar;
+    const uv=await _sb.from('varios').update({pagado:nuevoPag}).eq('local',num);
+    if(uv.error) return {ok:false,error:'No se pudo registrar: '+uv.error.message};
+    await _moverSaldo(met,aCobrar);
+    await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'COBRO_LLAVE',detalle:'L'+num+': $'+aCobrar+' '+met});
+    return {ok:true, cobrado:aCobrar, pendiente:Math.max(0,pend-aCobrar), local:num};
+  },
+  'llave_cargar':async(b)=>{
+    const num=parseInt(b.local); const monto=Math.abs(Number(b.monto))||0;
+    if(!num||monto<=0) return {ok:false,error:'Local o monto inválido'};
+    const u=await _sb.from('varios').upsert({local:num,llave:monto,expensas:0,multas:0,pagado:0},{onConflict:'local'});
+    if(u.error) return {ok:false,error:u.error.message};
+    await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'CARGAR_LLAVE',detalle:'L'+num+': llave $'+monto});
+    return {ok:true, local:num, monto};
+  },
   'cargar_pago':async(b)=>{
     const num=parseInt(b.local); const monto=Math.abs(Number(b.monto))||0; const met=(b.metodo||'EFECTIVO').toUpperCase();
     if(!num||monto<=0) return {ok:false,error:'Local o monto inválido'};
@@ -706,6 +744,19 @@ const _supaPost={
     if(le||!l) return {ok:false,error:'No se encontró el local '+num};
     const mora=Number(l.mora)||0;
     const destino=(b.destino||'AUTO').toString().toUpperCase();
+    if(destino==='EXTRA'){
+      const {data:v}=await _sb.from('varios').select('llave,expensas,multas,pagado').eq('local',num).maybeSingle();
+      if(!v) return {ok:false,error:'Este local no tiene deuda de llave/extraordinaria'};
+      const totalE=(Number(v.llave)||0)+(Number(v.expensas)||0)+(Number(v.multas)||0);
+      const pagE=Number(v.pagado)||0; const pendE=Math.max(0,totalE-pagE);
+      if(pendE<=0) return {ok:false,error:'La deuda extraordinaria ya está saldada'};
+      const aExtra=Math.min(monto,pendE);
+      const uvE=await _sb.from('varios').update({pagado:pagE+aExtra}).eq('local',num);
+      if(uvE.error) return {ok:false,error:uvE.error.message};
+      await _moverSaldo(met,aExtra);
+      await _sb.from('auditoria').insert({usuario:b.cargadoPor||'?',accion:'COBRO_LLAVE',detalle:`L${num}: $${aExtra} ${met} (extraordinaria)`});
+      return {ok:true,mensaje:'Pago extraordinaria',detalle:{a_extra:aExtra},a_extra:aExtra,destino:'EXTRA'};
+    }
     let aMora=0, aAlq=0;
     if(destino==='ALQUILER'){ aAlq=monto; } else { aMora=Math.min(monto,mora); aAlq=monto-aMora; }
     const detalle={a_mora:aMora,a_alquiler:aAlq};
@@ -3240,6 +3291,80 @@ async function guardarPortal(){
   }catch(e){ alert('Error al guardar: '+e.message); }
 }
 function val(id){ const e=$(id); return e?e.value.trim():''; }
+async function rLlaves(){
+  state.view='llaves'; loading('Cargando llaves...');
+  const r=await apiGet('llaves_listar');
+  if(!r.ok){ toast('Error: '+(r.error||''),'co'); rInicio(); return; }
+  const lista=r.lista||[];
+  state._llavesLocales=r.locales||[];
+  const pend=lista.filter(x=>x.pendiente>0);
+  const saldadas=lista.filter(x=>x.pendiente<=0);
+  const fila=x=>`<div class="lc" style="margin-bottom:10px;padding:12px;border-left:4px solid ${x.pendiente>0?'#f59e0b':'var(--ve)'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div><div style="font-weight:700">${x.local} · ${escapeHTML(x.nombre)}</div>
+        <div style="font-size:12px;color:var(--gr);margin-top:2px">Llave: ${money(x.total)} · Pagado: ${money(x.pagado)}</div></div>
+        <div style="text-align:right"><div style="font-size:12px;color:var(--gr)">Pendiente</div><div style="font-weight:800;color:${x.pendiente>0?'#b45309':'var(--ve)'}">${x.pendiente>0?money(x.pendiente):'✓ Saldada'}</div></div>
+      </div>
+      ${x.pendiente>0?`<button class="btn ve" style="margin-top:10px;width:100%" onclick="modCobrarLlave(${x.local},'${escapeHTML(x.nombre).replace(/'/g,"\\'")}',${x.pendiente})">💵 Cobrar llave</button>`:''}
+    </div>`;
+  render(`
+    <div class="greet"><h2>🔑 Llaves</h2><p>Lo que cada local debe de llave al entrar. Cobrá y la plata entra a la caja.</p></div>
+    <div class="section">
+      <button class="btn pri" style="width:100%;margin-bottom:12px" onclick="modCargarLlave()">➕ Cargar llave a un local</button>
+      <div class="kpis" style="grid-template-columns:1fr 1fr">
+        <div class="kpi co"><div class="kpi-label">Pendiente total</div><div class="kpi-value" style="color:#b45309">${money(r.total_pendiente||0)}</div></div>
+        <div class="kpi"><div class="kpi-label">Locales deben</div><div class="kpi-value">${pend.length}</div></div>
+      </div>
+      <div class="section-title" style="margin:14px 0 8px">🟡 Con llave pendiente (${pend.length})</div>
+      ${pend.length?pend.map(fila).join(''):'<div class="loading">No hay llaves pendientes 🎉</div>'}
+      ${saldadas.length?`<div class="section-title" style="margin:16px 0 8px">✅ Saldadas (${saldadas.length})</div>${saldadas.map(fila).join('')}`:''}
+    </div>
+  `);
+}
+function modCobrarLlave(num, nombre, pend){
+  modal(`<h3>💵 Cobrar llave</h3>
+    <div style="font-size:13px;color:var(--gr);margin-bottom:4px">Local ${num} · ${escapeHTML(String(nombre))}</div>
+    <div style="font-size:13px;margin-bottom:12px">Pendiente: <b style="color:#b45309">${money(pend)}</b></div>
+    <label style="font-size:11px;color:var(--gr)">Monto a cobrar (podés cobrar en partes)</label>
+    <input type="number" id="clMonto" inputmode="numeric" value="${Math.round(pend)}" style="margin-bottom:8px">
+    <label style="font-size:11px;color:var(--gr)">Método</label>
+    <select id="clMetodo" style="margin-bottom:4px"><option value="EFECTIVO">EFECTIVO</option><option value="TRANSFERENCIA">TRANSFERENCIA</option></select>
+    <div style="font-size:11px;color:var(--gr);margin-bottom:8px">Efectivo entra a la caja · Transferencia entra al banco.</div>
+    <button class="btn ve" style="width:100%" onclick="confCobrarLlave(${num})">💵 Confirmar cobro</button>`);
+}
+async function confCobrarLlave(num){
+  const monto=Number(String(document.getElementById('clMonto').value||'').replace(/[^\d.-]/g,''));
+  const metodo=document.getElementById('clMetodo').value;
+  if(!monto||monto<=0){ toast('Monto inválido','co'); return; }
+  const btn=event&&event.target; if(btn){btn.disabled=true;btn.textContent='Cobrando...';}
+  const r=await apiPost('llave_cobrar',{local:num,monto,metodo,cargadoPor:state.user.name});
+  if(btn){btn.disabled=false;btn.textContent='💵 Confirmar cobro';}
+  if(r.ok){ cerrarModal(); toast(`✓ Cobrado ${money(r.cobrado)}${r.pendiente>0?' · queda '+money(r.pendiente):' · saldada ✓'}`,'ve'); rLlaves(); }
+  else { toast('Error: '+(r.error||''),'co'); }
+}
+function modCargarLlave(){
+  const locs=state._llavesLocales||[];
+  const opts=locs.map(l=>`<option value="${l.local}">${l.local} · ${escapeHTML(l.nombre||'')}</option>`).join('');
+  modal(`<h3>➕ Cargar llave a un local</h3>
+    <div style="font-size:12px;color:var(--gr);margin-bottom:10px">Se usa cuando entra un local nuevo y tiene que pagar la llave.</div>
+    <label style="font-size:11px;color:var(--gr)">Local</label>
+    <select id="caLocal" style="margin-bottom:8px">${opts}</select>
+    <label style="font-size:11px;color:var(--gr)">Monto de la llave</label>
+    <input type="number" id="caMonto" inputmode="numeric" placeholder="Ej: 2500000" style="margin-bottom:4px">
+    <div style="font-size:11px;color:var(--gr);margin-bottom:8px">⚠️ Reemplaza la llave que tenga cargada ese local y la deja sin pagar.</div>
+    <button class="btn pri" style="width:100%" onclick="confCargarLlave()">➕ Cargar llave</button>`);
+}
+async function confCargarLlave(){
+  const local=Number(document.getElementById('caLocal').value);
+  const monto=Number(String(document.getElementById('caMonto').value||'').replace(/[^\d.-]/g,''));
+  if(!local){ toast('Elegí el local','co'); return; }
+  if(!monto||monto<=0){ toast('Monto inválido','co'); return; }
+  const btn=event&&event.target; if(btn){btn.disabled=true;btn.textContent='Cargando...';}
+  const r=await apiPost('llave_cargar',{local,monto,cargadoPor:state.user.name});
+  if(btn){btn.disabled=false;btn.textContent='➕ Cargar llave';}
+  if(r.ok){ cerrarModal(); toast('✓ Llave cargada: '+money(r.monto)+' al local '+r.local,'ve'); rLlaves(); }
+  else { toast('Error: '+(r.error||''),'co'); }
+}
 async function rRubros(){
   state.view='rubros'; loading('Cargando rubros...');
   const r=await apiGet('rubros_listar');
